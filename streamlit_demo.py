@@ -128,9 +128,11 @@ def main():
 
     st.title("Conformal Predictions in Classification")
     
-    st.write("In Classification, our model outputs are now class probabilities and prediction sets are discrete. This is in contrast to the continuous uncertainty bands we obtained before, and influences how we design the comparison of true and predicted classes to obtain our conformity scores. When the predictive uncertainty is high, size of the prediction set will be higher.")
-    st.write("MNIST is a popular dataset for handwritten digit classification. It consists of a training set with 60,000 images and a test set with 10,000 images. Each image is a grayscale 28x28 pixel image of a digit from 0 to 9.")
-    st.write("We split the training samples into two parts: the training set and the calibration set. The first 50,000 images are used for training, and the remaining 10,000 images are used for calibration.")
+    st.write("In regression, we had the predictions as continuous uncertainty bands. Now for classification, the outputs from the model are class probabilities, so the prediction sets are now discrete sets of the type:")
+    st.latex(r"\hat{C}(X_{n+1})\subseteq \{1,\dots,K\}")
+    st.write(r"where $K$ is the number of classes. This change in the output affects how we calculate the conformity scores.")
+    
+    st.write("We will use the MNIST dataset. The 60k training samples are split into two parts: the training set, which consists of 50k images, and the calibration set, which has 10k images. The test set consists of 10k images.")
     
     X_train, y_train, X_test, y_test, X_calib, y_calib = get_data()
     
@@ -142,15 +144,18 @@ def main():
     
     net = train_model(net, train_data)
     
-    st.write("**Test accuracy** of current model:", get_test_accuracy(X_test, y_test, net))
-    st.write("The choice of how to calculate conformity scores is a modelling decision. We will use a simple **softmax based method**:")
-    score_func = r"s_i=1-\hat{\pi}_{x_i}(y_i)"
-    st.latex(score_func)
-    st.write("the score function is 1 minus the softmax output of the true class. The prediction set is then constructed as :")
-    pred_set_latex = r"\hat{C}(x_{n+1})=\{y'\in K:\hat{\pi}_{x_{n+1}}(y') \ge 1-\hat{q}\}"
-    st.latex(pred_set_latex)
-    st.write("which collects all the classes for which the softmax score is above the threshold **$1-q$**.")
-    # st.latex(r"q = \left\lceil \frac{(n+1)(1-\alpha)}{n} \right\rceil")
+    st.write("For training, we will use a simple MLP. **Test accuracy** of the model is", get_test_accuracy(X_test, y_test, net))
+    
+    st.subheader("How to calculate Conformity Scores?")
+    st.write("The method of calculating conformity scores is a modelling decision. Here, we will use a simple method based on the softmax scores. The score is calculated by the following formula:")
+    st.write(r"$s_i=1-\hat{\pi}_{x_i}(y_i)$ for a sample $(x_i, y_i)$ from the calibration set.")
+    
+    st.write(r"The sample score $s_i$ is equal to 1 minus the softmax output of the true class.  If the softmax value of the true class is low, it means that the model is uncertain. The score in such a case will be high.")
+    st.write(r"After calculating the scores from the calibration set, we choose an error rate $\alpha$. The probability that the prediction set contains the correct class will be approximately 1 - $\alpha$. If $\alpha$ = 0.05, then the probability that the prediction set contains the true class is 0.95.")
+    st.write(r"We will get the prediction set for a test sample $(x_{n+1}, y_{n+1})$ by:")
+    st.latex(r"\hat{C}(x_{n+1})=\{y'\in K:\hat{\pi}_{x_{n+1}}(y') \ge 1-\hat{q}\}")
+    st.write(r"The prediction set $C$ consists of all the classes for which the softmax score is above a threshold value 1-$\hat{q}$. $\hat{q}$ is calculated as $\frac{{\lceil (1 - \alpha) \cdot (n + 1) \rceil}}{{n}}$ quantile of the scores from the calibration set.")
+       
     scores = get_scores(net, (X_calib, y_calib))
     alpha = st.slider("Select a value for alpha:", min_value=0.001, max_value=1.0, step=0.001, value=0.04)
     q_val = np.ceil((1 - alpha) * (n + 1)) / n
@@ -158,15 +163,21 @@ def main():
     q = np.quantile(scores, q_val, method="higher")
     plot_histogram_with_quantile(scores, q, alpha)
     # st.pyplot(fig)
-    st.write("Example:")
+    
+    s = "For this value of alpha, the threshold value $(1-q)$ = {:.3f}".format(1-q)
+    st.markdown(s)
+    
+    st.write("For example, select a random image from the below slider. The softmax scores for the classes can be seen in the plot on the right side. If the score is above the threshold value, then the class is in the predicted set.")
+    
+    # st.write("Example:")
     test_img_index = st.slider("Choose Image:", min_value=0, max_value=1000, step=1, value=628)
     pred_sets = get_pred_sets(net, (X_test, y_test), q, alpha)
     fig, ax, pred, pred_str = get_test_preds_and_smx(X_test, test_img_index, pred_sets, net, q, alpha)
     st.pyplot(fig)
     st.write("Prediction Set for this image: ", pred_str)
-    st.write("The average size of prediction sets for the test images is {:.3f}".format(mean_set_size(pred_sets)))
-    
-    
+    st.write("The average size of prediction sets for all the images from the test set is {:.3f}".format(mean_set_size(pred_sets)))
+    st.write("**What does the average size mean?** We observe that the average size of the prediction set decreases when value of alpha is increased. This is because of our method for computing conformity scores, where we only take into account the softmax scores of the correct class when calculating 𝑞̂. With increasing alpha, the softmax scores for the classes decreases and thus there are lesser scores above the threshold value.")    
+
 if __name__ == "__main__":
     main()
 
