@@ -5,7 +5,6 @@ import torch.nn as nn
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-from tqdm.auto import trange, tqdm
 
 # Import utility functions and model classes from custom modules
 from utils import get_simple_data_train, display_equation, train, get_data, get_test_preds_and_smx, get_scores, quantile, get_pred_sets, mean_set_size, get_test_accuracy

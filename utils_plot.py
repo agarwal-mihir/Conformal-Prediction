@@ -4,8 +4,6 @@ import torch.nn as nn
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-from tqdm.auto import trange, tqdm
-from utils import get_simple_data_train
 
 # Set random seeds for reproducibility
 torch.manual_seed(42)
