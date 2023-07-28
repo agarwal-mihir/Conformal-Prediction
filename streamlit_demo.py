@@ -100,8 +100,8 @@ def main():
     st.title("Conformal Predictions in Classification")
     st.write("In Classification, our model outputs are now class probabilities and prediction sets are discrete.")
     # Further explanations and information about the Cifar Dataset and the pre-trained CNN model
-    # X_test, y_test, X_calib, y_calib = get_data()
-    # net = CNN()
+    X_test, y_test, X_calib, y_calib = get_data()
+    # net = MLP(input_dim = 784,output_dim=1,hidden_dim=hidden_dim, n_hidden_layers=n_hidden_layers)
     # net.load_state_dict(torch.load("cifar/cifar_model", map_location=torch.device("cpu")))
     # st.write("**Test accuracy** of current model:", get_test_accuracy(X_test, y_test, net))
     # st.write("The choice of how to calculate conformity scores is a modelling decision. We will use a simple softmax based method:")
@@ -121,18 +121,18 @@ def main():
     # fig, ax = plot_scores_quantile(scores, q, alpha)
     # st.pyplot(fig)
     
-    # # Display conformal quantile(1-q) of the calibration data
-    # st.write("Conformal quantile(1-q) of the calibration data is: {:.3f}".format(1-q))
+    # Display conformal quantile(1-q) of the calibration data
+    st.write("Conformal quantile(1-q) of the calibration data is: {:.3f}".format(1-q))
     
-    # # Example of the prediction set for a selected test image
-    # st.write("Example:")
-    # test_img_index = st.slider("Choose Image:", min_value=0, max_value=1000, step=1, value=628)
-    # sample_test_img = X_test[test_img_index]
-    # pred_sets = get_pred_sets(net, (X_test, y_test), q, alpha)
-    # fig, ax, pred, pred_str = get_test_preds_and_smx(X_test, test_img_index, pred_sets, net, q, alpha)
-    # st.pyplot(fig)
-    # st.write("Prediction Set for this image: ", pred_str)
-    # st.write("The average size of prediction sets for the test images is {:.3f}".format(mean_set_size(pred_sets)))
+    # Example of the prediction set for a selected test image
+    st.write("Example:")
+    test_img_index = st.slider("Choose Image:", min_value=0, max_value=1000, step=1, value=628)
+    sample_test_img = X_test[test_img_index]
+    pred_sets = get_pred_sets(net, (X_test, y_test), q, alpha)
+    fig, ax, pred, pred_str = get_test_preds_and_smx(X_test, test_img_index, pred_sets, net, q, alpha)
+    st.pyplot(fig)
+    st.write("Prediction Set for this image: ", pred_str)
+    st.write("The average size of prediction sets for the test images is {:.3f}".format(mean_set_size(pred_sets)))
 if __name__ == "__main__":
     main()
 

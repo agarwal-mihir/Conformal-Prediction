@@ -4,6 +4,8 @@ import torch.nn as nn
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+import torchvision
+import torchvision.transforms as transforms
 
 # Set random seeds for reproducibility
 torch.manual_seed(42)
@@ -51,18 +53,24 @@ def train(net, train_data, epochs=1000):
 
 # Function to load the CIFAR-10 test and calibration data
 def get_data():
-    X_test = np.load("cifar/npy/cifar_x_test.npy")
-    y_test = np.load("cifar/npy/cifar_y_test.npy")
-    X_calib = np.load("cifar/npy/cifar_x_calib.npy")
-    y_calib = np.load("cifar/npy/cifar_y_calib.npy")
-    
-    # Convert data to PyTorch tensors and normalize the pixel values
-    X_test = torch.tensor(X_test, dtype=torch.float32) / 255.0
-    y_test = torch.tensor(y_test, dtype=torch.long)
-    
-    X_calib = torch.tensor(X_calib, dtype=torch.float32) / 255.0
-    y_calib = torch.tensor(y_calib, dtype=torch.long)
-    
+    # Define the transformations for the dataset
+    transform = transforms.Compose([
+        transforms.ToTensor(),
+        transforms.Normalize(mean=(0.5, 0.5, 0.5), std=(0.5, 0.5, 0.5))  # Normalize to range [-1, 1]
+    ])
+
+    # Download and load the CIFAR-10 test set
+    test_set = torchvision.datasets.CIFAR10(root="./data", train=False, download=True, transform=transform)
+    test_loader = torch.utils.data.DataLoader(test_set, batch_size=len(test_set), shuffle=False)
+
+    # Download and load the CIFAR-10 calibration set (validation set)
+    calib_set = torchvision.datasets.CIFAR10(root="./data", train=True, download=True, transform=transform)
+    calib_loader = torch.utils.data.DataLoader(calib_set, batch_size=len(calib_set), shuffle=False)
+
+    # Get the data and labels from the loaders
+    X_test, y_test = next(iter(test_loader))
+    X_calib, y_calib = next(iter(calib_loader))
+
     return X_test, y_test, X_calib, y_calib
 
 # Function to get the class label based on index
