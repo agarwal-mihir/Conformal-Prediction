@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 
 # Import utility functions and model classes from custom modules
 from utils import get_simple_data_train, display_equation, train, get_data, get_test_preds_and_smx, get_scores, quantile, get_pred_sets, mean_set_size, get_test_accuracy
-from utils_plot import plot_generic, plot_multiple_predictions, plot_predictions, plot_uncertainty_bands, plot_scores_quantile
+from utils_plot import plot_generic, plot_predictions, plot_scores_quantile
 from model import MLP, CNN
 
 # Set random seeds for reproducibility
