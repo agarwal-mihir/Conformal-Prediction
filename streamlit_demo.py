@@ -100,8 +100,8 @@ def main():
     st.title("Conformal Predictions in Classification")
     st.write("In Classification, our model outputs are now class probabilities and prediction sets are discrete.")
     # Further explanations and information about the Cifar Dataset and the pre-trained CNN model
-    X_test, y_test, X_calib, y_calib = get_data()
-    net = CNN()
+    # X_test, y_test, X_calib, y_calib = get_data()
+    # net = CNN()
     # net.load_state_dict(torch.load("cifar/cifar_model", map_location=torch.device("cpu")))
     # st.write("**Test accuracy** of current model:", get_test_accuracy(X_test, y_test, net))
     # st.write("The choice of how to calculate conformity scores is a modelling decision. We will use a simple softmax based method:")
