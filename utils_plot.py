@@ -90,7 +90,6 @@ def plot_uncertainty_bands(x_train, y_train, x_cal, y_cal, x_test, y_preds, coef
 #     plt.legend(loc=2)
     
 #     return fig, ax
-
 def plot_scores_quantile(scores, quantile, alpha):
     fig, ax = plt.subplots(figsize=(10, 5))
     plt.xlabel("Score")
@@ -104,3 +103,21 @@ def plot_scores_quantile(scores, quantile, alpha):
     
     plt.legend(loc = 2)
     return fig, ax
+
+def plot_histogram_with_quantile(scores, q, alpha):
+    fig, ax = plt.subplots(figsize=(10, 5))
+    
+    # Plot the histogram
+    n, bins, _ = plt.hist(scores, bins=50, alpha=0.7, color='b', edgecolor='black', label='Score Frequency')
+    
+    # Plot the vertical line at the quantile
+    q_x = np.quantile(scores, q)
+    plt.axvline(q_x, color='r', linestyle='dashed', linewidth=2, label=f'Quantile (q = {q:.4f})')
+    
+    plt.xlabel('Scores')
+    plt.ylabel('Frequency')
+    plt.title('Histogram of Scores with Quantile Line')
+    plt.legend()
+    plt.grid(True)
+    
+    st.pyplot(fig)

@@ -31,7 +31,6 @@ def get_simple_data_train(coef_1, coef_2, coef_3, coef_4):
 
 def display_equation(coef_1, coef_2, coef_3, coef_4):
     equation = r"f(x, \varepsilon) = {:.2f} \sin(2\pi(x + \varepsilon)) + {:.2f} \cos(4\pi(x + \varepsilon)) + {:.2f}x + \varepsilon".format(coef_1, coef_2, coef_3)
-    st.subheader("Function")
     st.latex(equation)
 
 
@@ -79,9 +78,10 @@ def class_label(i):
     return labels[i]
 
 # Function to calculate the test accuracy of a neural network model
-def get_test_accuracy(X_test, y_test, net):
+@st.cache_resource
+def get_test_accuracy(_X_test, _y_test, _net):
     # Create a DataLoader for the test dataset
-    test_dataset = torch.utils.data.TensorDataset(X_test, y_test.squeeze().long())
+    test_dataset = torch.utils.data.TensorDataset(_X_test, _y_test.squeeze().long())
     test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=64, shuffle=False)  # No need to shuffle for testing
     
     def calculate_accuracy(outputs, labels):
@@ -92,7 +92,7 @@ def get_test_accuracy(X_test, y_test, net):
         return accuracy
 
     # Evaluate the model on the test dataset
-    net.eval()  # Set the model to evaluation mode (important for dropout and batch normalization layers)
+    _net.eval()  # Set the model to evaluation mode (important for dropout and batch normalization layers)
     total_accuracy = 0.0
     total_samples = 0
 
@@ -100,7 +100,7 @@ def get_test_accuracy(X_test, y_test, net):
         for data in test_loader:
             inputs, labels = data
             # inputs = inputs
-            outputs = net(inputs)
+            outputs = _net(inputs)
             accuracy = calculate_accuracy(outputs, labels)
             total_accuracy += accuracy * labels.size(0)
             total_samples += labels.size(0)
@@ -148,7 +148,7 @@ def get_pred_str(pred):
     return pred_str
 
 
-# # Function to display test predictions and class scores
+# Function to display test predictions and class scores
 def get_test_preds_and_smx(X_test, index, pred_sets, net, q, alpha):
     test_smx = nn.functional.softmax(net(X_test), dim=1).detach().numpy()
     sample_smx = test_smx[index]
@@ -168,29 +168,25 @@ def get_test_preds_and_smx(X_test, index, pred_sets, net, q, alpha):
     
     return fig, axs, pred_set, get_pred_str(pred_set)
 
-# def accuracy(outputs, targets):
-#     _, predicted = torch.max(outputs, 1)
-#     correct = (predicted == targets).sum().item()
-#     total = targets.size(0)
-#     return correct / total
 
-def train_model(net, train_data):
-    X_train, y_train = train_data
+@st.cache_resource
+def train_model(_net, _train_data):
+    X_train, y_train = _train_data
     train_dataset = torch.utils.data.TensorDataset(X_train, y_train)
     train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=64, shuffle=True)
 
     criterion = nn.CrossEntropyLoss()
-    optimizer = torch.optim.Adam(net.parameters(), lr=0.001)
-    num_epochs = 1
+    optimizer = torch.optim.Adam(_net.parameters(), lr=0.001)
+    num_epochs = 5
     
     for epoch in range(num_epochs):
-        net.train()
+        _net.train()
         running_loss = 0.0
         running_accuracy = 0.0
 
         for batch_idx, (inputs, targets) in enumerate(train_loader):
             optimizer.zero_grad()
-            outputs = net(inputs)
+            outputs = _net(inputs)
             loss = criterion(outputs, targets)
             loss.backward()
             optimizer.step()
@@ -202,64 +198,5 @@ def train_model(net, train_data):
                 print(f"Epoch [{epoch+1}/{num_epochs}] Batch [{batch_idx+1}/{len(train_loader)}] Loss: {running_loss / 100:.4f} Train Accuracy: {running_accuracy / 100:.4f}")
                 running_loss = 0.0
                 running_accuracy = 0.0    
-    return net
+    return _net
 
-# def get_test_accuracy(net, test_data):
-#     X_test, y_test = test_data
-#     test_outputs = net(X_test)
-#     return accuracy(test_outputs, y_test)
-
-# def quantile(scores, alpha):
-#   # compute conformal quantiles
-
-#   n = len(scores)
-#   q_val = np.ceil((1 - alpha) * (n + 1)) / n
-#   q = np.quantile(scores, q_val, method="higher")
-#   return q
-
-# def mean_set_size(sets):
-#   # mean prediction set size
-#   return np.mean(np.sum(sets, axis=1), axis=0)
-
-# def emp_coverage(sets, target):
-#   # empirical coverage
-#   return sets[np.arange(len(sets)), target].mean()
-
-# def get_scores(net, calib_data):
-#     X_calib, y_calib = calib_data
-#     cal_smx = torch.functional.F.softmax(net(X_calib), dim=1).detach().numpy()
-#     scores = 1 - cal_smx[np.arange(len(X_calib)), y_calib.numpy()]
-#     return scores
-
-# def get_pred_sets(net, test_data, q, alpha):
-#     X_test, y_test = test_data
-#     test_smx = nn.functional.softmax(net(X_test), dim=1).detach().numpy()
-
-#     pred_sets = test_smx >= (1-q)
-#     return pred_sets
-
-# def get_pred_str(pred):
-#     pred_str = ""
-    
-#     for i in pred:
-#         pred_str += str(i) + ' '
-#     return pred_str
-
-# # def get_test_preds_and_smx(X_test, index, pred_sets, net, q, alpha, X_test_unscaled):
-# #     test_smx = nn.functional.softmax(net(X_test), dim=1).detach().numpy()
-# #     sample_smx = test_smx[index]
-    
-# #     fig, axs = plt.subplots(1, 2, figsize=(12, 3))
-# #     print(X_test_unscaled[index].reshape(28, 28).shape)
-# #     print(X_test_unscaled[index].reshape(28, 28))
-# #     axs[0].imshow(X_test_unscaled[index].reshape(28, 28), cmap='gray', vmin=0, vmax=255)
-# #     axs[0].set_title("Sample test image")
-    
-# #     axs[1].bar(range(10), sample_smx, label = "class scores")
-# #     axs[1].axhline(y = q, label = 'threshold', color = "red", linestyle='dashed')
-# #     axs[1].legend(loc = 1)
-# #     axs[1].set_title("Class Scores")
-    
-# #     pred_set = pred_sets[index].nonzero()[0].tolist()
-    
-# #     return fig, axs, pred_set, get_pred_str(pred_set)
