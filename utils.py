@@ -46,8 +46,6 @@ def train(net, train_data, epochs=1000):
         loss.backward()
         optimizer.step()
 
-        # Display the progress during training every 10 epochs
-
     return net
 
 
