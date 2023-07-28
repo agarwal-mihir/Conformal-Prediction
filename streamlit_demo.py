@@ -73,6 +73,9 @@ def main():
     x_test = torch.linspace(-.5, 1.5, 1000)[:, None]
     y_preds = net(x_test).clone().detach().numpy()
     y_cal_preds = net(x_cal).clone().detach()
+    st.latex(r"In regression, the score function $s_i$ for each calibration data point $x_i$ is calculated as the absolute difference between the true output $y_i$ and the model's predicted output $\hat{y}_i$.")
+    # st.latex(score_func)
+    st.write("The score function $s_i$ represents the absolute difference between the true output $y_i$ and the model's predicted output $\hat{y}_i$ for each calibration data point $x_i$. It measures the discrepancy between the true values and their corresponding predictions, providing a measure of model fit to the calibration data.")
     resid = torch.abs(y_cal - y_cal_preds).numpy()
     alpha = st.slider("Select a value for alpha:", min_value=0.01, max_value=1.0, step=0.001, value=0.03)
     n = len(x_cal)
