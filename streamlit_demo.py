@@ -35,7 +35,20 @@ def main():
     st.write("Conformal Prediction is a powerful framework in machine learning that provides a measure of uncertainty in predictions. Unlike traditional point predictions, conformal prediction constructs prediction intervals that quantify the range of potential outcomes.")
 
     st.write(r"The significance of conformal prediction lies in its ability to provide a confidence level ($\alpha$) for the predictions, allowing users to understand the reliability of the model's output. This is especially crucial in critical applications where understanding the uncertainty is essential.")
-    
+    st.write(r"Conformal Prediction for a General Input $x$ and Output $y$:")
+    st.write("**1.** Identify a heuristic notion of uncertainty using the pre-trained model.")
+    st.write(r"    - In conformal prediction, we make use of a pre-trained model to estimate the uncertainty associated with its predictions. This uncertainty is crucial as it allows us to create prediction intervals rather than single point predictions.")
+
+    st.write("**2.** Define the score function $s(x, y) \in \mathbb{R}$. (Larger scores encode worse agreement between $x$ and $y$.)")
+    st.write(r"- The score function $s(x, y)$ is a function that quantifies the discrepancy or disagreement between the input $x$ and the output $y$. Larger scores indicate a worse agreement between the predicted value and the true value.")
+
+    st.write("**3.** Compute $\\hat{q}$ as the ceiling function of $\\frac{d(n+1)(1-\\alpha)}{n}$.")
+    st.write(r"    - To determine the quantile value $\hat{q}$, we calculate the $\left\lceil \frac{d(n+1)(1-\alpha)}{n} \right\rceil$-th quantile of the calibration scores $s_1 = s(X_1, Y_1), ..., s_n = s(X_n, Y_n)$, where $d$ is the number of dimensions in the output space, $n$ is the number of calibration data points, and $\alpha$ is the confidence level.")
+
+    st.write("**4.** Use this quantile to form the prediction sets for new examples:")
+    st.write(r"    - The prediction set $C(X_{\text{test}})$ is constructed as $\{y : s(X_{\text{test}}, y) \leq \hat{q}\}$. It contains all the possible output values $y$ for the new input example $X_{\text{test}}$, where the score function $s(X_{\text{test}}, y)$ is less than or equal to the computed quantile $\hat{q}$.")
+
+    st.write("By following these steps, conformal prediction provides a practical way to estimate uncertainty and create prediction intervals for new examples, enabling better decision-making and trust in the model's predictions.")
     st.title("Conformal Predictions for Regression:")
     # Data Visualization Section
     # Sliders to control the coefficients of sine and cosine functions and noise
@@ -157,7 +170,7 @@ def main():
     st.write(r"The prediction set $C$ consists of all the classes for which the softmax score is above a threshold value 1-$\hat{q}$. $\hat{q}$ is calculated as $\frac{{\lceil (1 - \alpha) \cdot (n + 1) \rceil}}{{n}}$ quantile of the scores from the calibration set.")
        
     scores = get_scores(net, (X_calib, y_calib))
-    alpha = st.slider("Select a value for alpha:", min_value=0.001, max_value=1.0, step=0.001, value=0.04)
+    alpha = st.slider("Select a value for alpha:", min_value=0.01, max_value=1.0, step=0.001, value=0.04)
     q_val = np.ceil((1 - alpha) * (n + 1)) / n
     st.latex(r"q = \frac{{\lceil (1 - \alpha) \cdot (n + 1) \rceil}}{{n}} = {:.4f}".format(q_val))
     q = np.quantile(scores, q_val, method="higher")
