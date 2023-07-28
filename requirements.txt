@@ -1,5 +1,5 @@
-streamlit==1.23.0
-matplotlib==3.7.2
-numpy==1.25.1
-pandas==2.0.3
-torch==2.0.1
+streamlit
+matplotlib
+numpy
+pandas
+torch
