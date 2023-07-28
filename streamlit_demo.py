@@ -70,6 +70,7 @@ def main():
     display_equation(coef_1, coef_2, coef_3, coef_4)
     x_train, y_train, x_cal, y_cal = get_simple_data_train(coef_1, coef_2, coef_3, coef_4)
     fig, ax = plot_generic(x_train, y_train, x_cal, y_cal, coef_1=coef_1, coef_2=coef_2, coef_3=coef_3, coef_4=coef_4)
+    plt.title("Plot of Training and Calibration Data", fontsize=15)
     st.pyplot(fig)
     st.subheader("Model")
     st.write(r"You can specify the hyperparameters for the model below. The model will be trained on the training data and used to generate predictions on the calibration data. The calibration data is used to estimate the confidence level ($\alpha$) for the prediction intervals.")
@@ -120,6 +121,7 @@ def main():
     ax.plot(x_test, y_preds, '-', linewidth=3, color="y", label="predictive mean")
     ax.fill_between(x_test.ravel(), y_preds - q, y_preds + q, alpha=0.6, color='y', zorder=5)
     plt.legend(loc='best', fontsize=15, frameon=False)
+    plt.title("Plot of confidence interval for the conformal prediction", fontsize=15)
     st.pyplot(fig)
     
 
@@ -127,7 +129,8 @@ def main():
     st.title("Conformal Predictions in Classification")
     
     st.write("In Classification, our model outputs are now class probabilities and prediction sets are discrete. This is in contrast to the continuous uncertainty bands we obtained before, and influences how we design the comparison of true and predicted classes to obtain our conformity scores. When the predictive uncertainty is high, size of the prediction set will be higher.")
-    st.write(" We split the training samples into two parts: training set and calibration set. We take the first 50k images in training set and 10k images in the calibration set.")
+    st.write("MNIST is a popular dataset for handwritten digit classification. It consists of a training set with 60,000 images and a test set with 10,000 images. Each image is a grayscale 28x28 pixel image of a digit from 0 to 9.")
+    st.write("We split the training samples into two parts: the training set and the calibration set. The first 50,000 images are used for training, and the remaining 10,000 images are used for calibration.")
     
     X_train, y_train, X_test, y_test, X_calib, y_calib = get_data()
     
@@ -140,23 +143,23 @@ def main():
     net = train_model(net, train_data)
     
     st.write("**Test accuracy** of current model:", get_test_accuracy(X_test, y_test, net))
-    st.write("The choice of how to calculate conformity scores is a modelling decision. We will use a simple softmax based method:")
+    st.write("The choice of how to calculate conformity scores is a modelling decision. We will use a simple **softmax based method**:")
     score_func = r"s_i=1-\hat{\pi}_{x_i}(y_i)"
     st.latex(score_func)
-    st.write("which is 1 minus the softmax output of the true class. The prediction set is then constructed as :")
+    st.write("the score function is 1 minus the softmax output of the true class. The prediction set is then constructed as :")
     pred_set_latex = r"\hat{C}(x_{n+1})=\{y'\in K:\hat{\pi}_{x_{n+1}}(y') \ge 1-\hat{q}\}"
     st.latex(pred_set_latex)
-    st.write("which collects all the classes for which the softmax score is above the threshold **1-q**.")
-    st.write("**q** is given by: ")
-    st.latex(r"\left\lceil \frac{(n+1)(1-\alpha)}{n} \right\rceil")
+    st.write("which collects all the classes for which the softmax score is above the threshold **$1-q$**.")
+    # st.latex(r"q = \left\lceil \frac{(n+1)(1-\alpha)}{n} \right\rceil")
     scores = get_scores(net, (X_calib, y_calib))
     alpha = st.slider("Select a value for alpha:", min_value=0.001, max_value=1.0, step=0.001, value=0.04)
-    q = quantile(scores, alpha)
+    q_val = np.ceil((1 - alpha) * (n + 1)) / n
+    st.latex(r"q = \frac{{\lceil (1 - \alpha) \cdot (n + 1) \rceil}}{{n}} = {:.4f}".format(q_val))
+    q = np.quantile(scores, q_val, method="higher")
     plot_histogram_with_quantile(scores, q, alpha)
     # st.pyplot(fig)
     st.write("Example:")
     test_img_index = st.slider("Choose Image:", min_value=0, max_value=1000, step=1, value=628)
-    sample_test_img = X_test[test_img_index]
     pred_sets = get_pred_sets(net, (X_test, y_test), q, alpha)
     fig, ax, pred, pred_str = get_test_preds_and_smx(X_test, test_img_index, pred_sets, net, q, alpha)
     st.pyplot(fig)
