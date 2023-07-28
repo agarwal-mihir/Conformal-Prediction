@@ -4,6 +4,8 @@ import torch.nn as nn
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+import torchvision.datasets as datasets
+import torchvision.transforms as transforms
 
 # Set random seeds for reproducibility
 torch.manual_seed(42)
@@ -51,23 +53,29 @@ def train(net, train_data, epochs=1000):
 
 # Function to load the CIFAR-10 test and calibration data
 def get_data():
-    X_test = np.load("cifar/npy/cifar_x_test.npy")
-    y_test = np.load("cifar/npy/cifar_y_test.npy")
-    X_calib = np.load("cifar/npy/cifar_x_calib.npy")
-    y_calib = np.load("cifar/npy/cifar_y_calib.npy")
-    
-    # Convert data to PyTorch tensors and normalize the pixel values
-    X_test = torch.tensor(X_test, dtype=torch.float32) / 255.0
-    y_test = torch.tensor(y_test, dtype=torch.long)
-    
-    X_calib = torch.tensor(X_calib, dtype=torch.float32) / 255.0
-    y_calib = torch.tensor(y_calib, dtype=torch.long)
-    
-    return X_test, y_test, X_calib, y_calib
+    transform = transforms.Compose([
+        transforms.ToTensor(),
+        transforms.Normalize((0.1307,), (0.3081,))
+    ])
 
-# Function to get the class label based on index
+    train_dataset = datasets.MNIST(root='./data', train=True, download=True, transform=transform)
+    test_dataset = datasets.MNIST(root='./data', train=False, download=True, transform=transform)
+
+    X_train, y_train = train_dataset.data.float() / 255.0, train_dataset.targets
+    X_test, y_test = test_dataset.data.float() / 255.0, test_dataset.targets
+
+    X_train = X_train.view(-1, 28*28)
+    X_test = X_test.view(-1, 28*28)
+
+    X_calib, X_train = X_train[50000:], X_train[:50000]
+    y_calib, y_train = y_train[50000:], y_train[:50000]
+
+    return X_train, y_train, X_test, y_test, X_calib, y_calib
+
+# # Function to get the class label based on index
 def class_label(i):
-    labels = {0: "airplane", 1: "automobile", 2: "bird", 3: "cat", 4: "deer", 5: "dog", 6: "frog", 7: "horse", 8: "ship", 9: "truck"}
+    labels = {0: "0", 1: "1", 2: "2", 3: "3", 4: "4", 
+                5: "5", 6: "6", 7: "7", 8: "8", 9: "9"}
     return labels[i]
 
 # Function to calculate the test accuracy of a neural network model
@@ -91,7 +99,7 @@ def get_test_accuracy(X_test, y_test, net):
     with torch.no_grad():
         for data in test_loader:
             inputs, labels = data
-            inputs = inputs.permute(0, 3, 1, 2)
+            # inputs = inputs
             outputs = net(inputs)
             accuracy = calculate_accuracy(outputs, labels)
             total_accuracy += accuracy * labels.size(0)
@@ -119,14 +127,14 @@ def get_scores(net, calib_data):
     X_calib, y_calib = calib_data
     y_calib = y_calib.reshape(-1)
     
-    cal_smx = torch.functional.F.softmax(net(X_calib.permute(0, 3, 1, 2)), dim=1).detach().numpy()
+    cal_smx = torch.functional.F.softmax(net(X_calib), dim=1).detach().numpy()
     scores = 1 - cal_smx[np.arange(len(X_calib)), y_calib.numpy()]
     return scores
 
 # Function to compute the prediction sets for conformal prediction
 def get_pred_sets(net, test_data, q, alpha):
     X_test, y_test = test_data
-    test_smx = nn.functional.softmax(net(X_test.permute(0, 3, 1, 2)), dim=1).detach().numpy()
+    test_smx = nn.functional.softmax(net(X_test), dim=1).detach().numpy()
 
     pred_sets = test_smx >= (1 - q)
     return pred_sets
@@ -140,13 +148,13 @@ def get_pred_str(pred):
     return pred_str
 
 
-# Function to display test predictions and class scores
+# # Function to display test predictions and class scores
 def get_test_preds_and_smx(X_test, index, pred_sets, net, q, alpha):
-    test_smx = nn.functional.softmax(net(X_test.permute(0, 3, 1, 2)), dim=1).detach().numpy()
+    test_smx = nn.functional.softmax(net(X_test), dim=1).detach().numpy()
     sample_smx = test_smx[index]
     
     fig, axs = plt.subplots(1, 2, figsize=(12, 3))
-    axs[0].imshow(X_test[index].numpy())
+    axs[0].imshow(X_test[index].reshape(28,28).numpy())
     axs[0].set_title("Sample test image")
     
     axs[1].bar(range(10), sample_smx, label="class scores")
@@ -159,3 +167,99 @@ def get_test_preds_and_smx(X_test, index, pred_sets, net, q, alpha):
     pred_set = pred_sets[index].nonzero()[0].tolist()
     
     return fig, axs, pred_set, get_pred_str(pred_set)
+
+# def accuracy(outputs, targets):
+#     _, predicted = torch.max(outputs, 1)
+#     correct = (predicted == targets).sum().item()
+#     total = targets.size(0)
+#     return correct / total
+
+def train_model(net, train_data):
+    X_train, y_train = train_data
+    train_dataset = torch.utils.data.TensorDataset(X_train, y_train)
+    train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=64, shuffle=True)
+
+    criterion = nn.CrossEntropyLoss()
+    optimizer = torch.optim.Adam(net.parameters(), lr=0.001)
+    num_epochs = 1
+    
+    for epoch in range(num_epochs):
+        net.train()
+        running_loss = 0.0
+        running_accuracy = 0.0
+
+        for batch_idx, (inputs, targets) in enumerate(train_loader):
+            optimizer.zero_grad()
+            outputs = net(inputs)
+            loss = criterion(outputs, targets)
+            loss.backward()
+            optimizer.step()
+
+            running_loss += loss.item()
+            # running_accuracy += accuracy(outputs, targets)
+
+            if batch_idx % 100 == 99:
+                print(f"Epoch [{epoch+1}/{num_epochs}] Batch [{batch_idx+1}/{len(train_loader)}] Loss: {running_loss / 100:.4f} Train Accuracy: {running_accuracy / 100:.4f}")
+                running_loss = 0.0
+                running_accuracy = 0.0    
+    return net
+
+# def get_test_accuracy(net, test_data):
+#     X_test, y_test = test_data
+#     test_outputs = net(X_test)
+#     return accuracy(test_outputs, y_test)
+
+# def quantile(scores, alpha):
+#   # compute conformal quantiles
+
+#   n = len(scores)
+#   q_val = np.ceil((1 - alpha) * (n + 1)) / n
+#   q = np.quantile(scores, q_val, method="higher")
+#   return q
+
+# def mean_set_size(sets):
+#   # mean prediction set size
+#   return np.mean(np.sum(sets, axis=1), axis=0)
+
+# def emp_coverage(sets, target):
+#   # empirical coverage
+#   return sets[np.arange(len(sets)), target].mean()
+
+# def get_scores(net, calib_data):
+#     X_calib, y_calib = calib_data
+#     cal_smx = torch.functional.F.softmax(net(X_calib), dim=1).detach().numpy()
+#     scores = 1 - cal_smx[np.arange(len(X_calib)), y_calib.numpy()]
+#     return scores
+
+# def get_pred_sets(net, test_data, q, alpha):
+#     X_test, y_test = test_data
+#     test_smx = nn.functional.softmax(net(X_test), dim=1).detach().numpy()
+
+#     pred_sets = test_smx >= (1-q)
+#     return pred_sets
+
+# def get_pred_str(pred):
+#     pred_str = ""
+    
+#     for i in pred:
+#         pred_str += str(i) + ' '
+#     return pred_str
+
+# # def get_test_preds_and_smx(X_test, index, pred_sets, net, q, alpha, X_test_unscaled):
+# #     test_smx = nn.functional.softmax(net(X_test), dim=1).detach().numpy()
+# #     sample_smx = test_smx[index]
+    
+# #     fig, axs = plt.subplots(1, 2, figsize=(12, 3))
+# #     print(X_test_unscaled[index].reshape(28, 28).shape)
+# #     print(X_test_unscaled[index].reshape(28, 28))
+# #     axs[0].imshow(X_test_unscaled[index].reshape(28, 28), cmap='gray', vmin=0, vmax=255)
+# #     axs[0].set_title("Sample test image")
+    
+# #     axs[1].bar(range(10), sample_smx, label = "class scores")
+# #     axs[1].axhline(y = q, label = 'threshold', color = "red", linestyle='dashed')
+# #     axs[1].legend(loc = 1)
+# #     axs[1].set_title("Class Scores")
+    
+# #     pred_set = pred_sets[index].nonzero()[0].tolist()
+    
+# #     return fig, axs, pred_set, get_pred_str(pred_set)

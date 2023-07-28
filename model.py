@@ -29,7 +29,18 @@ class MLP(nn.Module):
 
         output_mean = self.layers[-1](hidden).squeeze()
         return output_mean
-
+class MLP1(nn.Module):
+    def __init__(self):
+        super(MLP1, self).__init__()
+        self.fc1 = nn.Linear(784, 32)
+        # self.relu1 = nn.ReLU()
+        self.sigmoid1 = nn.Sigmoid()
+        self.fc2 = nn.Linear(32, 10)
+        
+    def forward(self, x):
+        x = self.sigmoid1(self.fc1(x))
+        x = self.fc2(x)
+        return x
 # CNN (Convolutional Neural Network) class
 class CNN(nn.Module):
     def __init__(self):

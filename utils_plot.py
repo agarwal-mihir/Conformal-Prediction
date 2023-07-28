@@ -4,6 +4,8 @@ import torch.nn as nn
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+import torchvision.datasets as datasets
+import torchvision.transforms as transforms
 
 # Set random seeds for reproducibility
 torch.manual_seed(42)
@@ -69,22 +71,36 @@ def plot_uncertainty_bands(x_train, y_train, x_cal, y_cal, x_test, y_preds, coef
     return plot_generic(x_train, y_train, x_cal, y_cal, add_uncertainty, coef_1, coef_2, coef_3, coef_4)
 
 # Function to plot scores and the 1 - alpha quantile
+# def plot_scores_quantile(scores, quantile, alpha):
+#     fig, ax = plt.subplots(figsize=(10, 5))
+#     plt.xlabel("Score")
+#     plt.ylabel("Frequency")
+    
+#     # Plot histogram of scores
+#     ax.hist(scores, bins=50, label="Scores")
+    
+#     # Plot cumulative histogram (cumulative distribution function)
+#     ax.hist(scores, cumulative=True, alpha=0.2, label="Cumulative")
+    
+#     # Plot the 1 - alpha quantile as a vertical red line
+#     q_label = str(("{:.2f}")).format(1-alpha) + " Quantile"
+#     ax.axvline(x=quantile, label=q_label, color='red')
+    
+#     # Add legend to the plot
+#     plt.legend(loc=2)
+    
+#     return fig, ax
+
 def plot_scores_quantile(scores, quantile, alpha):
     fig, ax = plt.subplots(figsize=(10, 5))
     plt.xlabel("Score")
     plt.ylabel("Frequency")
+    ax.hist(scores, bins = 50, label = "Scores")
+    # ax.hist(scores, cumulative = True, histtype = "step", label = "Cumulative")
+    ax.hist(scores, cumulative = True, alpha = 0.2, label = "Cumulative")
     
-    # Plot histogram of scores
-    ax.hist(scores, bins=50, label="Scores")
-    
-    # Plot cumulative histogram (cumulative distribution function)
-    ax.hist(scores, cumulative=True, alpha=0.2, label="Cumulative")
-    
-    # Plot the 1 - alpha quantile as a vertical red line
     q_label = str(("{:.2f}")).format(1-alpha) + " Quantile"
-    ax.axvline(x=quantile, label=q_label, color='red')
+    ax.axvline(x = quantile, label = q_label)
     
-    # Add legend to the plot
-    plt.legend(loc=2)
-    
+    plt.legend(loc = 2)
     return fig, ax
