@@ -4,7 +4,6 @@ import torch.nn as nn
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-from tqdm.auto import trange, tqdm
 
 # Set random seeds for reproducibility
 torch.manual_seed(42)
@@ -40,14 +39,17 @@ def train(net, train_data, epochs=1000):
     optimizer = torch.optim.Adam(params=net.parameters(), lr=1e-3)
     criterion = nn.MSELoss()
 
-    progress_bar = trange(epochs)
-    for _ in progress_bar:
+    for epoch in range(epochs):
         optimizer.zero_grad()
-        loss = criterion(y_train, net(x_train))
-        progress_bar.set_postfix(loss=f'{loss / x_train.shape[0]:.3f}')
+        y_pred = net(x_train)
+        loss = criterion(y_pred, y_train)
         loss.backward()
         optimizer.step()
+
+        # Display the progress during training every 10 epochs
+
     return net
+
 
 # Function to load the CIFAR-10 test and calibration data
 def get_data():
