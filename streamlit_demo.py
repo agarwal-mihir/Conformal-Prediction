@@ -103,8 +103,8 @@ def main():
     plt.legend(loc='best', fontsize=15, frameon=False)
     st.pyplot(fig)
     # Conformal Predictions in Classification Section
-    st.title("Conformal Predictions in Classification")
-    st.write("In Classification, our model outputs are now class probabilities and prediction sets are discrete.")
+    # st.title("Conformal Predictions in Classification")
+    # st.write("In Classification, our model outputs are now class probabilities and prediction sets are discrete.")
     # Further explanations and information about the Cifar Dataset and the pre-trained CNN model
     # X_test, y_test, X_calib, y_calib = get_data()
     # net = MLP(input_dim = 1024,output_dim=1,hidden_dim=hidden_dim, n_hidden_layers=n_hidden_layers)
