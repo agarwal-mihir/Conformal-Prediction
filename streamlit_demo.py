@@ -165,7 +165,7 @@ def main():
     st.write("which collects all the classes for which the softmax score is above the threshold **$1-q$**.")
     # st.latex(r"q = \left\lceil \frac{(n+1)(1-\alpha)}{n} \right\rceil")
     scores = get_scores(net, (X_calib, y_calib))
-    alpha = st.slider("Select a value for alpha:", min_value=0.1, max_value=1.0, step=0.001, value=0.04)
+    alpha = st.slider("Select a value for alpha:", min_value=0.01, max_value=1.0, step=0.001, value=0.04)
     q_val = np.ceil((1 - alpha) * (n + 1)) / n
     st.latex(r"q = \frac{{\lceil (1 - \alpha) \cdot (n + 1) \rceil}}{{n}} = {:.4f}".format(q_val))
     q = np.quantile(scores, q_val, method="higher")
