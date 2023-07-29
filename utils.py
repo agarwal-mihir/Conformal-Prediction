@@ -177,7 +177,7 @@ def train_model(_net, _train_data):
 
     criterion = nn.CrossEntropyLoss()
     optimizer = torch.optim.Adam(_net.parameters(), lr=0.001)
-    num_epochs = 5
+    num_epochs = 1
     
     for epoch in range(num_epochs):
         _net.train()

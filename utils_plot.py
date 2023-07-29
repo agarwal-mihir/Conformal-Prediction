@@ -73,7 +73,7 @@ def plot_histogram_with_quantile(scores, q, alpha):
     n, bins, _ = plt.hist(scores, bins=50, alpha=0.7, color='b', edgecolor='black', label='Score Frequency')
     
     # Plot the vertical line at the quantile
-    q_x = np.quantile(scores, q)
+    q_x = q
     plt.axvline(q_x, color='r', linestyle='dashed', linewidth=2, label=f'Quantile (q = {q:.4f})')
     
     plt.xlabel('Scores')

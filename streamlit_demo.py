@@ -12,8 +12,8 @@ import matplotlib.pyplot as plt
 
 # Import utility functions and model classes from custom modules
 from utils import get_simple_data_train, display_equation, train, get_data, get_test_preds_and_smx, get_scores, quantile, get_pred_sets, mean_set_size, get_test_accuracy, train_model
-from utils_plot import plot_generic, plot_predictions, plot_scores_quantile, plot_histogram_with_quantile
-from model import MLP, CNN, MLP1
+from utils_plot import plot_generic, plot_predictions, plot_histogram_with_quantile
+from model import MLP, MLP1
 
 # Set random seeds for reproducibility
 torch.manual_seed(42)
