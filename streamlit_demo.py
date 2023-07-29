@@ -12,7 +12,7 @@ import matplotlib.pyplot as plt
 
 # Import utility functions and model classes from custom modules
 from utils import get_simple_data_train, display_equation, train, get_data, get_test_preds_and_smx, get_scores, quantile, get_pred_sets, mean_set_size, get_test_accuracy, train_model
-from utils_plot import plot_generic, plot_predictions, plot_histogram_with_quantile
+from utils_plot import plot_generic, plot_predictions, plot_histogram_with_quantile, plot_calibration_scores
 from model import MLP, MLP1
 
 # Set random seeds for reproducibility
@@ -75,22 +75,23 @@ def main():
     st.write(r"By incorporating conformal prediction into regression tasks, we can create prediction intervals that provide a clear measure of uncertainty, enabling decision-makers to assess the reliability and potential variability of the model's predictions. This can be particularly beneficial in domains where accurate estimates and understanding uncertainty are critical for making informed and trustworthy decisions.")
     st.subheader("Function")
     # Sliders with custom styles
-    coef_1 = st.slider("Coefficient for sine term", min_value=0.0, max_value=1.0, value=0.3, step=0.01, format="%.2f")
-    coef_2 = st.slider("Coefficient for cosine term", min_value=0.0, max_value=1.0, value=0.3, step=0.01, format="%.2f")
-    coef_3 = st.slider("Coefficient for x^3 term", min_value=0.0, max_value=1.0, value=0.1, step=0.01, format="%.2f")
-    coef_4 = st.slider("Coefficient for noise", min_value=0.0, max_value=1.0, value=0.02, step=0.01, format="%.2f")
+    coef_1 = 0.3
+    coef_2 = 0.3
+    coef_3 = 0.1
+    coef_4 = st.slider("Coefficient for noise", min_value=0.0, max_value=1.0, value=0.1, step=0.01, format="%.2f")
+    n_cal = st.slider("Number of calibration data points", min_value=100, max_value=200, value=150, step=10)
     # Display the equation based on user-selected coefficients
     display_equation(coef_1, coef_2, coef_3, coef_4)
-    x_train, y_train, x_cal, y_cal = get_simple_data_train(coef_1, coef_2, coef_3, coef_4)
+    x_train, y_train, x_cal, y_cal = get_simple_data_train(coef_1, coef_2, coef_3, coef_4, n_cal)
     fig, ax = plot_generic(x_train, y_train, x_cal, y_cal, coef_1=coef_1, coef_2=coef_2, coef_3=coef_3, coef_4=coef_4)
     plt.title("Plot of Training and Calibration Data", fontsize=15)
     st.pyplot(fig)
     st.subheader("Model")
     st.write(r"You can specify the hyperparameters for the model below. The model will be trained on the training data and used to generate predictions on the calibration data. The calibration data is used to estimate the confidence level ($\alpha$) for the prediction intervals.")
     # Train the model (MLP) on the generated data
-    hidden_dim = st.slider("Hidden Dimension", min_value=1, max_value=100, value=30, step=1)
-    n_hidden_layers = st.slider("Number of Hidden Layers", min_value=1, max_value=10, value=2, step=1)
-    epochs = st.slider("Number of Epochs", min_value=1, max_value=10000, value=1000, step=1)
+    hidden_dim = 30
+    n_hidden_layers = 2
+    epochs = 1000
     x_test = torch.linspace(-.5, 1.5, 3000)[:, None]
     net = MLP(hidden_dim=hidden_dim, n_hidden_layers=n_hidden_layers)
     net = train(net, (x_train, y_train), epochs=epochs)
@@ -98,6 +99,7 @@ def main():
 
     # Display the plot with the true function, training data, calibration data, predictive mean
     # st.subheader("Prediction Visualization")
+    
     fig, ax = plot_predictions(x_train, y_train, x_cal, y_cal, x_test, y_preds, coef_1=coef_1, coef_2=coef_2, coef_3=coef_3, coef_4=coef_4)
     st.pyplot(fig)
 
@@ -109,11 +111,14 @@ def main():
     st.latex(r"s_i = |y_i - \hat{y}_i|")
     st.write("The score function $s_i$ represents the absolute difference between the true output $y_i$ and the model's predicted output $\hat{y}_i$ for each calibration data point $x_i$. It measures the discrepancy between the true values and their corresponding predictions, providing a measure of model fit to the calibration data.")
     resid = torch.abs(y_cal - y_cal_preds).numpy()
-    alpha = st.slider("Select a value for alpha:", min_value=0.01, max_value=1.0, step=0.001, value=0.03)
+    alpha = st.slider("Select a value for alpha:", min_value=0.05, max_value=1.0, step=0.001, value=0.06)
+    # n = len(x_cal)
+    # print(f"n = {n}")
+    # fig = plot_calibration_scores(x_cal, scores=resid)
+    # st.pyplot(fig)
     n = len(x_cal)
-    
-
     q_val = np.ceil((1 - alpha) * (n + 1)) / n
+    print(q_val)
     st.latex(r"q = \frac{{\lceil (1 - \alpha) \cdot (n + 1) \rceil}}{{n}} = {:.4f}".format(q_val))
     q = np.quantile(resid, q_val, method="higher")
     plot_histogram_with_quantile(resid, q, alpha)

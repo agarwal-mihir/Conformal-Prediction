@@ -12,25 +12,26 @@ torch.manual_seed(42)
 np.random.seed(42)
 
 # Function to generate synthetic training and calibration data
-def get_simple_data_train(coef_1, coef_2, coef_3, coef_4):
+def get_simple_data_train(coef_1, coef_2, coef_3, coef_4, n_cal):
     # Generate data points for the custom function with some noise
     x = np.linspace(-.2, 0.2, 500)
     x = np.hstack([x, np.linspace(.6, 1, 500)])
     eps = coef_4 * np.random.randn(x.shape[0])
-    y = coef_1 * np.sin(2 * np.pi*(x + eps)) + coef_2 * np.cos(4 * np.pi *(x + eps)) + coef_3 * x+ eps
+    y = coef_1 * np.sin(2 * np.pi*(x)) + coef_2 * np.cos(4 * np.pi *(x)) + coef_3 * x+ eps
     x = torch.from_numpy(x).float()[:, None]
     y = torch.from_numpy(y).float()
 
     # Split data into calibration and training sets
-    cal_idx = np.arange(len(x), step=1/0.2, dtype=np.int64)
+    cal_idx = np.random.choice(x.shape[0], n_cal, replace=False)
     mask = np.zeros(len(x), dtype=bool)
     mask[cal_idx] = True
     x_cal, y_cal = x[mask], y[mask]
     x_train, y_train = x[~mask], y[~mask]
+    print(x_train.shape, y_train.shape, x_cal.shape, y_cal.shape)
     return x_train, y_train, x_cal, y_cal
 
 def display_equation(coef_1, coef_2, coef_3, coef_4):
-    equation = r"f(x, \varepsilon) = {:.2f} \sin(2\pi(x + \varepsilon)) + {:.2f} \cos(4\pi(x + \varepsilon)) + {:.2f}x + \varepsilon".format(coef_1, coef_2, coef_3)
+    equation = r"f(x, \varepsilon) = {:.2f} \sin(2\pi(x)) + {:.2f} \cos(4\pi(x)) + {:.2f}x + \varepsilon".format(coef_1, coef_2, coef_3)
     st.latex(equation)
 
 

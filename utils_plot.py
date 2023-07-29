@@ -66,19 +66,36 @@ def plot_scores_quantile(scores, quantile, alpha):
     plt.legend(loc = 2)
     return fig, ax
 
+def plot_calibration_scores(x_cal, scores):
+    fig, ax = plt.subplots(figsize=(10, 6))
+    bar_width = 0.8
+    ax.bar(x_cal.squeeze(),scores,width=bar_width, color='blue', linewidth=1, edgecolor='black')
+    ax.set_xlabel('Calibration Data Points', fontsize=14)
+    ax.set_ylabel('Score', fontsize=14)
+    ax.set_title('Calibration Scores', fontsize=16)
+    plt.xticks(rotation=45, ha='right')
+    plt.tight_layout()
+    return fig
+
 def plot_histogram_with_quantile(scores, q, alpha):
-    fig, ax = plt.subplots(figsize=(10, 5))
+    fig, ax = plt.subplots(1, 2, figsize=(12, 3))
+    
+    # Plot scores of calibration data
+    ax[0].bar(np.arange(len(scores)), height = scores, alpha = 0.7, color = 'b')
+    ax[0].set_ylabel("Score")
+    ax[0].set_xlabel("Calibration Data Points")
+    ax[0].set_title("Scores of Calibration Data")
     
     # Plot the histogram
-    n, bins, _ = plt.hist(scores, bins=50, alpha=0.7, color='b', edgecolor='black', label='Score Frequency')
+    n, bins, _ = ax[1].hist(scores, bins=30, alpha=0.7, cumulative = True, color='b', edgecolor='black', label='Score Frequency')
     
     # Plot the vertical line at the quantile
-    q_x = q
-    plt.axvline(q_x, color='r', linestyle='dashed', linewidth=2, label=f'Quantile (q = {q:.4f})')
+    q_x = np.quantile(scores, q)
+    ax[1].axvline(q_x, color='r', linestyle='dashed', linewidth=2, label=f'Quantile (q = {q:.4f})')
     
-    plt.xlabel('Scores')
-    plt.ylabel('Frequency')
-    plt.title('Histogram of Scores with Quantile Line')
+    ax[1].set_xlabel('Scores')
+    ax[1].set_ylabel('Frequency')
+    ax[1].set_title('Histogram of Scores with Quantile Line')
     plt.legend()
     plt.grid(True)
     
