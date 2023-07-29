@@ -43,10 +43,10 @@ def main():
     st.write(r"- The score function $s(f(x), y)$ is a function that quantifies the discrepancy or disagreement between the input $x$ and the output $y$. Larger scores indicate a worse agreement between the predicted value and the true value.")
 
     st.write("**3.** Compute $\\hat{q}$ as the ceiling function of $\\frac{(n+1)(1-\\alpha)}{n}$.")
-    st.write(r"    - To determine the quantile value $\hat{q}$, we calculate the $\left\lceil \frac{(n+1)(1-\alpha)}{n} \right\rceil$-th quantile of the calibration scores $s_1 = s(X_1, Y_1), ..., s_n = s(X_n, Y_n)$, where $d$ is the number of dimensions in the output space, $n$ is the number of calibration data points, and $\alpha$ is the confidence level.")
+    st.write(r"    - To determine the quantile value $\hat{q}$, we calculate the $\left\lceil \frac{(n+1)(1-\alpha)}{n} \right\rceil$-th quantile of the calibration scores $s_1 = s(f(X_1), Y_1), ..., s_n = s(f(X_n), Y_n)$, where $d$ is the number of dimensions in the output space, $n$ is the number of calibration data points, and $\alpha$ is the confidence level.")
 
     st.write("**4.** Use this quantile to form the prediction sets for new examples:")
-    st.write(r"    - The prediction set $C(X_{\text{test}})$ is constructed as $\{y : s(X_{\text{test}}, y) \leq \hat{q}\}$. It contains all the possible output values $y$ for the new input example $X_{\text{test}}$, where the score function $s(X_{\text{test}}, y)$ is less than or equal to the computed quantile $\hat{q}$.")
+    st.write(r"    - The prediction set $C(X_{\text{test}})$ is constructed as $\{y : s(f(X_{\text{test}}), y) \leq \hat{q}\}$. It contains all the possible output values $y$ for the new input example $X_{\text{test}}$, where the score function $s(f(X_{\text{test}}), y)$ is less than or equal to the computed quantile $\hat{q}$.")
 
     st.write("By following these steps, conformal prediction provides a practical way to estimate uncertainty and create prediction intervals for new examples, enabling better decision-making and trust in the model's predictions.")
     st.title("Conformal Predictions for Regression:")
@@ -139,6 +139,7 @@ def main():
     ax.plot(x_test, y_preds, '-', linewidth=3, color="y", label="predictive mean")
     ax.fill_between(x_test.ravel(), y_preds - q, y_preds + q, alpha=0.6, color='y', zorder=5)
     plt.legend(loc='best', fontsize=15, frameon=False)
+    st.latex(r"\hat{C}(X_{n+1}) = [ \hat{f}(x_{n+1}) - \hat{q}, \, \hat{f}(x_{n+1}) + \hat{q} ]")
     plt.title("Plot of confidence interval for the conformal prediction", fontsize=15)
     st.pyplot(fig)
     
