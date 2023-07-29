@@ -27,7 +27,6 @@ def get_simple_data_train(coef_1, coef_2, coef_3, coef_4, n_cal):
     mask[cal_idx] = True
     x_cal, y_cal = x[mask], y[mask]
     x_train, y_train = x[~mask], y[~mask]
-    print(x_train.shape, y_train.shape, x_cal.shape, y_cal.shape)
     return x_train, y_train, x_cal, y_cal
 
 def display_equation(coef_1, coef_2, coef_3, coef_4):
@@ -67,8 +66,8 @@ def get_data():
     X_train = X_train.view(-1, 28*28)
     X_test = X_test.view(-1, 28*28)
 
-    X_calib, X_train = X_train[50000:], X_train[:50000]
-    y_calib, y_train = y_train[50000:], y_train[:50000]
+    X_calib, X_train = X_train[55000:], X_train[:55000]
+    y_calib, y_train = y_train[55000:], y_train[:55000]
 
     return X_train, y_train, X_test, y_test, X_calib, y_calib
 

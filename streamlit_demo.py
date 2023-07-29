@@ -43,7 +43,7 @@ def main():
     st.write(r"- The score function $s(x, y)$ is a function that quantifies the discrepancy or disagreement between the input $x$ and the output $y$. Larger scores indicate a worse agreement between the predicted value and the true value.")
 
     st.write("**3.** Compute $\\hat{q}$ as the ceiling function of $\\frac{d(n+1)(1-\\alpha)}{n}$.")
-    st.write(r"    - To determine the quantile value $\hat{q}$, we calculate the $\left\lceil \frac{d(n+1)(1-\alpha)}{n} \right\rceil$-th quantile of the calibration scores $s_1 = s(X_1, Y_1), ..., s_n = s(X_n, Y_n)$, where $d$ is the number of dimensions in the output space, $n$ is the number of calibration data points, and $\alpha$ is the confidence level.")
+    st.write(r"    - To determine the quantile value $\hat{q}$, we calculate the $\left\lceil \frac{(n+1)(1-\alpha)}{n} \right\rceil$-th quantile of the calibration scores $s_1 = s(X_1, Y_1), ..., s_n = s(X_n, Y_n)$, where $d$ is the number of dimensions in the output space, $n$ is the number of calibration data points, and $\alpha$ is the confidence level.")
 
     st.write("**4.** Use this quantile to form the prediction sets for new examples:")
     st.write(r"    - The prediction set $C(X_{\text{test}})$ is constructed as $\{y : s(X_{\text{test}}, y) \leq \hat{q}\}$. It contains all the possible output values $y$ for the new input example $X_{\text{test}}$, where the score function $s(X_{\text{test}}, y)$ is less than or equal to the computed quantile $\hat{q}$.")
@@ -87,7 +87,7 @@ def main():
     plt.title("Plot of Training and Calibration Data", fontsize=15)
     st.pyplot(fig)
     st.subheader("Model")
-    st.write(r"You can specify the hyperparameters for the model below. The model will be trained on the training data and used to generate predictions on the calibration data. The calibration data is used to estimate the confidence level ($\alpha$) for the prediction intervals.")
+    st.write(r"The model will be trained on the training data and used to generate predictions on the calibration data. The calibration data is used to estimate the confidence level ($\alpha$) for the prediction intervals.")
     # Train the model (MLP) on the generated data
     hidden_dim = 30
     n_hidden_layers = 2
@@ -150,7 +150,7 @@ def main():
     st.latex(r"\hat{C}(X_{n+1})\subseteq \{1,\dots,K\}")
     st.write(r"where $K$ is the number of classes. This change in the output affects how we calculate the conformity scores.")
     
-    st.write("We will use the MNIST dataset. The 60k training samples are split into two parts: the training set, which consists of 50k images, and the calibration set, which has 10k images. The test set consists of 10k images.")
+    st.write("We will use the MNIST dataset. The 60k training samples are split into two parts: the training set, which consists of 55k images, and the calibration set, which has 5k images. The test set consists of 10k images.")
     
     X_train, y_train, X_test, y_test, X_calib, y_calib = get_data()
     
@@ -171,8 +171,8 @@ def main():
     st.write(r"The sample score $s_i$ is equal to 1 minus the softmax output of the true class.  If the softmax value of the true class is low, it means that the model is uncertain. The score in such a case will be high.")
     st.write(r"After calculating the scores from the calibration set, we choose an error rate $\alpha$. The probability that the prediction set contains the correct class will be approximately 1 - $\alpha$. If $\alpha$ = 0.05, then the probability that the prediction set contains the true class is 0.95.")
     st.write(r"We will get the prediction set for a test sample $(x_{n+1}, y_{n+1})$ by:")
-    st.latex(r"\hat{C}(x_{n+1})=\{y'\in K:\hat{\pi}_{x_{n+1}}(y') \ge 1-\hat{q}\}")
-    st.write(r"The prediction set $C$ consists of all the classes for which the softmax score is above a threshold value 1-$\hat{q}$. $\hat{q}$ is calculated as $\frac{{\lceil (1 - \alpha) \cdot (n + 1) \rceil}}{{n}}$ quantile of the scores from the calibration set.")
+    st.latex(r"\hat{C}(x_{n+1})=\{y'\in K:\hat{\pi}_{x_{n+1}}(y') \ge 1-{q_{val}}\}")
+    st.write(r"The prediction set $C$ consists of all the classes for which the softmax score is above a threshold value 1-${q_{val}}$. ${q}$ is calculated as $\frac{{\lceil (1 - \alpha) \cdot (n + 1) \rceil}}{{n}}$ quantile of the scores from the calibration set.")
        
     scores = get_scores(net, (X_calib, y_calib))
     alpha = st.slider("Select a value for alpha:", min_value=0.01, max_value=1.0, step=0.001, value=0.04)
@@ -181,9 +181,7 @@ def main():
     q = np.quantile(scores, q_val, method="higher")
     plot_histogram_with_quantile(scores, q, alpha)
     # st.pyplot(fig)
-    
-    s = "For this value of alpha, the threshold value $(1-q)$ = {:.3f}".format(1-q)
-    st.markdown(s)
+    st.write(r"For this value of alpha, the threshold value 1-${q_{val}}$"+ " is {:.4f}".format(1 - q))
     
     st.write("For example, select a random image from the below slider. The softmax scores for the classes can be seen in the plot on the right side. If the score is above the threshold value, then the class is in the predicted set.")
     

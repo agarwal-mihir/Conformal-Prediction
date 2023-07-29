@@ -90,7 +90,7 @@ def plot_histogram_with_quantile(scores, q, alpha):
     
     # Plot the vertical line at the quantile
     # q_x = np.quantile(scores, q)
-    ax[1].axvline(q, color='r', linestyle='dashed', linewidth=2, label=f'Quantile (q = {q:.4f})')
+    ax[1].axvline(q, color='r', linestyle='dashed', linewidth=2, label=r"Quantile (${q_{val}}$ = " + str(("{:.2f}")).format(q) + ")")
     
     ax[1].set_xlabel('Scores')
     ax[1].set_ylabel('Frequency')
