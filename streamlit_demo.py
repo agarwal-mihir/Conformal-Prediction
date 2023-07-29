@@ -39,10 +39,10 @@ def main():
     st.write("**1.** Identify a heuristic notion of uncertainty using the pre-trained model.")
     st.write(r"    - In conformal prediction, we make use of a pre-trained model to estimate the uncertainty associated with its predictions. This uncertainty is crucial as it allows us to create prediction intervals rather than single point predictions.")
 
-    st.write("**2.** Define the score function $s(x, y) \in \mathbb{R}$. (Larger scores encode worse agreement between $x$ and $y$.)")
-    st.write(r"- The score function $s(x, y)$ is a function that quantifies the discrepancy or disagreement between the input $x$ and the output $y$. Larger scores indicate a worse agreement between the predicted value and the true value.")
+    st.write("**2.** Define the score function $s(f(x), y) \in \mathbb{R}$. (Larger scores encode worse agreement between $f(x)$ and $y$.)")
+    st.write(r"- The score function $s(f(x), y)$ is a function that quantifies the discrepancy or disagreement between the input $x$ and the output $y$. Larger scores indicate a worse agreement between the predicted value and the true value.")
 
-    st.write("**3.** Compute $\\hat{q}$ as the ceiling function of $\\frac{d(n+1)(1-\\alpha)}{n}$.")
+    st.write("**3.** Compute $\\hat{q}$ as the ceiling function of $\\frac{(n+1)(1-\\alpha)}{n}$.")
     st.write(r"    - To determine the quantile value $\hat{q}$, we calculate the $\left\lceil \frac{(n+1)(1-\alpha)}{n} \right\rceil$-th quantile of the calibration scores $s_1 = s(X_1, Y_1), ..., s_n = s(X_n, Y_n)$, where $d$ is the number of dimensions in the output space, $n$ is the number of calibration data points, and $\alpha$ is the confidence level.")
 
     st.write("**4.** Use this quantile to form the prediction sets for new examples:")
