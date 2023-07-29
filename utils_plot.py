@@ -79,7 +79,6 @@ def plot_calibration_scores(x_cal, scores):
 
 def plot_histogram_with_quantile(scores, q, alpha):
     fig, ax = plt.subplots(1, 2, figsize=(12, 3))
-    
     # Plot scores of calibration data
     ax[0].bar(np.arange(len(scores)), height = scores, alpha = 0.7, color = 'b')
     ax[0].set_ylabel("Score")
@@ -90,8 +89,8 @@ def plot_histogram_with_quantile(scores, q, alpha):
     n, bins, _ = ax[1].hist(scores, bins=30, alpha=0.7, cumulative = True, color='b', edgecolor='black', label='Score Frequency')
     
     # Plot the vertical line at the quantile
-    q_x = np.quantile(scores, q)
-    ax[1].axvline(q_x, color='r', linestyle='dashed', linewidth=2, label=f'Quantile (q = {q:.4f})')
+    # q_x = np.quantile(scores, q)
+    ax[1].axvline(q, color='r', linestyle='dashed', linewidth=2, label=f'Quantile (q = {q:.4f})')
     
     ax[1].set_xlabel('Scores')
     ax[1].set_ylabel('Frequency')
