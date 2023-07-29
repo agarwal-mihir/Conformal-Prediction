@@ -139,7 +139,7 @@ def main():
     ax.plot(x_test, y_preds, '-', linewidth=3, color="y", label="predictive mean")
     ax.fill_between(x_test.ravel(), y_preds - q, y_preds + q, alpha=0.6, color='y', zorder=5)
     plt.legend(loc='best', fontsize=15, frameon=False)
-    st.latex(r"\hat{C}(X_{n+1}) = [ \hat{f}(x_{n+1}) - \hat{q}, \, \hat{f}(x_{n+1}) + \hat{q} ]")
+    st.latex(r"\hat{C}(X_{n+1}) = [ \hat{f}(x_{n+1}) - {q_{val}}, \, \hat{f}(x_{n+1}) + {q_{val}} ]")
     plt.title("Plot of confidence interval for the conformal prediction", fontsize=15)
     st.pyplot(fig)
     
