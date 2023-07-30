@@ -93,7 +93,7 @@ def main():
     st.write(r"The model will be trained on the training data and used to generate predictions on the calibration data. The calibration data is used to estimate the confidence level ($\alpha$) for the prediction intervals.")
     # Train the model (MLP) on the generated data
     hidden_dim = 30
-    n_hidden_layers = 2
+    n_hidden_layers = 1
     epochs = 1000
     x_test = torch.linspace(-.5, 1.5, 3000)[:, None]
     net = MLP(hidden_dim=hidden_dim, n_hidden_layers=n_hidden_layers)
