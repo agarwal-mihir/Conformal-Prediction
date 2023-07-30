@@ -85,10 +85,20 @@ def main():
     st.write("Conformal prediction in regression provides prediction intervals that quantify \
              the uncertainty associated with the model's predictions.")
 
-    st.write(r"The process involves two steps. First, we train a regression model on a \
-              training dataset. Next, we use a calibration dataset to estimate the confidence level \
-             ($\alpha$) for the prediction intervals. This represents the proportion of times the intervals \
-             will contain the true target value for future test instances.")
+    # st.write(r"The process involves two steps. First, we train a regression model on a \
+    #           training dataset. Next, we use a calibration dataset to estimate the confidence level \
+    #          ($\alpha$) for the prediction intervals. This represents the proportion of times the intervals \
+    #          will contain the true target value for future test instances.")
+    
+    st.markdown(
+        """
+        The process involves two steps:
+        - First, we train a regression model on a training dataset.
+        - Next, we use a calibration dataset to estimate the quantiles ($q_{val}$) based on a chosen  \
+            confidence level $\alpha$ for the prediction intervals. This represents the proportion of times \
+            the intervals will contain the true target value for future test instances.
+        """
+        )
 
     st.write("To compute the prediction intervals, we calculate the residuals for the calibration dataset. The quantile \
              of these residuals based on the chosen confidence level determines the width of the prediction intervals, \
@@ -109,7 +119,7 @@ def main():
     st.pyplot(fig)
     st.subheader("Model")
     st.write(r"The model will be trained on the training data and used to generate predictions on the calibration data. \
-             The calibration data is used to estimate the confidence level ($\alpha$) for the prediction intervals.")
+             The calibration data is used to estimate the quantiles ($q_{val}$) for the prediction intervals.")
     # Train the model (MLP) on the generated data
     hidden_dim = 30
     n_hidden_layers = 1
