@@ -78,12 +78,11 @@ def class_label(i):
     return labels[i]
 
 # Function to calculate the test accuracy of a neural network model
-@st.cache_resource
+@st.cache_data
 def get_test_accuracy(_X_test, _y_test, _net):
     # Create a DataLoader for the test dataset
     test_dataset = torch.utils.data.TensorDataset(_X_test, _y_test.squeeze().long())
     test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=64, shuffle=False)  # No need to shuffle for testing
-    
     def calculate_accuracy(outputs, labels):
         _, predicted = torch.max(outputs, 1)
         correct = (predicted == labels).sum().item()
@@ -149,6 +148,7 @@ def get_pred_str(pred):
 
 
 # Function to display test predictions and class scores
+
 def get_test_preds_and_smx(X_test, index, pred_sets, net, q, alpha):
     test_smx = nn.functional.softmax(net(X_test), dim=1).detach().numpy()
     sample_smx = test_smx[index]

@@ -77,7 +77,9 @@ def plot_calibration_scores(x_cal, scores):
     plt.tight_layout()
     return fig
 
+@st.cache_data
 def plot_histogram_with_quantile(scores, q, alpha):
+    print("hello")
     fig, ax = plt.subplots(1, 2, figsize=(12, 3))
     # Plot scores of calibration data
     ax[0].bar(np.arange(len(scores)), height = scores, alpha = 0.7, color = 'b')

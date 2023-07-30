@@ -162,6 +162,7 @@ def main():
     # test_data = (X_test, y_test)
     
     net = train_model(net, train_data)
+    print("Test accuracy of the model is", get_test_accuracy(X_test, y_test, net))
     
     st.write("For training, we will use a simple MLP. **Test accuracy** of the model is", get_test_accuracy(X_test, y_test, net))
     
