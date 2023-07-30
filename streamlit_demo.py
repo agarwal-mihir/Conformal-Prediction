@@ -27,12 +27,15 @@ def main():
     st.title("Conformal Prediction: A Brief Overview")
     st.subheader("Introduction:")
     # Provide an overview of Conformal Prediction
-    st.write("Machine learning models, especially black-box models like neural networks, have gained widespread adoption in high-risk domains like medical diagnostics, where accurate predictions are critical to avoid potential model failures. However, the lack of uncertainty quantification in these models poses significant challenges in decision-making and trust. Conformal prediction emerges as a promising solution, providing a user-friendly paradigm to quantify uncertainty in model predictions.")
-    st.write("Uncertainty is an inherent aspect of real-world data and the predictions made by machine learning models. Conformal prediction offers a principled approach to address this challenge by providing a measure of uncertainty in predictions. The prediction intervals constructed by conformal prediction not only quantify the range of potential outcomes but also assign a confidence level (alpha) to each prediction. This allows users to gauge the reliability of the model's output and make informed decisions based on the level of uncertainty associated with the predictions.")
-    st.write("The key advantage of conformal prediction lies in its distribution-free nature, making it robust to various scenarios without making strong assumptions about the underlying data distribution or the model itself. By utilizing conformal prediction with any pre-trained model, researchers and practitioners can create prediction sets that offer explicit, non-asymptotic guarantees, instilling confidence in the reliability of model predictions.")
+    # st.write("Machine learning models, especially black-box models like neural networks, have gained widespread adoption in high-risk domains like medical diagnostics, where accurate predictions are critical to avoid potential model failures. However, the lack of uncertainty quantification in these models poses significant challenges in decision-making and trust. Conformal prediction emerges as a promising solution, providing a user-friendly paradigm to quantify uncertainty in model predictions.")
+    # st.write("Uncertainty is an inherent aspect of real-world data and the predictions made by machine learning models. Conformal prediction offers a principled approach to address this challenge by providing a measure of uncertainty in predictions. The prediction intervals constructed by conformal prediction not only quantify the range of potential outcomes but also assign a confidence level (alpha) to each prediction. This allows users to gauge the reliability of the model's output and make informed decisions based on the level of uncertainty associated with the predictions.")
+    # st.write("The key advantage of conformal prediction lies in its distribution-free nature, making it robust to various scenarios without making strong assumptions about the underlying data distribution or the model itself. By utilizing conformal prediction with any pre-trained model, researchers and practitioners can create prediction sets that offer explicit, non-asymptotic guarantees, instilling confidence in the reliability of model predictions.")
 
+
+    # st.write("Conformal Prediction is a powerful framework in machine learning that provides a measure of uncertainty in predictions. Unlike traditional point predictions, conformal prediction constructs prediction intervals that quantify the range of potential outcomes.")
 
     st.write("Conformal Prediction is a powerful framework in machine learning that provides a measure of uncertainty in predictions. Unlike traditional point predictions, conformal prediction constructs prediction intervals that quantify the range of potential outcomes.")
+    st.write("Machine learning models, particularly neural networks, are widely used in critical areas like medical diagnostics. However, the lack of uncertainty quantification in these models poses challenges in decision-making and trust. Conformal prediction offers a user-friendly way to quantify uncertainty, providing confidence levels for each prediction. Its distribution-free nature makes it robust without strong assumptions about the data distribution or the model. This instills confidence in the reliability of model predictions.")
 
     st.write(r"The significance of conformal prediction lies in its ability to provide a confidence level ($\alpha$) for the predictions, allowing users to understand the reliability of the model's output. This is especially crucial in critical applications where understanding the uncertainty is essential.")
     st.write(r"Conformal Prediction for a General Input $x$ and Output $y$:")
@@ -122,6 +125,7 @@ def main():
     st.latex(r"q = \frac{{\lceil (1 - \alpha) \cdot (n + 1) \rceil}}{{n}} = {:.4f}".format(q_val))
     q = np.quantile(resid, q_val, method="higher")
     plot_histogram_with_quantile(resid, q, alpha)
+    st.write(r"The $q^{th}$ quantile this:")
     st.latex(r"q_{{\text{{value}}}} = {:.4f}".format(q))
     x_true = np.linspace(-.5, 1.5, 1000)
     y_true = coef_1 * np.sin(2 * np.pi*(x_true)) + coef_2 * np.cos(4 * np.pi *(x_true )) + coef_3 * x_true
@@ -139,6 +143,7 @@ def main():
     ax.plot(x_test, y_preds, '-', linewidth=3, color="y", label="predictive mean")
     ax.fill_between(x_test.ravel(), y_preds - q, y_preds + q, alpha=0.6, color='y', zorder=5)
     plt.legend(loc='best', fontsize=15, frameon=False)
+    st.write("The prediction interval is calculated as:")
     st.latex(r"\hat{C}(X_{n+1}) = [ \hat{f}(x_{n+1}) - {q_{val}}, \, \hat{f}(x_{n+1}) + {q_{val}} ]")
     plt.title("Plot of confidence interval for the conformal prediction", fontsize=15)
     st.pyplot(fig)

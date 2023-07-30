@@ -14,8 +14,8 @@ np.random.seed(42)
 # Function to generate synthetic training and calibration data
 def get_simple_data_train(coef_1, coef_2, coef_3, coef_4, n_cal):
     # Generate data points for the custom function with some noise
-    x = np.linspace(-.2, 0.2, 500)
-    x = np.hstack([x, np.linspace(.6, 1, 500)])
+    x = np.linspace(-.2, 0.2, 300)
+    x = np.hstack([x, np.linspace(.6, 1, 300)])
     eps = coef_4 * np.random.randn(x.shape[0])
     y = coef_1 * np.sin(2 * np.pi*(x)) + coef_2 * np.cos(4 * np.pi *(x)) + coef_3 * x+ eps
     x = torch.from_numpy(x).float()[:, None]
@@ -66,8 +66,8 @@ def get_data():
     X_train = X_train.view(-1, 28*28)
     X_test = X_test.view(-1, 28*28)
 
-    X_calib, X_train = X_train[55000:], X_train[:55000]
-    y_calib, y_train = y_train[55000:], y_train[:55000]
+    X_calib, X_train = X_train[59500:], X_train[:59500]
+    y_calib, y_train = y_train[59500:], y_train[:59500]
 
     return X_train, y_train, X_test, y_test, X_calib, y_calib
 

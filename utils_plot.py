@@ -23,6 +23,7 @@ def plot_generic(x_train, y_train, x_cal, y_cal, add_to_plot=None, coef_1=0.3, c
     # Generate true function curve
     x_true = np.linspace(-.5, 1.5, 1000)
     y_true = coef_1 * np.sin(2 * np.pi * x_true) + coef_2 * np.cos(4 * np.pi * x_true) + coef_3 * x_true
+    print(x_train.shape, y_train.shape, x_cal.shape, y_cal.shape)
 
     # Plot training data as green scatter points
     ax.scatter(x_train, y_train, c='green', s=10, label="training data")
@@ -79,7 +80,7 @@ def plot_calibration_scores(x_cal, scores):
 
 @st.cache_data
 def plot_histogram_with_quantile(scores, q, alpha):
-    print("hello")
+    print("running histogram")
     fig, ax = plt.subplots(1, 2, figsize=(12, 3))
     # Plot scores of calibration data
     ax[0].bar(np.arange(len(scores)), height = scores, alpha = 0.7, color = 'b')
