@@ -34,10 +34,18 @@ def main():
 
     # st.write("Conformal Prediction is a powerful framework in machine learning that provides a measure of uncertainty in predictions. Unlike traditional point predictions, conformal prediction constructs prediction intervals that quantify the range of potential outcomes.")
 
-    st.write("Conformal Prediction is a powerful framework in machine learning that provides a measure of uncertainty in predictions. Unlike traditional point predictions, conformal prediction constructs prediction intervals that quantify the range of potential outcomes.")
-    st.write("Machine learning models, particularly neural networks, are widely used in critical areas like medical diagnostics. However, the lack of uncertainty quantification in these models poses challenges in decision-making and trust. Conformal prediction offers a user-friendly way to quantify uncertainty, providing confidence levels for each prediction. Its distribution-free nature makes it robust without strong assumptions about the data distribution or the model. This instills confidence in the reliability of model predictions.")
+    st.write("Conformal Prediction is a powerful framework in machine learning that provides a well-calibrated of \
+             uncertainty in predictions. Conformal prediction can construct prediction intervals that quantify the \
+             range of potential outcomes even for point estimate models.")
+    st.write("Machine learning models, particularly neural networks, are widely used in critical areas like medical \
+             diagnostics. However, the lack of uncertainty quantification in these models poses challenges in \
+             decision-making and trust. Conformal prediction's distribution-free nature makes it robust without \
+             strong assumptions about the data distribution or the model. This instills confidence in the reliability \
+             of model predictions.")
 
-    st.write(r"The significance of conformal prediction lies in its ability to provide a confidence level ($\alpha$) for the predictions, allowing users to understand the reliability of the model's output. This is especially crucial in critical applications where understanding the uncertainty is essential.")
+    st.write(r"The significance of conformal prediction lies in its ability to provide a confidence level \
+              for the predictions, allowing users to understand the reliability of the model's output. This is \
+             especially crucial in critical applications where understanding the uncertainty is essential.")
     # st.write(r"Conformal Prediction for a General Input $x$ and Output $y$:")
     # st.write("**1.** Identify a heuristic notion of uncertainty using the pre-trained model.")
     # st.write(r"    - In conformal prediction, we make use of a pre-trained model to estimate the uncertainty associated with its predictions. This uncertainty is crucial as it allows us to create prediction intervals rather than single point predictions.")
@@ -54,10 +62,11 @@ def main():
     # st.write("By following these steps, conformal prediction provides a practical way to estimate uncertainty and create prediction intervals for new examples, enabling better decision-making and trust in the model's predictions.")
 
     st.write("Conformal Prediction Algorithm:")
-    st.write(r"1. **Uncertainty Estimation:** Use a pre-trained model to estimate uncertainty in predictions.")
-    st.write(r"2. **Score Function:** Define a score function ($s(f(x), y)$) to measure prediction discrepancy.")
-    st.write(r"3. **Quantile Computation:** Compute quantile ($q_{val}$) based on calibration data and confidence level.")
-    st.write(r"4. **Prediction Intervals:** Form prediction intervals for new examples using quantile ($q_{val}$).")
+    st.write(r"1. **Data Processing:** Split the training data into train and calibration sets.")
+    st.write(r"2. **Model Predictions:** Use a pre-trained model $f(x)$ to get predictions.")
+    st.write(r"3. **Score Function:** Define a score function ($s(f(x), y)$) to measure prediction discrepancy.")
+    st.write(r"4. **Quantile Computation:** Compute quantile ($q_{val}$) based on calibration data and confidence level.")
+    st.write(r"5. **Prediction Intervals:** Form prediction intervals for new examples using quantile ($q_{val}$).")
     st.title("Conformal Predictions for Regression:")
     # Data Visualization Section
     # Sliders to control the coefficients of sine and cosine functions and noise
@@ -73,19 +82,25 @@ def main():
     st.markdown(custom_slider_style, unsafe_allow_html=True)
     
 
-    st.write("Conformal prediction in regression provides prediction intervals that quantify the uncertainty associated with the model's predictions.")
+    st.write("Conformal prediction in regression provides prediction intervals that quantify \
+             the uncertainty associated with the model's predictions.")
 
-    st.write(r"The process involves two steps. First, we train a regression model on a training dataset. Next, we use a calibration dataset to estimate the confidence level ($\alpha$) for the prediction intervals. This represents the proportion of times the intervals will contain the true target value for future test instances.")
+    st.write(r"The process involves two steps. First, we train a regression model on a \
+              training dataset. Next, we use a calibration dataset to estimate the confidence level \
+             ($\alpha$) for the prediction intervals. This represents the proportion of times the intervals \
+             will contain the true target value for future test instances.")
 
-    st.write("To compute the prediction intervals, we calculate the residuals for the calibration dataset. The quantile of these residuals based on the chosen confidence level determines the width of the prediction intervals, reflecting the uncertainty in the model's predictions.")
+    st.write("To compute the prediction intervals, we calculate the residuals for the calibration dataset. The quantile \
+             of these residuals based on the chosen confidence level determines the width of the prediction intervals, \
+             reflecting the uncertainty in the model's predictions.")
 
     st.subheader("Function")
     # Sliders with custom styles
     coef_1 = 0.3
     coef_2 = 0.3
     coef_3 = 0.1
-    coef_4 = st.slider("Coefficient for noise", min_value=0.0, max_value=1.0, value=0.1, step=0.01, format="%.2f")
-    n_cal = st.slider("Number of calibration data points", min_value=100, max_value=200, value=150, step=10)
+    coef_4 = st.slider(r"Coefficient for noise $(\epsilon)$", min_value=0.0, max_value=1.0, value=0.1, step=0.01, format="%.2f")
+    n_cal = st.slider("Number of calibration data points $(n_{X_c})$", min_value=100, max_value=200, value=150, step=10)
     # Display the equation based on user-selected coefficients
     display_equation(coef_1, coef_2, coef_3, coef_4)
     x_train, y_train, x_cal, y_cal = get_simple_data_train(coef_1, coef_2, coef_3, coef_4, n_cal)
@@ -93,7 +108,8 @@ def main():
     plt.title("Plot of Training and Calibration Data", fontsize=15)
     st.pyplot(fig)
     st.subheader("Model")
-    st.write(r"The model will be trained on the training data and used to generate predictions on the calibration data. The calibration data is used to estimate the confidence level ($\alpha$) for the prediction intervals.")
+    st.write(r"The model will be trained on the training data and used to generate predictions on the calibration data. \
+             The calibration data is used to estimate the confidence level ($\alpha$) for the prediction intervals.")
     # Train the model (MLP) on the generated data
     hidden_dim = 30
     n_hidden_layers = 1
@@ -129,13 +145,16 @@ def main():
     # st.latex(r"q = \frac{{\lceil (1 - \alpha) \cdot (n + 1) \rceil}}{{n}} = {:.4f}".format(q_val))
     # q = np.quantile(resid, q_val, method="higher")
     st.latex(r"s_i = |y_i - \hat{y}_i|")
-    st.write("The score function $s_i$ represents the absolute difference between the true output $y_i$ and the model's predicted output $\hat{y}_i$ for each calibration data point $x_i$. It measures the discrepancy between the true values and their corresponding predictions, providing a measure of model fit to the calibration data.")
+    st.write("The score function $s_i$ represents the absolute difference between the t \
+             rue output $y_i$ and the model's predicted output $\hat{y}_i$ for each calibration data point $x_i$. \
+             It measures the discrepancy between the true values and their corresponding predictions, providing a measure \
+             of model fit to the calibration data.")
     alpha = st.slider("Select a value for alpha:", min_value=0.05, max_value=1.0, step=0.001, value=0.06)
 
     x_test, y_preds, q, resid = conformal_prediction_regression(x_cal, y_cal, net1,alpha)
 
     histogram_plot(resid, q, alpha)
-    st.write(r"The $q^{th}$ quantile this:")
+    st.write(r"The $q^{th}$ quantile is:")
     st.latex(r"q_{{\text{{value}}}} = {:.4f}".format(q))
     # x_true = np.linspace(-.5, 1.5, 1000)
     # y_true = coef_1 * np.sin(2 * np.pi*(x_true)) + coef_2 * np.cos(4 * np.pi *(x_true )) + coef_3 * x_true
@@ -162,7 +181,8 @@ def main():
 
     st.title("Conformal Predictions in Classification")
     
-    st.write("In regression, we had the predictions as continuous uncertainty bands. Now for classification, the outputs from the model are class probabilities, so the prediction sets are now discrete sets of the type:")
+    st.write("In regression, we had the predictions as continuous uncertainty bands. Now for classification, the outputs from \
+             the model are class probabilities, so the prediction sets are now discrete sets of the type:")
     st.latex(r"\hat{C}(X_{n+1})\subseteq \{1,\dots,K\}")
     st.write(r"where $K$ is the number of classes. This change in the output affects how we calculate the conformity scores.")
     
@@ -182,14 +202,20 @@ def main():
     st.write("For training, we will use a simple MLP. **Test accuracy** of the model is", get_test_accuracy(X_test, y_test, net))
     
     st.subheader("How to calculate Conformity Scores?")
-    st.write("The method of calculating conformity scores is a modelling decision. Here, we will use a simple method based on the softmax scores. The score is calculated by the following formula:")
+    st.write("The method of calculating conformity scores is a modelling decision. Here, we will use a simple \
+              method based on the softmax scores. The score is calculated by the following formula:")
     st.write(r"$s_i=1-\hat{\pi}_{x_i}(y_i)$ for a sample $(x_i, y_i)$ from the calibration set.")
     
-    st.write(r"The sample score $s_i$ is equal to 1 minus the softmax output of the true class.  If the softmax value of the true class is low, it means that the model is uncertain. The score in such a case will be high.")
-    st.write(r"After calculating the scores from the calibration set, we choose an error rate $\alpha$. The probability that the prediction set contains the correct class will be approximately 1 - $\alpha$. If $\alpha$ = 0.05, then the probability that the prediction set contains the true class is 0.95.")
+    st.write(r"The sample score $s_i$ is equal to 1 minus the softmax output of the true class.  If the softmax value \
+             of the true class is low, it means that the model is uncertain. The score in such a case will be high.")
+    st.write(r"After calculating the scores from the calibration set, we choose an error rate $\alpha$. The probability \
+             that the prediction set contains the correct class will be approximately 1 - $\alpha$. If $\alpha$ = 0.05, \
+             then the probability that the prediction set contains the true class is 0.95.")
     st.write(r"We will get the prediction set for a test sample $(x_{n+1}, y_{n+1})$ by:")
     st.latex(r"\hat{C}(x_{n+1})=\{y'\in K:\hat{\pi}_{x_{n+1}}(y') \ge 1-{q_{val}}\}")
-    st.write(r"The prediction set $C$ consists of all the classes for which the softmax score is above a threshold value 1-${q_{val}}$. ${q}$ is calculated as $\frac{{\lceil (1 - \alpha) \cdot (n + 1) \rceil}}{{n}}$ quantile of the scores from the calibration set.")
+    st.write(r"The prediction set $C$ consists of all the classes for which the softmax score is above a threshold \
+             value 1-${q_{val}}$. ${q}$ is calculated as $\frac{{\lceil (1 - \alpha) \cdot (n + 1) \rceil}}{{n}}$ \
+             quantile of the scores from the calibration set.")
     n = len(X_calib)
     scores = get_scores(net, (X_calib, y_calib))
     alpha = st.slider("Select a value for alpha:", min_value=0.01, max_value=1.0, step=0.001, value=0.04)
@@ -213,8 +239,12 @@ def main():
     fig, ax, pred, pred_str = get_test_preds_and_smx(X_test, idxs[test_img_index-1], pred_sets, net, q, alpha)
     st.pyplot(fig)
     st.write("Prediction Set for this image: ", pred_str)
-    st.write("The average size of prediction sets for all the images from the test set is {:.3f}".format(mean_set_size(pred_sets)))
-    st.write("*What does the average size mean?* We observe that the average size of the prediction set decreases when value of alpha is increased. This is because of our method for computing conformity scores, where we only take into account the softmax scores of the correct class when calculating 𝑞̂. With increasing alpha, the softmax scores for the classes decreases and thus there are lesser scores above the threshold value.")    
+    st.write("The average size of prediction sets for all the images from the test set is \
+             {:.3f}".format(mean_set_size(pred_sets)))
+    st.write("*What does the average size mean?* We observe that the average size of the prediction set decreases when \
+             value of alpha is increased. This is because of our method for computing conformity scores, where we only \
+             take into account the softmax scores of the correct class when calculating 𝑞̂. With increasing alpha, the \
+             softmax scores for the classes decreases and thus there are lesser scores above the threshold value.")    
 
 
 if __name__ == "__main__":
