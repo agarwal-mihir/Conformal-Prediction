@@ -95,7 +95,7 @@ def main():
         The process involves two steps:
         - First, we train a regression model on a training dataset.
         - Next, we use a calibration dataset to estimate the quantiles ($q_{val}$) based on a chosen  \
-            confidence level $\alpha$ for the prediction intervals. This represents the proportion of times \
+            confidence level for the prediction intervals. This represents the proportion of times \
             the intervals will contain the true target value for future test instances.
         """
         )
@@ -256,7 +256,11 @@ def main():
              take into account the softmax scores of the correct class when calculating 𝑞̂. With increasing alpha, the \
              softmax scores for the classes decreases and thus there are lesser scores above the threshold value.")    
 
-
+    st.subheader("References:")
+    st.write(r"[A Gentle Introduction to Conformal Prediction and Distribution-Free Uncertainty Quantification](https://people.eecs.berkeley.edu/~angelopoulos/publications/downloads/gentle_intro_conformal_dfuq.pdf)")
+    st.write(r"[Tutorial on Conformal Predictions](https://uvadlc-notebooks.readthedocs.io/en/latest/tutorial_notebooks/DL2/Bayesian_Neural_Networks/dl2_bnn_tut2_student_with_answers.html#Conformal-prediction)")
+    st.write(r"[A Tutorial on Conformal Predictions by Glenn Shafer and Vladimir Vovk](https://www.jmlr.org/papers/volume9/shafer08a/shafer08a.pdf)")
+    
 if __name__ == "__main__":
     main()
 
