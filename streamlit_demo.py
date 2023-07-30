@@ -12,7 +12,7 @@ import matplotlib.pyplot as plt
 
 # Import utility functions and model classes from custom modules
 from utils import get_simple_data_train, display_equation, train, get_data, get_test_preds_and_smx, get_scores, quantile, get_pred_sets, mean_set_size, get_test_accuracy, train_model
-from utils_plot import plot_generic, plot_predictions, plot_histogram_with_quantile, plot_calibration_scores
+from utils_plot import plot_generic, plot_predictions, histogram_plot
 from model import MLP, MLP1
 
 # Set random seeds for reproducibility
@@ -38,20 +38,26 @@ def main():
     st.write("Machine learning models, particularly neural networks, are widely used in critical areas like medical diagnostics. However, the lack of uncertainty quantification in these models poses challenges in decision-making and trust. Conformal prediction offers a user-friendly way to quantify uncertainty, providing confidence levels for each prediction. Its distribution-free nature makes it robust without strong assumptions about the data distribution or the model. This instills confidence in the reliability of model predictions.")
 
     st.write(r"The significance of conformal prediction lies in its ability to provide a confidence level ($\alpha$) for the predictions, allowing users to understand the reliability of the model's output. This is especially crucial in critical applications where understanding the uncertainty is essential.")
-    st.write(r"Conformal Prediction for a General Input $x$ and Output $y$:")
-    st.write("**1.** Identify a heuristic notion of uncertainty using the pre-trained model.")
-    st.write(r"    - In conformal prediction, we make use of a pre-trained model to estimate the uncertainty associated with its predictions. This uncertainty is crucial as it allows us to create prediction intervals rather than single point predictions.")
+    # st.write(r"Conformal Prediction for a General Input $x$ and Output $y$:")
+    # st.write("**1.** Identify a heuristic notion of uncertainty using the pre-trained model.")
+    # st.write(r"    - In conformal prediction, we make use of a pre-trained model to estimate the uncertainty associated with its predictions. This uncertainty is crucial as it allows us to create prediction intervals rather than single point predictions.")
 
-    st.write("**2.** Define the score function $s(f(x), y) \in \mathbb{R}$. (Larger scores encode worse agreement between $f(x)$ and $y$.)")
-    st.write(r"- The score function $s(f(x), y)$ is a function that quantifies the discrepancy or disagreement between the input $x$ and the output $y$. Larger scores indicate a worse agreement between the predicted value and the true value.")
+    # st.write("**2.** Define the score function $s(f(x), y) \in \mathbb{R}$. (Larger scores encode worse agreement between $f(x)$ and $y$.)")
+    # st.write(r"- The score function $s(f(x), y)$ is a function that quantifies the discrepancy or disagreement between the input $x$ and the output $y$. Larger scores indicate a worse agreement between the predicted value and the true value.")
 
-    st.write("**3.** Compute $\\hat{q}$ as the ceiling function of $\\frac{(n+1)(1-\\alpha)}{n}$.")
-    st.write(r"    - To determine the quantile value $\hat{q}$, we calculate the $\left\lceil \frac{(n+1)(1-\alpha)}{n} \right\rceil$-th quantile of the calibration scores $s_1 = s(f(X_1), Y_1), ..., s_n = s(f(X_n), Y_n)$, where $d$ is the number of dimensions in the output space, $n$ is the number of calibration data points, and $\alpha$ is the confidence level.")
+    # st.write("**3.** Compute $\\hat{q}$ as the ceiling function of $\\frac{(n+1)(1-\\alpha)}{n}$.")
+    # st.write(r"    - To determine the quantile value $\hat{q}$, we calculate the $\left\lceil \frac{(n+1)(1-\alpha)}{n} \right\rceil$-th quantile of the calibration scores $s_1 = s(f(X_1), Y_1), ..., s_n = s(f(X_n), Y_n)$, where $d$ is the number of dimensions in the output space, $n$ is the number of calibration data points, and $\alpha$ is the confidence level.")
 
-    st.write("**4.** Use this quantile to form the prediction sets for new examples:")
-    st.write(r"    - The prediction set $C(X_{\text{test}})$ is constructed as $\{y : s(f(X_{\text{test}}), y) \leq \hat{q}\}$. It contains all the possible output values $y$ for the new input example $X_{\text{test}}$, where the score function $s(f(X_{\text{test}}), y)$ is less than or equal to the computed quantile $\hat{q}$.")
+    # st.write("**4.** Use this quantile to form the prediction sets for new examples:")
+    # st.write(r"    - The prediction set $C(X_{\text{test}})$ is constructed as $\{y : s(f(X_{\text{test}}), y) \leq \hat{q}\}$. It contains all the possible output values $y$ for the new input example $X_{\text{test}}$, where the score function $s(f(X_{\text{test}}), y)$ is less than or equal to the computed quantile $\hat{q}$.")
 
-    st.write("By following these steps, conformal prediction provides a practical way to estimate uncertainty and create prediction intervals for new examples, enabling better decision-making and trust in the model's predictions.")
+    # st.write("By following these steps, conformal prediction provides a practical way to estimate uncertainty and create prediction intervals for new examples, enabling better decision-making and trust in the model's predictions.")
+
+    st.write("Conformal Prediction Algorithm:")
+    st.write(r"1. **Uncertainty Estimation:** Use a pre-trained model to estimate uncertainty in predictions.")
+    st.write(r"2. **Score Function:** Define a score function ($s(f(x), y)$) to measure prediction discrepancy.")
+    st.write(r"3. **Quantile Computation:** Compute quantile ($q_{val}$) based on calibration data and confidence level.")
+    st.write(r"4. **Prediction Intervals:** Form prediction intervals for new examples using quantile ($q_{val}$).")
     st.title("Conformal Predictions for Regression:")
     # Data Visualization Section
     # Sliders to control the coefficients of sine and cosine functions and noise
@@ -67,15 +73,12 @@ def main():
     st.markdown(custom_slider_style, unsafe_allow_html=True)
     
 
-    st.write(r"We will be using a custom function to demonstrate the working of conformal prediction on regression tasks. In regression, the goal is to predict continuous values rather than discrete classes. Conformal prediction in regression provides prediction intervals that quantify the uncertainty associated with the model's predictions. These prediction intervals define a range of potential outcomes rather than a single point estimate, offering valuable insights into the reliability of the model.")
+    st.write("Conformal prediction in regression provides prediction intervals that quantify the uncertainty associated with the model's predictions.")
 
+    st.write(r"The process involves two steps. First, we train a regression model on a training dataset. Next, we use a calibration dataset to estimate the confidence level ($\alpha$) for the prediction intervals. This represents the proportion of times the intervals will contain the true target value for future test instances.")
 
+    st.write("To compute the prediction intervals, we calculate the residuals for the calibration dataset. The quantile of these residuals based on the chosen confidence level determines the width of the prediction intervals, reflecting the uncertainty in the model's predictions.")
 
-    st.write(r"The process of constructing prediction intervals in conformal prediction involves two main steps. First, we train a regression model on a training dataset using the standard machine learning approach. Next, we use a calibration dataset to estimate the level of confidence ($\alpha$) for the prediction intervals. This confidence level represents the proportion of times the intervals will contain the true target value for future test instances.")
-
-    st.write(r"To compute the prediction intervals, we calculate the residuals, which are the absolute differences between the true target values and the model's predicted values, for the calibration dataset. We then determine the quantile of these residuals based on the chosen confidence level ($\alpha$). The quantile value helps us set the width of the prediction intervals, capturing a certain percentage of the residuals and reflecting the uncertainty in the model's predictions.")
-
-    st.write(r"By incorporating conformal prediction into regression tasks, we can create prediction intervals that provide a clear measure of uncertainty, enabling decision-makers to assess the reliability and potential variability of the model's predictions. This can be particularly beneficial in domains where accurate estimates and understanding uncertainty are critical for making informed and trustworthy decisions.")
     st.subheader("Function")
     # Sliders with custom styles
     coef_1 = 0.3
@@ -124,7 +127,7 @@ def main():
     print(q_val)
     st.latex(r"q = \frac{{\lceil (1 - \alpha) \cdot (n + 1) \rceil}}{{n}} = {:.4f}".format(q_val))
     q = np.quantile(resid, q_val, method="higher")
-    plot_histogram_with_quantile(resid, q, alpha)
+    histogram_plot(resid, q, alpha)
     st.write(r"The $q^{th}$ quantile this:")
     st.latex(r"q_{{\text{{value}}}} = {:.4f}".format(q))
     x_true = np.linspace(-.5, 1.5, 1000)
@@ -186,7 +189,7 @@ def main():
     q_val = np.ceil((1 - alpha) * (n + 1)) / n
     st.latex(r"q = \frac{{\lceil (1 - \alpha) \cdot (n + 1) \rceil}}{{n}} = {:.4f}".format(q_val))
     q = np.quantile(scores, q_val, method="higher")
-    plot_histogram_with_quantile(scores, q, alpha)
+    histogram_plot(scores, q, alpha)
     # st.pyplot(fig)
     st.write(r"For this value of alpha, the threshold value 1-${q_{val}}$"+ " is {:.4f}".format(1 - q))
     

@@ -79,7 +79,7 @@ def plot_calibration_scores(x_cal, scores):
     return fig
 
 @st.cache_data
-def plot_histogram_with_quantile(scores, q, alpha):
+def histogram_plot(scores, q, alpha):
     print("running histogram")
     fig, ax = plt.subplots(1, 2, figsize=(12, 3))
     # Plot scores of calibration data
