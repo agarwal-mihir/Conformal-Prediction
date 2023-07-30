@@ -115,7 +115,7 @@ def show_samples(X_test, idxs, pred_sets, net, q, alpha):
     for i, ax in enumerate(axes):
         if i < len(idxs):
             ax.imshow(X_test[idxs[i]].reshape(28,28).numpy())  # Assuming the images are grayscale, change cmap as needed
-            title = f"Image {i}"
+            title = f"Image {i+1}"
             ax.set_title(title)
             ax.axis("off")
                 
