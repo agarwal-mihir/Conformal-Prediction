@@ -186,7 +186,7 @@ def main():
     # st.latex(r"\hat{C}(X_{n+1}) = [ \hat{f}(x_{n+1}) - {q_{val}}, \, \hat{f}(x_{n+1}) + {q_{val}} ]")
     # plt.title("Plot of confidence interval for the conformal prediction", fontsize=15)
     # st.pyplot(fig)
-    plot_conformal_prediction(x_train, y_train, x_cal, y_cal, x_test, y_preds, q, coef_1, coef_2, coef_3)
+    plot_conformal_prediction(x_train, y_train, x_cal, y_cal, x_test, y_preds, q, coef_1, coef_2, coef_3, alpha)
 
 
     st.title("Conformal Predictions in Classification")

@@ -120,8 +120,9 @@ def show_samples(X_test, idxs, pred_sets, net, q, alpha):
             ax.axis("off")
                 
     st.pyplot(fig)
+
 @st.cache_data
-def plot_conformal_prediction( _x_train, _y_train, _x_cal, _y_cal, _x_test, _y_preds, q, coef_1, coef_2, coef_3):
+def plot_conformal_prediction( _x_train, _y_train, _x_cal, _y_cal, _x_test, _y_preds, q, coef_1, coef_2, coef_3, alpha):
     print("running conformal prediction")
     x_true = np.linspace(-.5, 1.5, 1000)
     y_true = coef_1 * np.sin(2 * np.pi*(x_true)) + coef_2 * np.cos(4 * np.pi *(x_true )) + coef_3 * x_true
@@ -140,5 +141,11 @@ def plot_conformal_prediction( _x_train, _y_train, _x_cal, _y_cal, _x_test, _y_p
     plt.legend(loc='best', fontsize=15, frameon=False)
     st.write("The prediction interval is calculated as:")
     st.latex(r"\hat{C}(X_{n+1}) = [ \hat{f}(x_{n+1}) - {q_{val}}, \, \hat{f}(x_{n+1}) + {q_{val}} ]")
+    
+    cov = np.mean(((_y_preds - q) <= y_true) * ((_y_preds + q) >= y_true))
+    s = r"Below is the plot of the predictions with uncertainty bands. We want the uncertainty band to\
+        contain (1-$\alpha$) = " + f"{1-alpha:.2%}" + " of the ground truth. Empirically, the prediction set\
+        contains " + f"{cov:.2%}" + " of the ground truth."
+    st.write(s)
     plt.title("Plot of confidence interval for the conformal prediction", fontsize=15)
     st.pyplot(fig)
