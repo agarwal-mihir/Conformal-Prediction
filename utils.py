@@ -12,7 +12,9 @@ torch.manual_seed(42)
 np.random.seed(42)
 
 # Function to generate synthetic training and calibration data
+@st.cache_data
 def get_simple_data_train(coef_1, coef_2, coef_3, coef_4, n_cal):
+    print("running simple data")
     # Generate data points for the custom function with some noise
     x = np.linspace(-.2, 0.2, 300)
     x = np.hstack([x, np.linspace(.6, 1, 300)])
@@ -20,7 +22,7 @@ def get_simple_data_train(coef_1, coef_2, coef_3, coef_4, n_cal):
     y = coef_1 * np.sin(2 * np.pi*(x)) + coef_2 * np.cos(4 * np.pi *(x)) + coef_3 * x+ eps
     x = torch.from_numpy(x).float()[:, None]
     y = torch.from_numpy(y).float()
-
+    print("running regression data")
     # Split data into calibration and training sets
     cal_idx = np.random.choice(x.shape[0], n_cal, replace=False)
     mask = np.zeros(len(x), dtype=bool)
@@ -28,26 +30,29 @@ def get_simple_data_train(coef_1, coef_2, coef_3, coef_4, n_cal):
     x_cal, y_cal = x[mask], y[mask]
     x_train, y_train = x[~mask], y[~mask]
     return x_train, y_train, x_cal, y_cal
-
+@st.cache_data
 def display_equation(coef_1, coef_2, coef_3, coef_4):
+    print("running display equation")
     equation = r"f(x, \varepsilon) = {:.2f} \sin(2\pi(x)) + {:.2f} \cos(4\pi(x)) + {:.2f}x + \varepsilon".format(coef_1, coef_2, coef_3)
     st.latex(equation)
 
 
 # Function to train a neural network model
-def train(net, train_data, epochs=1000):
-    x_train, y_train = train_data
-    optimizer = torch.optim.Adam(params=net.parameters(), lr=1e-3)
+@st.cache_resource
+def train(_net, _train_data, epochs=1000):
+    print("running training")
+    x_train, y_train = _train_data
+    optimizer = torch.optim.Adam(params=_net.parameters(), lr=1e-3)
     criterion = nn.MSELoss()
 
     for epoch in range(epochs):
         optimizer.zero_grad()
-        y_pred = net(x_train)
+        y_pred = _net(x_train)
         loss = criterion(y_pred, y_train)
         loss.backward()
         optimizer.step()
 
-    return net
+    return _net
 
 
 # Function to load the CIFAR-10 test and calibration data
@@ -81,6 +86,7 @@ def class_label(i):
 @st.cache_data
 def get_test_accuracy(_X_test, _y_test, _net):
     # Create a DataLoader for the test dataset
+    print("running test accuracy")
     test_dataset = torch.utils.data.TensorDataset(_X_test, _y_test.squeeze().long())
     test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=64, shuffle=False)  # No need to shuffle for testing
     def calculate_accuracy(outputs, labels):
@@ -150,7 +156,7 @@ def get_pred_str(pred):
 # Function to display test predictions and class scores
 
 def get_test_preds_and_smx(X_test, index, pred_sets, net, q, alpha):
-    test_smx = nn.functional.softmax(net(X_test), dim=1).detach().numpy()
+    test_smx = nn.functional.softmax(net(X_test[:1000]), dim=1).detach().numpy()
     sample_smx = test_smx[index]
     
     fig, axs = plt.subplots(1, 2, figsize=(12, 3))
@@ -200,3 +206,17 @@ def train_model(_net, _train_data):
                 running_accuracy = 0.0    
     return _net
 
+@st.cache_data
+def conformal_prediction_regression(_x_cal, _y_cal, _net, alpha):
+    print("Conformal prediction for regression")
+    x_test = torch.linspace(-.5, 1.5, 1000)[:, None]
+    y_preds = _net(x_test).clone().detach().numpy()
+    _y_cal_preds = _net(_x_cal).clone().detach()
+    
+    resid = torch.abs(_y_cal - _y_cal_preds).numpy()
+    
+    n = len(_x_cal)
+    q_val = np.ceil((1 - alpha) * (n + 1)) / n
+    q = np.quantile(resid, q_val, method="higher")
+
+    return x_test, y_preds, q, resid

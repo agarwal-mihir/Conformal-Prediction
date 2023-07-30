@@ -11,8 +11,8 @@ import matplotlib.pyplot as plt
 # from tqdm.auto import trange, tqdm
 
 # Import utility functions and model classes from custom modules
-from utils import get_simple_data_train, display_equation, train, get_data, get_test_preds_and_smx, get_scores, quantile, get_pred_sets, mean_set_size, get_test_accuracy, train_model
-from utils_plot import plot_generic, plot_predictions, histogram_plot
+from utils import get_simple_data_train, display_equation, train, get_data, get_test_preds_and_smx, get_scores, quantile, get_pred_sets, mean_set_size, get_test_accuracy, train_model, conformal_prediction_regression
+from utils_plot import plot_generic, plot_predictions, histogram_plot, show_samples, plot_conformal_prediction
 from model import MLP, MLP1
 
 # Set random seeds for reproducibility
@@ -99,9 +99,9 @@ def main():
     n_hidden_layers = 1
     epochs = 1000
     x_test = torch.linspace(-.5, 1.5, 3000)[:, None]
-    net = MLP(hidden_dim=hidden_dim, n_hidden_layers=n_hidden_layers)
-    net = train(net, (x_train, y_train), epochs=epochs)
-    y_preds = net(x_test).clone().detach().numpy()
+    net1 = MLP(hidden_dim=hidden_dim, n_hidden_layers=n_hidden_layers)
+    net1 = train(net1, (x_train, y_train), epochs=epochs)
+    y_preds = net1(x_test).clone().detach().numpy()
 
     # Display the plot with the true function, training data, calibration data, predictive mean
     # st.subheader("Prediction Visualization")
@@ -110,47 +110,54 @@ def main():
     st.pyplot(fig)
 
     # Calculate residuals and estimate quantile based on user-selected alpha
-    x_test = torch.linspace(-.5, 1.5, 1000)[:, None]
-    y_preds = net(x_test).clone().detach().numpy()
-    y_cal_preds = net(x_cal).clone().detach()
-    # st.latex(score_func)
+
+    # x_test = torch.linspace(-.5, 1.5, 1000)[:, None]
+    # y_preds = net(x_test).clone().detach().numpy()
+    # y_cal_preds = net(x_cal).clone().detach()
+    # # st.latex(score_func)
+    # st.latex(r"s_i = |y_i - \hat{y}_i|")
+    # st.write("The score function $s_i$ represents the absolute difference between the true output $y_i$ and the model's predicted output $\hat{y}_i$ for each calibration data point $x_i$. It measures the discrepancy between the true values and their corresponding predictions, providing a measure of model fit to the calibration data.")
+    # resid = torch.abs(y_cal - y_cal_preds).numpy()
+    # alpha = st.slider("Select a value for alpha:", min_value=0.05, max_value=1.0, step=0.001, value=0.06)
+    # # n = len(x_cal)
+    # # print(f"n = {n}")
+    # # fig = plot_calibration_scores(x_cal, scores=resid)
+    # # st.pyplot(fig)
+    # n = len(x_cal)
+    # q_val = np.ceil((1 - alpha) * (n + 1)) / n
+    # print(q_val)
+    # st.latex(r"q = \frac{{\lceil (1 - \alpha) \cdot (n + 1) \rceil}}{{n}} = {:.4f}".format(q_val))
+    # q = np.quantile(resid, q_val, method="higher")
     st.latex(r"s_i = |y_i - \hat{y}_i|")
     st.write("The score function $s_i$ represents the absolute difference between the true output $y_i$ and the model's predicted output $\hat{y}_i$ for each calibration data point $x_i$. It measures the discrepancy between the true values and their corresponding predictions, providing a measure of model fit to the calibration data.")
-    resid = torch.abs(y_cal - y_cal_preds).numpy()
     alpha = st.slider("Select a value for alpha:", min_value=0.05, max_value=1.0, step=0.001, value=0.06)
-    # n = len(x_cal)
-    # print(f"n = {n}")
-    # fig = plot_calibration_scores(x_cal, scores=resid)
-    # st.pyplot(fig)
-    n = len(x_cal)
-    q_val = np.ceil((1 - alpha) * (n + 1)) / n
-    print(q_val)
-    st.latex(r"q = \frac{{\lceil (1 - \alpha) \cdot (n + 1) \rceil}}{{n}} = {:.4f}".format(q_val))
-    q = np.quantile(resid, q_val, method="higher")
+
+    x_test, y_preds, q, resid = conformal_prediction_regression(x_cal, y_cal, net1,alpha)
+
     histogram_plot(resid, q, alpha)
     st.write(r"The $q^{th}$ quantile this:")
     st.latex(r"q_{{\text{{value}}}} = {:.4f}".format(q))
-    x_true = np.linspace(-.5, 1.5, 1000)
-    y_true = coef_1 * np.sin(2 * np.pi*(x_true)) + coef_2 * np.cos(4 * np.pi *(x_true )) + coef_3 * x_true
+    # x_true = np.linspace(-.5, 1.5, 1000)
+    # y_true = coef_1 * np.sin(2 * np.pi*(x_true)) + coef_2 * np.cos(4 * np.pi *(x_true )) + coef_3 * x_true
 
-    # Generate plot with the true function, training data, calibration data, predictive mean, and uncertainty bands
-    fig, ax = plt.subplots(figsize=(10, 5))
-    plt.xlim([-.5, 1.5])
-    plt.ylim([-1.5, 2.5])
-    plt.xlabel("X", fontsize=30)
-    plt.ylabel("Y", fontsize=30)
+    # # Generate plot with the true function, training data, calibration data, predictive mean, and uncertainty bands
+    # fig, ax = plt.subplots(figsize=(10, 5))
+    # plt.xlim([-.5, 1.5])
+    # plt.ylim([-1.5, 2.5])
+    # plt.xlabel("X", fontsize=30)
+    # plt.ylabel("Y", fontsize=30)
     
-    ax.plot(x_true, y_true, 'b-', linewidth=3, label="true function")
-    ax.plot(x_train, y_train, 'go', markersize=4, label="training data")
-    ax.plot(x_cal, y_cal, 'ro', markersize=4, label="calibration data")
-    ax.plot(x_test, y_preds, '-', linewidth=3, color="y", label="predictive mean")
-    ax.fill_between(x_test.ravel(), y_preds - q, y_preds + q, alpha=0.6, color='y', zorder=5)
-    plt.legend(loc='best', fontsize=15, frameon=False)
-    st.write("The prediction interval is calculated as:")
-    st.latex(r"\hat{C}(X_{n+1}) = [ \hat{f}(x_{n+1}) - {q_{val}}, \, \hat{f}(x_{n+1}) + {q_{val}} ]")
-    plt.title("Plot of confidence interval for the conformal prediction", fontsize=15)
-    st.pyplot(fig)
-    
+    # ax.plot(x_true, y_true, 'b-', linewidth=3, label="true function")
+    # ax.plot(x_train, y_train, 'go', markersize=4, label="training data")
+    # ax.plot(x_cal, y_cal, 'ro', markersize=4, label="calibration data")
+    # ax.plot(x_test, y_preds, '-', linewidth=3, color="y", label="predictive mean")
+    # ax.fill_between(x_test.ravel(), y_preds - q, y_preds + q, alpha=0.6, color='y', zorder=5)
+    # plt.legend(loc='best', fontsize=15, frameon=False)
+    # st.write("The prediction interval is calculated as:")
+    # st.latex(r"\hat{C}(X_{n+1}) = [ \hat{f}(x_{n+1}) - {q_{val}}, \, \hat{f}(x_{n+1}) + {q_{val}} ]")
+    # plt.title("Plot of confidence interval for the conformal prediction", fontsize=15)
+    # st.pyplot(fig)
+    plot_conformal_prediction(x_train, y_train, x_cal, y_cal, x_test, y_preds, q, coef_1, coef_2, coef_3)
 
 
     st.title("Conformal Predictions in Classification")
@@ -183,7 +190,7 @@ def main():
     st.write(r"We will get the prediction set for a test sample $(x_{n+1}, y_{n+1})$ by:")
     st.latex(r"\hat{C}(x_{n+1})=\{y'\in K:\hat{\pi}_{x_{n+1}}(y') \ge 1-{q_{val}}\}")
     st.write(r"The prediction set $C$ consists of all the classes for which the softmax score is above a threshold value 1-${q_{val}}$. ${q}$ is calculated as $\frac{{\lceil (1 - \alpha) \cdot (n + 1) \rceil}}{{n}}$ quantile of the scores from the calibration set.")
-       
+    n = len(X_calib)
     scores = get_scores(net, (X_calib, y_calib))
     alpha = st.slider("Select a value for alpha:", min_value=0.01, max_value=1.0, step=0.001, value=0.04)
     q_val = np.ceil((1 - alpha) * (n + 1)) / n
@@ -193,16 +200,22 @@ def main():
     # st.pyplot(fig)
     st.write(r"For this value of alpha, the threshold value 1-${q_{val}}$"+ " is {:.4f}".format(1 - q))
     
-    st.write("For example, select a random image from the below slider. The softmax scores for the classes can be seen in the plot on the right side. If the score is above the threshold value, then the class is in the predicted set.")
+    st.write("For example, select an image from the below slider. The softmax scores for the classes can be seen in the plot on the right side. If the score is above the threshold value, then the class is in the predicted set.")
     
-    # st.write("Example:")
-    test_img_index = st.slider("Choose Image:", min_value=0, max_value=1000, step=1, value=628)
     pred_sets = get_pred_sets(net, (X_test, y_test), q, alpha)
-    fig, ax, pred, pred_str = get_test_preds_and_smx(X_test, test_img_index, pred_sets, net, q, alpha)
+    
+    idxs = [976,300,844,149,195,619,511,112,65,658]
+    show_samples(X_test, idxs, pred_sets, net, q, alpha)
+    
+    test_img_index = st.slider("Choose Image:", min_value=1, max_value=10, step=1, value=5)
+    # test_img_index = st.selectbox("Choose Image:", options = [i for i in range(1, 10)])
+    
+    fig, ax, pred, pred_str = get_test_preds_and_smx(X_test, idxs[test_img_index-1], pred_sets, net, q, alpha)
     st.pyplot(fig)
     st.write("Prediction Set for this image: ", pred_str)
     st.write("The average size of prediction sets for all the images from the test set is {:.3f}".format(mean_set_size(pred_sets)))
-    st.write("**What does the average size mean?** We observe that the average size of the prediction set decreases when value of alpha is increased. This is because of our method for computing conformity scores, where we only take into account the softmax scores of the correct class when calculating 𝑞̂. With increasing alpha, the softmax scores for the classes decreases and thus there are lesser scores above the threshold value.")    
+    st.write("*What does the average size mean?* We observe that the average size of the prediction set decreases when value of alpha is increased. This is because of our method for computing conformity scores, where we only take into account the softmax scores of the correct class when calculating 𝑞̂. With increasing alpha, the softmax scores for the classes decreases and thus there are lesser scores above the threshold value.")    
+
 
 if __name__ == "__main__":
     main()
