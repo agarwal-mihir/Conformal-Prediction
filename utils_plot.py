@@ -92,17 +92,17 @@ def histogram_plot(scores, q, alpha):
     ax[0].set_title("Scores of Calibration Data")
     
     # Plot the histogram
-    n, bins, _ = ax[1].hist(scores, bins=30, alpha=0.7, cumulative = True, color='b', edgecolor='black', label='Score Frequency')
+    n, bins, _ = ax[1].hist(scores, bins=30, alpha=0.7, cumulative = True, color='#E94B3CFF', edgecolor='black', label='Score Frequency')
     
     # Plot the vertical line at the quantile
     # q_x = np.quantile(scores, q)
-    ax[1].axvline(q, color='r', linestyle='dashed', linewidth=2, label=r"Quantile (${q_{val}}$ = " + str(("{:.2f}")).format(q) + ")")
+    ax[1].axvline(q, color='b', linestyle='dashed', linewidth=2, label=r"Quantile (${q_{val}}$ = " + str(("{:.2f}")).format(q) + ")")
     
     ax[1].set_xlabel('Scores')
     ax[1].set_ylabel('Frequency')
     ax[1].set_title('Histogram of Scores with Quantile Line')
     plt.legend()
-    plt.grid(True)
+    # plt.grid(True)
     
     st.pyplot(fig)
 

@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 # from tqdm.auto import trange, tqdm
 
 # Import utility functions and model classes from custom modules
-from utils import get_simple_data_train, display_equation, train, get_data, get_test_preds_and_smx, get_scores, quantile, get_pred_sets, mean_set_size, get_test_accuracy, train_model, conformal_prediction_regression
+from utils import get_simple_data_train, display_equation, train, get_data, get_test_preds_and_smx, get_scores, quantile, get_pred_sets, mean_set_size, get_test_accuracy, train_model, conformal_prediction_regression, tensor_to_img
 from utils_plot import plot_generic, plot_predictions, histogram_plot, show_samples, plot_conformal_prediction
 from model import MLP, MLP1
 
@@ -196,7 +196,7 @@ def main():
     st.latex(r"\hat{C}(X_{n+1})\subseteq \{1,\dots,K\}")
     st.write(r"where $K$ is the number of classes. This change in the output affects how we calculate the conformity scores.")
     
-    st.write("We will use the MNIST dataset. The 60k training samples are split into two parts: the training set, which consists of 55k images, and the calibration set, which has 5k images. The test set consists of 10k images.")
+    st.write("We will use the MNIST dataset. The 60k training samples are split into two parts: the training set, which consists of 59500 images, and the calibration set, which has 500 images. The test set consists of 10k images.")
     
     X_train, y_train, X_test, y_test, X_calib, y_calib = get_data()
     
@@ -241,12 +241,14 @@ def main():
     pred_sets = get_pred_sets(net, (X_test, y_test), q, alpha)
     
     idxs = [976,300,844,149,195,619,511,112,65,658]
-    show_samples(X_test, idxs, pred_sets, net, q, alpha)
+    test_img_idx = st_image.image_select(label = "Select an image", images = [tensor_to_img(X_test, idx) for idx in idxs], return_value = "index")
+    # show_samples(X_test, idxs, pred_sets, net, q, alpha)
     
-    test_img_index = st.slider("Choose Image:", min_value=1, max_value=10, step=1, value=5)
+    
+    # test_img_index = st.slider("Choose Image:", min_value=1, max_value=10, step=1, value=5)
     # test_img_index = st.selectbox("Choose Image:", options = [i for i in range(1, 10)])
     
-    fig, ax, pred, pred_str = get_test_preds_and_smx(X_test, idxs[test_img_index-1], pred_sets, net, q, alpha)
+    fig, ax, pred, pred_str = get_test_preds_and_smx(X_test, idxs[test_img_idx], pred_sets, net, q, alpha)
     st.pyplot(fig)
     st.write("Prediction Set for this image: ", pred_str)
     st.write("The average size of prediction sets for all the images from the test set is \

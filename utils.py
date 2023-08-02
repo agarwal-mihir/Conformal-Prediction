@@ -6,6 +6,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import torchvision.datasets as datasets
 import torchvision.transforms as transforms
+import PIL
 
 # Set random seeds for reproducibility
 torch.manual_seed(42)
@@ -162,11 +163,13 @@ def get_test_preds_and_smx(X_test, index, pred_sets, net, q, alpha):
     fig, axs = plt.subplots(1, 2, figsize=(12, 3))
     axs[0].imshow(X_test[index].reshape(28,28).numpy())
     axs[0].set_title("Sample test image")
+    axs[0].set_xticks([])
+    axs[0].set_yticks([])
     
-    axs[1].bar(range(10), sample_smx, label="class scores")
+    axs[1].bar(range(10), sample_smx, label="class scores", color = '#5B84B1FF')
     axs[1].set_xticks(range(10))
-    axs[1].set_xticklabels([class_label(i) for i in range(10)], rotation=90)
-    axs[1].axhline(y=1 - q, label='threshold', color="red", linestyle='dashed')
+    axs[1].set_xticklabels([class_label(i) for i in range(10)])
+    axs[1].axhline(y=1 - q, label='threshold', color="#FC766AFF", linestyle='dashed')
     axs[1].legend(loc=1)
     axs[1].set_title("Class Scores")
     
@@ -220,3 +223,16 @@ def conformal_prediction_regression(_x_cal, _y_cal, _net, alpha):
     q = np.quantile(resid, q_val, method="higher")
 
     return x_test, y_preds, q, resid
+
+def tensor_to_img(X_test, idx):
+    # fig, ax = plt.subplots(figsize=(10, 5))
+    # ax.plot(X_test[idx].reshape(28,28).numpy())
+    # return PIL.Image.frombytes('RGB', fig.canvas.get_width_height(),fig.canvas.tostring_rgb())
+    plt.switch_backend('Agg')  # Set the backend to Agg
+    fig, ax = plt.subplots(figsize=(10, 5))
+    ax.imshow(X_test[idx].reshape(28, 28).numpy())
+    ax.set_axis_off()
+    fig.canvas.draw()  # Draw the canvas
+    img = PIL.Image.frombytes('RGB', fig.canvas.get_width_height(), fig.canvas.tostring_rgb())
+    plt.close(fig)  # Close the figure to free up resources
+    return img
