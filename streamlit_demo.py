@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 import torchvision.datasets as datasets
 import torchvision.transforms as transforms
 import matplotlib.pyplot as plt
+import streamlit_image_select as st_image
 # from tqdm.auto import trange, tqdm
 
 # Import utility functions and model classes from custom modules
