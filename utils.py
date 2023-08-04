@@ -13,7 +13,7 @@ torch.manual_seed(42)
 np.random.seed(42)
 
 # Function to generate synthetic training and calibration data
-@st.cache_data
+
 def get_simple_data_train(coef_1, coef_2, coef_3, coef_4, n_cal):
     print("running simple data")
     # Generate data points for the custom function with some noise
@@ -39,7 +39,7 @@ def display_equation(coef_1, coef_2, coef_3, coef_4):
 
 
 # Function to train a neural network model
-@st.cache_resource
+
 def train(_net, _train_data, epochs=1000):
     print("running training")
     x_train, y_train = _train_data

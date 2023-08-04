@@ -12,7 +12,7 @@ torch.manual_seed(42)
 np.random.seed(42)
 
 # Function to plot generic data visualization
-@st.cache_data
+
 def plot_generic(_x_train, _y_train, _x_cal, _y_cal, _add_to_plot=None, coef_1=0.3, coef_2=0.02, coef_3=0.1, coef_4=0.02):
     print("running plot_generic")
     fig, ax = plt.subplots(figsize=(10, 5))
@@ -45,7 +45,7 @@ def plot_generic(_x_train, _y_train, _x_cal, _y_cal, _add_to_plot=None, coef_1=0
 
     return fig, ax
 
-@st.cache_data
+
 def plot_predictions(_x_train, _y_train, _x_cal, _y_cal, _x_test, _y_preds, coef_1=0.3, coef_2=0.02, coef_3=0.1, coef_4=0.02):
     print("running predictions")
     def add_predictions(ax):

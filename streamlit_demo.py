@@ -242,7 +242,7 @@ def main():
     pred_sets = get_pred_sets(net, (X_test, y_test), q, alpha)
     
     idxs = [976,300,844,149,195,619,511,112,65,658]
-    test_img_idx = st_image.image_select(label = "Select an image", images = [tensor_to_img(X_test, idx) for idx in idxs], return_value = "index")
+    test_img_idx = st_image.image_select(label = "Select an image", images = [tensor_to_img(X_test, idx) for idx in idxs], return_value = "index", use_container_width = False)
     # show_samples(X_test, idxs, pred_sets, net, q, alpha)
     
     
