@@ -236,3 +236,41 @@ def tensor_to_img(X_test, idx):
     img = PIL.Image.frombytes('RGB', fig.canvas.get_width_height(), fig.canvas.tostring_rgb())
     plt.close(fig)  # Close the figure to free up resources
     return img
+
+
+#FashionMNIST
+def fashion_mnist():
+    transform = transforms.Compose([
+        transforms.ToTensor(),
+        transforms.Normalize((0.1307,), (0.3081,))
+    ])
+    
+    test_dataset = datasets.FashionMNIST(root='./data', train=False, download=True, transform=transform)
+    X_test, y_test = test_dataset.data.float() / 255.0, test_dataset.targets
+    X_test = X_test.view(-1, 28*28)
+    
+    X_test = X_test[:40]
+    
+    return X_test
+
+#Fashion MNIST Predictions
+def get_test_preds_and_smx(X_test, index, pred_sets, net, q, alpha):
+    test_smx = nn.functional.softmax(net(X_test), dim=1).detach().numpy()
+    sample_smx = test_smx[index]
+    
+    fig, axs = plt.subplots(1, 2, figsize=(12, 3))
+    axs[0].imshow(X_test[index].reshape(28,28).numpy())
+    axs[0].set_title("Sample test image")
+    axs[0].set_xticks([])
+    axs[0].set_yticks([])
+    
+    axs[1].bar(range(10), sample_smx, label="class scores", color = '#5B84B1FF')
+    axs[1].set_xticks(range(10))
+    axs[1].set_xticklabels([class_label(i) for i in range(10)])
+    axs[1].axhline(y=1 - q, label='threshold', color="#FC766AFF", linestyle='dashed')
+    axs[1].legend(loc=1)
+    axs[1].set_title("Class Scores")
+    
+    pred_set = pred_sets[index].nonzero()[0].tolist()
+    
+    return fig, axs, pred_set, get_pred_str(pred_set)
