@@ -17,8 +17,7 @@ np.random.seed(42)
 def get_simple_data_train(coef_1, coef_2, coef_3, coef_4, n_cal):
     print("running simple data")
     # Generate data points for the custom function with some noise
-    x = np.linspace(-.2, 0.2, 300)
-    x = np.hstack([x, np.linspace(.6, 1, 300)])
+    x = np.linspace(-.2, 1, 300)
     eps = coef_4 * np.random.randn(x.shape[0])
     y = coef_1 * np.sin(2 * np.pi*(x)) + coef_2 * np.cos(4 * np.pi *(x)) + coef_3 * x+ eps
     x = torch.from_numpy(x).float()[:, None]
@@ -148,34 +147,14 @@ def get_pred_sets(net, test_data, q, alpha):
 # Function to get the predicted class labels as a string
 def get_pred_str(pred):
     pred_str = "{"
-    for i in pred:
-        pred_str += class_label(i) + ', '  # Use comma instead of space
+    for i, j in enumerate(pred):
+        print(j)
+        if j:
+            pred_str += class_label(i) + ', '  # Use comma instead of space
     pred_str = pred_str.rstrip(', ') + "}"  # Remove the trailing comma and add closing curly brace
     return pred_str
 
 
-# Function to display test predictions and class scores
-
-def get_test_preds_and_smx(X_test, index, pred_sets, net, q, alpha):
-    test_smx = nn.functional.softmax(net(X_test[:1000]), dim=1).detach().numpy()
-    sample_smx = test_smx[index]
-    
-    fig, axs = plt.subplots(1, 2, figsize=(12, 3))
-    axs[0].imshow(X_test[index].reshape(28,28).numpy())
-    axs[0].set_title("Sample test image")
-    axs[0].set_xticks([])
-    axs[0].set_yticks([])
-    
-    axs[1].bar(range(10), sample_smx, label="class scores", color = '#5B84B1FF')
-    axs[1].set_xticks(range(10))
-    axs[1].set_xticklabels([class_label(i) for i in range(10)])
-    axs[1].axhline(y=1 - q, label='threshold', color="#FC766AFF", linestyle='dashed')
-    axs[1].legend(loc=1)
-    axs[1].set_title("Class Scores")
-    
-    pred_set = pred_sets[index].nonzero()[0].tolist()
-    
-    return fig, axs, pred_set, get_pred_str(pred_set)
 
 
 @st.cache_resource
@@ -254,23 +233,26 @@ def fashion_mnist():
     return X_test
 
 #Fashion MNIST Predictions
-def get_test_preds_and_smx(X_test, index, pred_sets, net, q, alpha):
-    test_smx = nn.functional.softmax(net(X_test), dim=1).detach().numpy()
-    sample_smx = test_smx[index]
+def get_test_preds_and_smx(selected_img_tensor, index, pred_sets, net, q, alpha):
+    # Note: Instead of passing X_test, we pass the selected_img_tensor directly
+    print(net(selected_img_tensor.unsqueeze(0)))  # Unsqueeze to add batch dimension
+    test_smx = nn.functional.softmax(net(selected_img_tensor.unsqueeze(0)), dim=1).detach().numpy()
+
+    sample_smx = test_smx[0]  # Since we're using only one image, get the first (and only) softmax output
     
     fig, axs = plt.subplots(1, 2, figsize=(12, 3))
-    axs[0].imshow(X_test[index].reshape(28,28).numpy())
+    axs[0].imshow(selected_img_tensor.reshape(28, 28).numpy())
     axs[0].set_title("Sample test image")
     axs[0].set_xticks([])
     axs[0].set_yticks([])
     
-    axs[1].bar(range(10), sample_smx, label="class scores", color = '#5B84B1FF')
+    axs[1].bar(range(10), sample_smx, label="class scores", color='#5B84B1FF')
     axs[1].set_xticks(range(10))
     axs[1].set_xticklabels([class_label(i) for i in range(10)])
     axs[1].axhline(y=1 - q, label='threshold', color="#FC766AFF", linestyle='dashed')
     axs[1].legend(loc=1)
     axs[1].set_title("Class Scores")
+    pred_sets = sample_smx >= (1 - q)
+
     
-    pred_set = pred_sets[index].nonzero()[0].tolist()
-    
-    return fig, axs, pred_set, get_pred_str(pred_set)
+    return fig, axs, pred_sets, get_pred_str(list(pred_sets))
