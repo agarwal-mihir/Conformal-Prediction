@@ -38,11 +38,26 @@ def main():
     st.write("Conformal Prediction is a powerful framework in machine learning that provides a well-calibrated of \
              uncertainty in predictions. Conformal prediction can construct prediction intervals that quantify the \
              range of potential outcomes even for point estimate models.")
-    st.write("Machine learning models, particularly neural networks, are widely used in critical areas like medical \
-             diagnostics. However, the lack of uncertainty quantification in these models poses challenges in \
-             decision-making and trust. Conformal prediction's distribution-free nature makes it robust without \
-             strong assumptions about the data distribution or the model. This instills confidence in the reliability \
-             of model predictions.")
+    # st.write("Machine learning models, particularly neural networks, are widely used in critical areas like medical \
+    #          diagnostics. However, the lack of uncertainty quantification in these models poses challenges in \
+    #          decision-making and trust. Conformal prediction's distribution-free nature makes it robust without \
+    #          strong assumptions about the data distribution or the model. This instills confidence in the reliability \
+    #          of model predictions.")
+
+    st.write("The lack of uncertainty quantification in machine learning models, particularly neural networks, poses \
+             challenges in decision making and trust. Let us consider a scenario where we fine-tuned a ResNet18 model \
+             for binary classification, distinguishing between green apple and orange images. The model exhibited good \
+             accuracy in this task, effectively identifying the fruit type in question. However, when presented \
+             with the image of a frog, the model confidently classified the image as a green apple. This example \
+             shows the critical need for uncertainty quantification in machine learning. ")
+    
+    st.write("Understanding and assessing a model's level of certainty in its predictions is essential, \
+             especially in domains where erroneous, overly confident predictions can have dire consequences, \
+             such as medical diagnostics. To navigate these challenges effectively, we must have insight into \
+             how certain or uncertain our model is about its predictions before proceeding with decisions. Conformal \
+             prediction's distribution-free nature makes it robust without strong assumptions about the data \
+             distribution or the model. This instills confidence in the reliability of model predictions.")
+    
 
     st.write(r"The significance of conformal prediction lies in its ability to provide a confidence level \
               for the predictions, allowing users to understand the reliability of the model's output. This is \
