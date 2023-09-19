@@ -206,7 +206,7 @@ def main():
     print("hello", pred_sets[0])
     fashion_mnist_data = utils.fashion_mnist()
     fashion_idx = [5, 18]
-    idxs = [300,149,1782,195,619,511]
+    idxs = [300,149,1782,195,511, 2]
 
     # Get images from fashion mnist data
     fashion_images = [tensor_to_img(fashion_mnist_data, idx) for idx in fashion_idx]
