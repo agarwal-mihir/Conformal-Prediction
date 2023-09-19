@@ -136,25 +136,7 @@ def main():
     fig, ax = plot_predictions(x_train, y_train, x_cal, y_cal, x_test, y_preds, coef_1=coef_1, coef_2=coef_2, coef_3=coef_3, coef_4=coef_4)
     st.pyplot(fig)
 
-    # Calculate residuals and estimate quantile based on user-selected alpha
 
-    # x_test = torch.linspace(-.5, 1.5, 1000)[:, None]
-    # y_preds = net(x_test).clone().detach().numpy()
-    # y_cal_preds = net(x_cal).clone().detach()
-    # # st.latex(score_func)
-    # st.latex(r"s_i = |y_i - \hat{y}_i|")
-    # st.write("The score function $s_i$ represents the absolute difference between the true output $y_i$ and the model's predicted output $\hat{y}_i$ for each calibration data point $x_i$. It measures the discrepancy between the true values and their corresponding predictions, providing a measure of model fit to the calibration data.")
-    # resid = torch.abs(y_cal - y_cal_preds).numpy()
-    # alpha = st.slider("Select a value for alpha:", min_value=0.05, max_value=1.0, step=0.001, value=0.06)
-    # # n = len(x_cal)
-    # # print(f"n = {n}")
-    # # fig = plot_calibration_scores(x_cal, scores=resid)
-    # # st.pyplot(fig)
-    # n = len(x_cal)
-    # q_val = np.ceil((1 - alpha) * (n + 1)) / n
-    # print(q_val)
-    # st.latex(r"q = \frac{{\lceil (1 - \alpha) \cdot (n + 1) \rceil}}{{n}} = {:.4f}".format(q_val))
-    # q = np.quantile(resid, q_val, method="higher")
     st.latex(r"s_i = |y_i - \hat{y}_i|")
     st.write("The score function $s_i$ represents the absolute difference between the t \
              rue output $y_i$ and the model's predicted output $\hat{y}_i$ for each calibration data point $x_i$. \
@@ -167,26 +149,7 @@ def main():
     histogram_plot(resid, q, alpha)
     st.write(r"The $q^{th}$ quantile is:")
     st.latex(r"q_{{\text{{value}}}} = {:.4f}".format(q))
-    # x_true = np.linspace(-.5, 1.5, 1000)
-    # y_true = coef_1 * np.sin(2 * np.pi*(x_true)) + coef_2 * np.cos(4 * np.pi *(x_true )) + coef_3 * x_true
 
-    # # Generate plot with the true function, training data, calibration data, predictive mean, and uncertainty bands
-    # fig, ax = plt.subplots(figsize=(10, 5))
-    # plt.xlim([-.5, 1.5])
-    # plt.ylim([-1.5, 2.5])
-    # plt.xlabel("X", fontsize=30)
-    # plt.ylabel("Y", fontsize=30)
-    
-    # ax.plot(x_true, y_true, 'b-', linewidth=3, label="true function")
-    # ax.plot(x_train, y_train, 'go', markersize=4, label="training data")
-    # ax.plot(x_cal, y_cal, 'ro', markersize=4, label="calibration data")
-    # ax.plot(x_test, y_preds, '-', linewidth=3, color="y", label="predictive mean")
-    # ax.fill_between(x_test.ravel(), y_preds - q, y_preds + q, alpha=0.6, color='y', zorder=5)
-    # plt.legend(loc='best', fontsize=15, frameon=False)
-    # st.write("The prediction interval is calculated as:")
-    # st.latex(r"\hat{C}(X_{n+1}) = [ \hat{f}(x_{n+1}) - {q_{val}}, \, \hat{f}(x_{n+1}) + {q_{val}} ]")
-    # plt.title("Plot of confidence interval for the conformal prediction", fontsize=15)
-    # st.pyplot(fig)
     plot_conformal_prediction(x_train, y_train, x_cal, y_cal, x_test, y_preds, q, coef_1, coef_2, coef_3, alpha)
 
 
