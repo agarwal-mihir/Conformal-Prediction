@@ -25,8 +25,63 @@ np.random.seed(42)
 # Define the main function to create the Streamlit app
 def main():
     # Set the title and subheader of the app
-    st.title("Conformal Prediction: A Brief Overview")
+   
+
+#     st.subheader("""Authors:
+# 1) Lalit Chandra Routhu, IIT Patna  
+# 2) Mihir Agarwal, IIT Gandhinagar  
+# 3) Zeel B Patel, IIT Gandhinagar  
+# 4) Nipun Batra, IIT Gandhinagar  
+# """)
+
+   
+    st.markdown('<h1 style="text-align: center;font-size:50px;">Conformal Prediction: <br>A Visual Introduction</h1>', unsafe_allow_html=True)
+#     st.markdown("""
+#     <div style='text-align: center; color: grey; font-size: 14px;'>
+#         <div style='display: inline-block; margin-right: 20px;'>
+#             <b>Lalit Chandra Routhu
+#                 </b> <br>
+#             IIT Patna
+#         </div>
+#         <div style='display: inline-block; margin-left: 20px;'>
+#             <b>Mihir Agarwal</b> <br>
+#             IIT Gandhinagar
+#         </div> <br>
+#         <div style='display: inline-block; margin-right: 20px;'>
+#             <b>Zeel B Patel</b> <br>
+#             IIT Gandhinagar
+#         </div>
+#         <div style='display: inline-block; margin-left: 2px;'>
+#             <b>Nipun Batra</b> <br>
+#             IIT Gandhinagar
+#         </div>
+#     </div>
+# """, unsafe_allow_html=True)
+    st.markdown("""
+    <div style='position: relative;text-align: center; color: grey; font-size: 15px;'>
+        <b>By</b> <br>
+        <div style='position: absolute; left: 200px; top: 40px;display: inline-block; margin-right: 40px;font-size: 12px;'>
+            <b>Lalit Chandra Routhu</b> <br>
+            IIT Patna
+        </div>
+        <div style='position: absolute; left: 350px; top: 40px;display: inline-block; margin-left: 40px;font-size: 12px;'>
+            <b>Mihir Agarwal</b> <br>
+            IIT Gandhinagar
+        </div> <br>
+        <div style='position: absolute; left: 220px; top: 100px;display: inline-block; margin-right: 10px;font-size: 12px;'>
+            <b>Zeel B Patel</b> <br>
+            IIT Gandhinagar
+        </div>
+        <div style='position: absolute; left: 300px; top: 100px;display: inline-block; margin-left: 90px;font-size: 12px;'>
+            <b>Nipun Batra</b> <br>
+            IIT Gandhinagar
+        </div>
+    </div>
+""", unsafe_allow_html=True)
+    st.markdown("<br><br><br>", unsafe_allow_html=True)
+    
     st.subheader("Introduction:")
+
     # Provide an overview of Conformal Prediction
     # st.write("Machine learning models, especially black-box models like neural networks, have gained widespread adoption in high-risk domains like medical diagnostics, where accurate predictions are critical to avoid potential model failures. However, the lack of uncertainty quantification in these models poses significant challenges in decision-making and trust. Conformal prediction emerges as a promising solution, providing a user-friendly paradigm to quantify uncertainty in model predictions.")
     # st.write("Uncertainty is an inherent aspect of real-world data and the predictions made by machine learning models. Conformal prediction offers a principled approach to address this challenge by providing a measure of uncertainty in predictions. The prediction intervals constructed by conformal prediction not only quantify the range of potential outcomes but also assign a confidence level (alpha) to each prediction. This allows users to gauge the reliability of the model's output and make informed decisions based on the level of uncertainty associated with the predictions.")
@@ -44,12 +99,14 @@ def main():
     #          strong assumptions about the data distribution or the model. This instills confidence in the reliability \
     #          of model predictions.")
 
+    # st.write("The lack of uncertainty quantification in machine learning models, particularly neural networks, poses \
+    #          challenges in decision making and trust. Let us consider a scenario where we fine-tuned a ResNet18 model \
+    #          for binary classification, distinguishing between green apple and orange images. The model exhibited good \
+    #          accuracy in this task, effectively identifying the fruit type in question. However, when presented \
+    #          with the image of a frog, the model confidently classified the image as a green apple. This example \
+    #          shows the critical need for uncertainty quantification in machine learning. ")
     st.write("The lack of uncertainty quantification in machine learning models, particularly neural networks, poses \
-             challenges in decision making and trust. Let us consider a scenario where we fine-tuned a ResNet18 model \
-             for binary classification, distinguishing between green apple and orange images. The model exhibited good \
-             accuracy in this task, effectively identifying the fruit type in question. However, when presented \
-             with the image of a frog, the model confidently classified the image as a green apple. This example \
-             shows the critical need for uncertainty quantification in machine learning. ")
+             challenges in decision making and trust. ")
     
     st.write("Understanding and assessing a model's level of certainty in its predictions is essential, \
              especially in domains where erroneous, overly confident predictions can have dire consequences, \
