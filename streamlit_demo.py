@@ -35,7 +35,7 @@ def main():
 
     # st.write("Conformal Prediction is a powerful framework in machine learning that provides a measure of uncertainty in predictions. Unlike traditional point predictions, conformal prediction constructs prediction intervals that quantify the range of potential outcomes.")
 
-    st.write("Conformal Prediction is a powerful framework in machine learning that provides a well-calibrated of \
+    st.write("Conformal Prediction is a powerful framework in machine learning that provides a well-calibrated \
              uncertainty in predictions. Conformal prediction can construct prediction intervals that quantify the \
              range of potential outcomes even for point estimate models.")
     # st.write("Machine learning models, particularly neural networks, are widely used in critical areas like medical \
