@@ -60,19 +60,19 @@ def main():
     st.markdown("""
     <div style='position: relative;text-align: center; color: grey; font-size: 15px;'>
         <b>By</b> <br>
-        <div style='position: absolute; left: 200px; top: 40px;display: inline-block; margin-right: 40px;font-size: 12px;'>
+        <div style='position: relative; left: 10px; top: 20px;display: inline-block; margin-right: 40px;font-size: 12px;'>
             <b>Lalit Chandra Routhu</b> <br>
             IIT Patna
         </div>
-        <div style='position: absolute; left: 350px; top: 40px;display: inline-block; margin-left: 40px;font-size: 12px;'>
+        <div style='position: relative; left: 10px; top: 20px;display: inline-block; margin-left: 40px;font-size: 12px;'>
             <b>Mihir Agarwal</b> <br>
             IIT Gandhinagar
         </div> <br>
-        <div style='position: absolute; left: 220px; top: 100px;display: inline-block; margin-right: 10px;font-size: 12px;'>
+        <div style='position: relative; left: 23px; top:30px;display: inline-block; margin-right: 10px;font-size: 12px;'>
             <b>Zeel B Patel</b> <br>
             IIT Gandhinagar
         </div>
-        <div style='position: absolute; left: 300px; top: 100px;display: inline-block; margin-left: 90px;font-size: 12px;'>
+        <div style='position: relative; left: 15px; top: 30px;display: inline-block; margin-left: 90px;font-size: 12px;'>
             <b>Nipun Batra</b> <br>
             IIT Gandhinagar
         </div>
