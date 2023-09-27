@@ -71,8 +71,8 @@ def get_data():
     X_train = X_train.view(-1, 28*28)
     X_test = X_test.view(-1, 28*28)
 
-    X_calib, X_train = X_train[59500:], X_train[:59500]
-    y_calib, y_train = y_train[59500:], y_train[:59500]
+    X_calib, X_train = X_train[59900:], X_train[:59900]
+    y_calib, y_train = y_train[59900:], y_train[:59900]
 
     return X_train, y_train, X_test, y_test, X_calib, y_calib
 

@@ -232,7 +232,7 @@ def main():
     st.latex(r"\hat{C}(X_{n+1})\subseteq \{1,\dots,K\}")
     st.write(r"where $K$ is the number of classes. This change in the output affects how we calculate the conformity scores.")
     
-    st.write("We will use the MNIST dataset. The 60k training samples are split into two parts: the training set, which consists of 59500 images, and the calibration set, which has 500 images. The test set consists of 10k images.")
+    st.write("We will use the MNIST dataset. The 60k training samples are split into two parts: the training set, which consists of 59900 images, and the calibration set, which has 100 images. The test set consists of 10k images.")
     
     X_train, y_train, X_test, y_test, X_calib, y_calib = get_data()
     
