@@ -278,7 +278,7 @@ def main():
     print("hello", pred_sets[0])
     fashion_mnist_data = utils.fashion_mnist()
     fashion_idx = [5, 18]
-    idxs = [300,149,1782,195,511, 2]
+    idxs = [300,149,1782,195, 1, 2]
 
     # Get images from fashion mnist data
     fashion_images = [tensor_to_img(fashion_mnist_data, idx) for idx in fashion_idx]
@@ -305,12 +305,18 @@ def main():
     fig, ax, pred, pred_str = get_test_preds_and_smx(selected_img_tensor, test_img_idx, pred_sets, net, q, alpha)
     st.pyplot(fig)
     st.write("Prediction Set for this image: ", pred_str)
-    st.write("The average size of prediction sets for all the images from the test set is \
-             {:.3f}".format(mean_set_size(pred_sets)))
-    st.write("*What does the average size mean?* We observe that the average size of the prediction set decreases when \
+    
+    st.write("In the above examples, the first 2 images are sourced from the Fashion-MNIST dataset. The model is \
+             uncertain about these images, which can be seen by the larger predicted set sizes. This is a property we want,\
+             as the size of the predicted set indicates the model's uncertainty. In contrast, for the last 2 images, the predicted \
+             set contains only one element because the model is confident about its prediction. This is reflected by \
+             the high softmax scores of the true classes.")
+    
+    st.write("The average size of prediction sets for all the images from the test set is {:.3f}. \
+             *What does the average size mean?* We observe that the average size of the prediction set decreases when \
              value of alpha is increased. This is because of our method for computing conformity scores, where we only \
              take into account the softmax scores of the correct class when calculating 𝑞̂. With increasing alpha, the \
-             softmax scores for the classes decreases and thus there are lesser scores above the threshold value.")    
+             softmax scores for the classes decreases and thus there are lesser scores above the threshold value.".format(mean_set_size(pred_sets)))    
 
     st.subheader("References:")
     st.write(r"[A Gentle Introduction to Conformal Prediction and Distribution-Free Uncertainty Quantification](https://people.eecs.berkeley.edu/~angelopoulos/publications/downloads/gentle_intro_conformal_dfuq.pdf)")
