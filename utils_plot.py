@@ -14,7 +14,7 @@ np.random.seed(42)
 # Function to plot generic data visualization
 
 def plot_generic(_x_train, _y_train, _x_cal, _y_cal, _add_to_plot=None, coef_1=0.3, coef_2=0.02, coef_3=0.1, coef_4=0.02):
-    print("running plot_generic")
+    # print("running plot_generic")
     fig, ax = plt.subplots(figsize=(10, 5))
     plt.xlim([-.5, 1.5])
     plt.ylim([-1.5, 2.5])
@@ -25,13 +25,13 @@ def plot_generic(_x_train, _y_train, _x_cal, _y_cal, _add_to_plot=None, coef_1=0
     # Generate true function curve
     x_true = np.linspace(-.5, 1.5, 1000)
     y_true = coef_1 * np.sin(2 * np.pi * x_true) + coef_2 * np.cos(4 * np.pi * x_true) + coef_3 * x_true
-    # print(_x_train.shape, _y_train.shape, _x_cal.shape, _y_cal.shape)
+    print(_x_train.shape, _y_train.shape, _x_cal.shape, _y_cal.shape)
 
     # Plot training data as green scatter points
-    ax.scatter(_x_train, _y_train, c='green', s=10, label="training data")
+    ax.scatter(_x_train, _y_train, c='green', s=150, label="training data")
 
     # Plot calibration data as red scatter points
-    ax.scatter(_x_cal, _y_cal, c='red', s=10, label="calibration data")
+    ax.scatter(_x_cal, _y_cal, c='red', s=125, label="calibration data")
 
     # Plot the true function as a blue line
     ax.plot(x_true, y_true, 'b-', linewidth=3, label="true function")
@@ -47,7 +47,7 @@ def plot_generic(_x_train, _y_train, _x_cal, _y_cal, _add_to_plot=None, coef_1=0
 
 
 def plot_predictions(_x_train, _y_train, _x_cal, _y_cal, _x_test, _y_preds, coef_1=0.3, coef_2=0.02, coef_3=0.1, coef_4=0.02):
-    print("running predictions")
+    # print("running predictions")
     def add_predictions(ax):
         # Plot the neural network prediction curve as a line
         ax.plot(_x_test, _y_preds, 'y-', linewidth=3, label='neural net prediction')
@@ -55,7 +55,7 @@ def plot_predictions(_x_train, _y_train, _x_cal, _y_cal, _x_test, _y_preds, coef
     plt.title("Plot of Training, Calibration, and Neural Network Predictions", fontsize=15)
     return fig, ax
 
-@st.cache_data
+# @st.cache_data
 def plot_scores_quantile(scores, quantile, alpha):
     fig, ax = plt.subplots(figsize=(10, 5))
     plt.xlabel("Score")
@@ -81,9 +81,9 @@ def plot_calibration_scores(x_cal, scores):
     plt.tight_layout()
     return fig
 
-@st.cache_data
+
 def histogram_plot(scores, q, alpha):
-    print("running histogram")
+    # print("running histogram")
     fig, ax = plt.subplots(1, 2, figsize=(12, 3))
     # Plot scores of calibration data
     ax[0].bar(np.arange(len(scores)), height = scores, alpha = 0.7, color = 'b')
@@ -107,7 +107,7 @@ def histogram_plot(scores, q, alpha):
     st.pyplot(fig)
 
 def show_samples(X_test, idxs, pred_sets, net, q, alpha):
-    print("running show samples")
+    # print("running show samples")
     fig, axes = plt.subplots(1, 10, figsize = (12, 2))
     axes = axes.flatten()
 
@@ -121,9 +121,9 @@ def show_samples(X_test, idxs, pred_sets, net, q, alpha):
                 
     st.pyplot(fig)
 
-@st.cache_data
-def plot_conformal_prediction( _x_train, _y_train, _x_cal, _y_cal, _x_test, _y_preds, q, coef_1, coef_2, coef_3, alpha):
-    print("running conformal prediction")
+
+def plot_conformal_prediction( x_train, y_train, x_cal, y_cal, x_test, y_preds, q, coef_1, coef_2, coef_3, alpha):
+    # print("running conformal prediction")
     x_true = np.linspace(-.5, 1.5, 1000)
     y_true = coef_1 * np.sin(2 * np.pi*(x_true)) + coef_2 * np.cos(4 * np.pi *(x_true )) + coef_3 * x_true
     fig, ax = plt.subplots(figsize=(10, 5))
@@ -133,19 +133,25 @@ def plot_conformal_prediction( _x_train, _y_train, _x_cal, _y_cal, _x_test, _y_p
     plt.ylabel("Y", fontsize=30)
 
     ax.plot(x_true, y_true, 'b-', linewidth=3, label="true function")
-    ax.plot(_x_train, _y_train, 'go', markersize=4, label="training data")
-    ax.plot(_x_cal, _y_cal, 'ro', markersize=4, label="calibration data")
-    ax.plot(_x_test, _y_preds, '-', linewidth=3, color="y", label="predictive mean")
-    ax.fill_between(_x_test.ravel(), _y_preds - q, _y_preds + q, alpha=0.6, color='y', zorder=5)
+    ax.scatter(x_train, y_train, c='g', s=150, label="training data")
+    ax.scatter(x_cal, y_cal, c='r', s=125, label="calibration data")
+    ax.plot(x_test, y_preds, '-', linewidth=3, color="y", label="predictive mean")
+    ax.fill_between(x_test.ravel(), y_preds - q, y_preds + q, alpha=0.6, color='y', zorder=5)
 
     plt.legend(loc='best', fontsize=15, frameon=False)
     st.write("The prediction interval is calculated as:")
     st.latex(r"\hat{C}(X_{n+1}) = [ \hat{f}(x_{n+1}) - {q_{val}}, \, \hat{f}(x_{n+1}) + {q_{val}} ]")
     
-    cov = np.mean(((_y_preds - q) <= y_true) * ((_y_preds + q) >= y_true))
-    s = r"Below is the plot of the predictions with uncertainty bands. We want the uncertainty band to\
-        contain (1-$\alpha$) = " + f"{1-alpha:.2%}" + " of the ground truth. Empirically, the prediction set\
-        contains " + f"{cov:.2%}" + " of the ground truth."
-    st.write(s)
+    cov = np.mean(((y_preds - q) <= y_true) * ((y_preds + q) >= y_true))
+    # s = r"Below is the plot of the predictions with uncertainty bands. We want the uncertainty band to\
+    #     contain (1-$\alpha$) = " + f"{1-alpha:.2%}" + " of the ground truth. Empirically, the prediction set\
+    #     contains " + f"{cov:.2%}" + " of the ground truth."
+    # st.write(s)
+    s = r"""Below is the plot of the predictions with uncertainty bands. We want the uncertainty band to
+        contain (1-$\alpha$) = <span style='font-size:20px;'>""" + f"{1-alpha:.2%}" + """</span> of the ground truth. 
+        Empirically, the prediction set contains <span style='font-size:20px;'>""" + f"{cov:.2%}" + """</span> of the ground truth."""
+
+    st.markdown(s, unsafe_allow_html=True)
+
     plt.title("Plot of confidence interval for the conformal prediction", fontsize=15)
     st.pyplot(fig)

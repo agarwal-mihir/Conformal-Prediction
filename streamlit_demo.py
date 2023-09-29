@@ -9,70 +9,44 @@ import torchvision.datasets as datasets
 import torchvision.transforms as transforms
 import matplotlib.pyplot as plt
 import streamlit_image_select as st_image
+# from tueplots import axes, bundles
+
 # from tqdm.auto import trange, tqdm
 import utils
 # Import utility functions and model classes from custom modules
 from utils import get_simple_data_train, display_equation, train, get_data, get_test_preds_and_smx, get_scores, quantile, get_pred_sets, mean_set_size, get_test_accuracy, train_model, conformal_prediction_regression, tensor_to_img
 from utils_plot import plot_generic, plot_predictions, histogram_plot, show_samples, plot_conformal_prediction
 from model import MLP, MLP1
-
+from PIL import Image
 # Set random seeds for reproducibility
 torch.manual_seed(42)
 np.random.seed(42)
-
+# plt.rcParams.update(bundles.icml2022())
 
 
 # Define the main function to create the Streamlit app
 def main():
-    # Set the title and subheader of the app
-   
 
-#     st.subheader("""Authors:
-# 1) Lalit Chandra Routhu, IIT Patna  
-# 2) Mihir Agarwal, IIT Gandhinagar  
-# 3) Zeel B Patel, IIT Gandhinagar  
-# 4) Nipun Batra, IIT Gandhinagar  
-# """)
 
    
     st.markdown('<h1 style="text-align: center;font-size:50px;">Conformal Prediction: <br>A Visual Introduction</h1>', unsafe_allow_html=True)
-#     st.markdown("""
-#     <div style='text-align: center; color: grey; font-size: 14px;'>
-#         <div style='display: inline-block; margin-right: 20px;'>
-#             <b>Lalit Chandra Routhu
-#                 </b> <br>
-#             IIT Patna
-#         </div>
-#         <div style='display: inline-block; margin-left: 20px;'>
-#             <b>Mihir Agarwal</b> <br>
-#             IIT Gandhinagar
-#         </div> <br>
-#         <div style='display: inline-block; margin-right: 20px;'>
-#             <b>Zeel B Patel</b> <br>
-#             IIT Gandhinagar
-#         </div>
-#         <div style='display: inline-block; margin-left: 2px;'>
-#             <b>Nipun Batra</b> <br>
-#             IIT Gandhinagar
-#         </div>
-#     </div>
-# """, unsafe_allow_html=True)
+
     st.markdown("""
-    <div style='position: relative;text-align: center; color: grey; font-size: 15px;'>
+    <div style='position: relative;text-align: center; color: grey; font-size: 18px;'>
         <b>By</b> <br>
-        <div style='position: relative; left: 0px; top: 20px;display: inline-block; margin-right: 40px;font-size: 12px;'>
+        <div style='position: relative; left: 0px; top: 20px;display: inline-block; margin-right: 40px;font-size: 14px;'>
             <b>Lalit Chandra Routhu</b> <br>
             IIT Patna
         </div>
-        <div style='position: relative; left: 0px; top: 20px;display: inline-block; margin-left: 40px;font-size: 12px;'>
+        <div style='position: relative; left: 0px; top: 20px;display: inline-block; margin-left: 40px;font-size: 14px;'>
             <b>Mihir Agarwal</b> <br>
             IIT Gandhinagar
         </div> <br>
-        <div style='position: relative; left: 13px; top:30px;display: inline-block; margin-right: 10px;font-size: 12px;'>
+        <div style='position: relative; left: 13px; top:30px;display: inline-block; margin-right: 10px;font-size: 14px;'>
             <b>Zeel B Patel</b> <br>
             IIT Gandhinagar
         </div>
-        <div style='position: relative; left: 5px; top: 30px;display: inline-block; margin-left: 90px;font-size: 12px;'>
+        <div style='position: relative; left: 5px; top: 30px;display: inline-block; margin-left: 90px;font-size: 14px;'>
             <b>Nipun Batra</b> <br>
             IIT Gandhinagar
         </div>
@@ -80,116 +54,95 @@ def main():
 """, unsafe_allow_html=True)
     st.markdown("<br><br><br>", unsafe_allow_html=True)
     
-    st.subheader("Introduction:")
+    st.title("Introduction:")
 
-    # Provide an overview of Conformal Prediction
-    # st.write("Machine learning models, especially black-box models like neural networks, have gained widespread adoption in high-risk domains like medical diagnostics, where accurate predictions are critical to avoid potential model failures. However, the lack of uncertainty quantification in these models poses significant challenges in decision-making and trust. Conformal prediction emerges as a promising solution, providing a user-friendly paradigm to quantify uncertainty in model predictions.")
-    # st.write("Uncertainty is an inherent aspect of real-world data and the predictions made by machine learning models. Conformal prediction offers a principled approach to address this challenge by providing a measure of uncertainty in predictions. The prediction intervals constructed by conformal prediction not only quantify the range of potential outcomes but also assign a confidence level (alpha) to each prediction. This allows users to gauge the reliability of the model's output and make informed decisions based on the level of uncertainty associated with the predictions.")
-    # st.write("The key advantage of conformal prediction lies in its distribution-free nature, making it robust to various scenarios without making strong assumptions about the underlying data distribution or the model itself. By utilizing conformal prediction with any pre-trained model, researchers and practitioners can create prediction sets that offer explicit, non-asymptotic guarantees, instilling confidence in the reliability of model predictions.")
-
-
-    # st.write("Conformal Prediction is a powerful framework in machine learning that provides a measure of uncertainty in predictions. Unlike traditional point predictions, conformal prediction constructs prediction intervals that quantify the range of potential outcomes.")
-
-    st.write("Conformal Prediction is a powerful framework in machine learning that provides a well-calibrated of \
-             uncertainty in predictions. Conformal prediction can construct prediction intervals that quantify the \
-             range of potential outcomes even for point estimate models.")
-    # st.write("Machine learning models, particularly neural networks, are widely used in critical areas like medical \
-    #          diagnostics. However, the lack of uncertainty quantification in these models poses challenges in \
-    #          decision-making and trust. Conformal prediction's distribution-free nature makes it robust without \
-    #          strong assumptions about the data distribution or the model. This instills confidence in the reliability \
-    #          of model predictions.")
-
-    # st.write("The lack of uncertainty quantification in machine learning models, particularly neural networks, poses \
-    #          challenges in decision making and trust. Let us consider a scenario where we fine-tuned a ResNet18 model \
-    #          for binary classification, distinguishing between green apple and orange images. The model exhibited good \
-    #          accuracy in this task, effectively identifying the fruit type in question. However, when presented \
-    #          with the image of a frog, the model confidently classified the image as a green apple. This example \
-    #          shows the critical need for uncertainty quantification in machine learning. ")
-    st.write("The lack of uncertainty quantification in machine learning models, particularly neural networks, poses \
-             challenges in decision making and trust. ")
-    
-    st.write("Understanding and assessing a model's level of certainty in its predictions is essential, \
-             especially in domains where erroneous, overly confident predictions can have dire consequences, \
-             such as medical diagnostics. To navigate these challenges effectively, we must have insight into \
-             how certain or uncertain our model is about its predictions before proceeding with decisions. Conformal \
-             prediction's distribution-free nature makes it robust without strong assumptions about the data \
-             distribution or the model. This instills confidence in the reliability of model predictions.")
     
 
-    st.write(r"The significance of conformal prediction lies in its ability to provide a confidence level \
-              for the predictions, allowing users to understand the reliability of the model's output. This is \
-             especially crucial in critical applications where understanding the uncertainty is essential.")
-    # st.write(r"Conformal Prediction for a General Input $x$ and Output $y$:")
-    # st.write("**1.** Identify a heuristic notion of uncertainty using the pre-trained model.")
-    # st.write(r"    - In conformal prediction, we make use of a pre-trained model to estimate the uncertainty associated with its predictions. This uncertainty is crucial as it allows us to create prediction intervals rather than single point predictions.")
+    st.write("Understanding the nuances of uncertainty is pivotal in numerous domains, ranging from financial forecasting to healthcare diagnostics and autonomous vehicle control. The accurate quantification of uncertainty enables robust decision-making and engenders trust in machine learning models. For instance, in medical settings, a false negative could result in untreated disease progression, while a false positive might lead to unnecessary treatments—both with life-altering implications.")
 
-    # st.write("**2.** Define the score function $s(f(x), y) \in \mathbb{R}$. (Larger scores encode worse agreement between $f(x)$ and $y$.)")
-    # st.write(r"- The score function $s(f(x), y)$ is a function that quantifies the discrepancy or disagreement between the input $x$ and the output $y$. Larger scores indicate a worse agreement between the predicted value and the true value.")
+    st.write("To illustrate, consider a scenario where a machine learning model was fine-tuned to classify green apples and oranges. Utilizing the fast.ai library, a ResNet18 model was deployed and fed a myriad of images containing these fruits. However, when exposed to images of other objects that were green—such as frogs, green tennis balls, and even green oranges—the model overwhelmingly classified these as 'green apples' with high confidence. You can see the examples as follows:")
+    image_paths = [
+    "/Users/mihiragarwal/Desktop/SRIP 2023/Conformal-Prediction/Screenshot 2023-09-29 at 3.56.30 PM.png",
+    "/Users/mihiragarwal/Desktop/SRIP 2023/Conformal-Prediction/Screenshot 2023-09-29 at 3.56.50 PM.png",
+    "/Users/mihiragarwal/Desktop/SRIP 2023/Conformal-Prediction/Screenshot 2023-09-29 at 3.56.57 PM.png"
+    # Add more image paths here
+]
 
-    # st.write("**3.** Compute $\\hat{q}$ as the ceiling function of $\\frac{(n+1)(1-\\alpha)}{n}$.")
-    # st.write(r"    - To determine the quantile value $\hat{q}$, we calculate the $\left\lceil \frac{(n+1)(1-\alpha)}{n} \right\rceil$-th quantile of the calibration scores $s_1 = s(f(X_1), Y_1), ..., s_n = s(f(X_n), Y_n)$, where $d$ is the number of dimensions in the output space, $n$ is the number of calibration data points, and $\alpha$ is the confidence level.")
+# Read images into numpy arrays after converting to RGB and put them in a list
+    all_images = [np.array(Image.open(path).convert("RGB")) for path in image_paths]
 
-    # st.write("**4.** Use this quantile to form the prediction sets for new examples:")
-    # st.write(r"    - The prediction set $C(X_{\text{test}})$ is constructed as $\{y : s(f(X_{\text{test}}), y) \leq \hat{q}\}$. It contains all the possible output values $y$ for the new input example $X_{\text{test}}$, where the score function $s(f(X_{\text{test}}), y)$ is less than or equal to the computed quantile $\hat{q}$.")
+# Streamlit image selection widget
+    test_img_idx = st_image.image_select(label="Select an image", images=all_images, return_value="index", use_container_width=False)
+    # dict = {0: "Probability it's a apple: 0.9947, Probability it's a orange: 0.0053", 1: "Probability it's a apple: 0.9753, Probability it's a orange: 0.0247", 2: "Probability it's a apple: 0.9936, Probability it's a orange: 0.0064"}
+    # st.write(dict[test_img_idx])
+    dict = {
+    0: {"apple": 0.9947, "orange": 0.0053},
+    1: {"apple": 0.9753, "orange": 0.0247},
+    2: {"apple": 0.9936, "orange": 0.0064}
+}
 
-    # st.write("By following these steps, conformal prediction provides a practical way to estimate uncertainty and create prediction intervals for new examples, enabling better decision-making and trust in the model's predictions.")
 
-    st.write("Conformal Prediction Algorithm:")
-    st.write(r"1. **Data Processing:** Split the training data into train and calibration sets.")
-    st.write(r"2. **Model Predictions:** Use a pre-trained model $f(x)$ to get predictions.")
-    st.write(r"3. **Score Function:** Define a score function ($s(f(x), y)$) to measure prediction discrepancy.")
-    st.write(r"4. **Quantile Computation:** Compute quantile ($q_{val}$) based on calibration data and confidence level.")
-    st.write(r"5. **Prediction Intervals:** Form prediction intervals for new examples using quantile ($q_{val}$).")
-    st.title("Conformal Predictions for Regression:")
-    # Data Visualization Section
-    # Sliders to control the coefficients of sine and cosine functions and noise
-    custom_slider_style = """
-    <style>
-    /* Add your custom CSS styling for sliders here */
-    /* Example: changing the color of the slider handle to blue */
-    div[role="slider"] > .stSlider { background: blue; }
-    </style>
-    """
+    apple_prob = dict[test_img_idx]["apple"]    
+    orange_prob = dict[test_img_idx]["orange"]
 
-    # Display the custom CSS style
-    st.markdown(custom_slider_style, unsafe_allow_html=True)
+    st.markdown(f"<div style='font-family: \"Helvetica, Arial, sans-serif\"; font-size:21px;'><b><span style='color:green;'>Probability it's an apple: {apple_prob}</span><br><span style='color:orange;'>Probability it's an orange: {orange_prob}</span></b></div>", unsafe_allow_html=True)
+    st.markdown("<br>", unsafe_allow_html=True)
+
+    st.write("This example vividly illustrates the pitfalls of biased training and the lack of uncertainty quantification. A traditional classification model would provide point estimates—single labels with associated probabilities—that could be misleading. Such deterministic outputs can have far-reaching consequences, from flawed recommendations to incorrect automated decisions.")
+
+    st.write("Conformal Prediction is an efficacious framework in machine learning that delivers well-calibrated measures of uncertainty associated with predictions. It extends beyond the provision of mere point estimates, constructing prediction intervals that encapsulate the realm of plausible outcomes.")
+
+    st.write("The absence of uncertainty quantification in many machine learning models, especially neural networks, presents obstacles in decision-making processes and undermines trustworthiness. It is imperative, therefore, to comprehend and assess the confidence level of a model’s predictions.")
+
+
     
+    # st.write("Conformal Prediction is notable for its distribution-free properties, which eliminate the need for rigorous assumptions about the data distribution or the model’s architectural design. This makes the method inherently robust and lends greater confidence in the reliability of the model’s predictions.")
 
-    st.write("Conformal prediction in regression provides prediction intervals that quantify \
-             the uncertainty associated with the model's predictions.")
+    # st.write("Additionally, Conformal Prediction is computationally more efficient compared to Bayesian methods such as Monte Carlo Dropout (MC Dropout), Deep Ensembles, and Bootstrap techniques. While Bayesian methods necessitate multiple forward passes or resampling to estimate uncertainty, Conformal Prediction typically requires only a single forward pass, rendering it faster and more scalable. The computational complexity for Conformal Prediction can be as low as $O(n)$ for some implementations, where $n$ is the size of the calibration set.")
 
-    # st.write(r"The process involves two steps. First, we train a regression model on a \
-    #           training dataset. Next, we use a calibration dataset to estimate the confidence level \
-    #          ($\alpha$) for the prediction intervals. This represents the proportion of times the intervals \
-    #          will contain the true target value for future test instances.")
-    
-    st.markdown(
-        """
-        The process involves two steps:
-        - First, we train a regression model on a training dataset.
-        - Next, we use a calibration dataset to estimate the quantiles ($q_{val}$) based on a chosen  \
-            confidence level for the prediction intervals. This represents the proportion of times \
-            the intervals will contain the true target value for future test instances.
-        """
-        )
+    # st.write(r"Mathematically, Conformal Prediction offers strong guarantees about the coverage of its prediction intervals. Given a predefined confidence level $\alpha$, the framework guarantees that the true output will lie within the prediction interval with a probability of at least $1 - \alpha$. This is formally expressed as:")
+    # st.latex(r"P(y \in C(x)) \geq 1 - \alpha")
+    # st.write("where $C(x)$ is the prediction interval for a new input $x$ and $y$ is the true output. These coverage guarantees are valid under fairly general conditions, providing a robust measure of uncertainty.")
 
-    st.write("To compute the prediction intervals, we calculate the residuals for the calibration dataset. The quantile \
-             of these residuals based on the chosen confidence level determines the width of the prediction intervals, \
-             reflecting the uncertainty in the model's predictions.")
+    # st.write("The significance of Conformal Prediction is amplified in mission-critical applications where understanding uncertainty is of paramount importance. Its mathematical rigor and computational efficiency make it an excellent choice for real-time and resource-constrained environments.")
+    st.write("Conformal Prediction is both robust and computationally efficient, eliminating the need for data or model-specific assumptions. Its computational complexity can be as low as \( O(n) \), outperforming Bayesian methods like MC Dropout.")
+    st.latex(r"P(y \in C(x)) \geq 1 - \alpha")
+    st.write("This mathematical guarantee on prediction intervals makes it invaluable in mission-critical applications.")
 
-    st.subheader("Function")
-    # Sliders with custom styles
+
+    st.write("""
+### How Conformal Prediction Works
+1. **Data Split**: Divide data into a Training and a Calibration Set.
+2. **Model Training**: Train your model on the Training Set.
+3. **Scoring Rule**: Create a rule to evaluate model predictions.
+4. **Calibration**: Fine-tune the model on the Calibration Set.
+5. **Confidence Level**: Set a desired confidence level.
+6. **Future Predictions**: Make new predictions with confidence levels.
+""")
+
+    st.title("Conformal Prediction for Regression")
+    st.write("""
+In conformal prediction for regression, we aim to construct prediction intervals around our point estimates to offer a statistically 
+valid level of confidence. The method leverages a calibration dataset to compute 'conformity scores,' which help us rank 
+how well the model's predictions align with actual outcomes. These scores, in turn, guide the creation of prediction intervals 
+with a desired coverage probability. Thus, conformal prediction serves as a tool for robust and interpretable prediction intervals.
+""")
     coef_1 = 0.3
     coef_2 = 0.3
     coef_3 = 0.1
-    coef_4 = st.slider(r"Coefficient for noise $(\epsilon)$", min_value=0.0, max_value=1.0, value=0.1, step=0.01, format="%.2f")
-    n_cal = st.slider("Number of calibration data points $(n_{X_c})$", min_value=50, max_value=100, value=50, step=10)
+    st.write("Let us consider a simple regression problem with a single input variable $x$ and a single output variable $y$.")
+    st.write(r"The true function $f(x)$ is given by: ")
+    # Sliders with custom styles
+    display_equation(coef_1, coef_2, coef_3)
+    coef_4 = st.slider(r"Coefficient for noise $(\epsilon)$", min_value=0.1, max_value=1.0, value=0.3, step=0.01, format="%.2f")
+    st.write(f"You can choose the number of calibration data points $(n)$ using the slider below.")
+    n_cal = st.slider("Number of calibration data points $(n)$", min_value=10, max_value=20, value=10, step=2)
     # Display the equation based on user-selected coefficients
-    display_equation(coef_1, coef_2, coef_3, coef_4)
+    
     x_train, y_train, x_cal, y_cal = get_simple_data_train(coef_1, coef_2, coef_3, coef_4, n_cal)
-    fig, ax = plot_generic(x_train, y_train, x_cal, y_cal, coef_1=coef_1, coef_2=coef_2, coef_3=coef_3, coef_4=coef_4)
-    plt.title("Plot of Training and Calibration Data", fontsize=15)
-    st.pyplot(fig)
+    # fig, ax = plot_generic(x_train, y_train, x_cal, y_cal, coef_1=coef_1, coef_2=coef_2, coef_3=coef_3, coef_4=coef_4)
+    # plt.title("Plot of Training and Calibration Data", fontsize=15)
+    # st.pyplot(fig)
     st.subheader("Model")
     st.write(r"The model will be trained on the training data and used to generate predictions on the calibration data. \
              The calibration data is used to estimate the quantiles ($q_{val}$) for the prediction intervals.")
@@ -201,9 +154,6 @@ def main():
     net1 = MLP(hidden_dim=hidden_dim, n_hidden_layers=n_hidden_layers)
     net1 = train(net1, (x_train, y_train), epochs=epochs)
     y_preds = net1(x_test).clone().detach().numpy()
-
-    # Display the plot with the true function, training data, calibration data, predictive mean
-    # st.subheader("Prediction Visualization")
     
     fig, ax = plot_predictions(x_train, y_train, x_cal, y_cal, x_test, y_preds, coef_1=coef_1, coef_2=coef_2, coef_3=coef_3, coef_4=coef_4)
     st.pyplot(fig)
@@ -214,25 +164,32 @@ def main():
              rue output $y_i$ and the model's predicted output $\hat{y}_i$ for each calibration data point $x_i$. \
              It measures the discrepancy between the true values and their corresponding predictions, providing a measure \
              of model fit to the calibration data.")
-    alpha = st.slider("Select a value for alpha:", min_value=0.05, max_value=1.0, step=0.001, value=0.06)
+    alpha = st.slider("Select a value for alpha:", min_value=0.15, max_value=1.0, step=0.001, value=0.16)
 
     x_test, y_preds, q, resid = conformal_prediction_regression(x_cal, y_cal, net1,alpha)
 
-    histogram_plot(resid, q, alpha)
+    # histogram_plot(resid, q, alpha)
     st.write(r"The $q^{th}$ quantile is:")
-    st.latex(r"q_{{\text{{value}}}} = {:.4f}".format(q))
+    # st.latex(r"q_{{\text{{value}}}} = {:.4f}".format(q))
+    st.markdown(f'<span style=" top: 2px;font-size:50px;"><center> $q_{{\\text{{value}}}} = {q:.4f}$</center></span>', unsafe_allow_html=True)
+
 
     plot_conformal_prediction(x_train, y_train, x_cal, y_cal, x_test, y_preds, q, coef_1, coef_2, coef_3, alpha)
+
+    ########################################################################################################################################################
+    ########################################################################################################################################################
+    ########################################################################################################################################################
+    ########################################################################################################################################################
 
 
     st.title("Conformal Predictions in Classification")
     
-    st.write("In regression, we had the predictions as continuous uncertainty bands. Now for classification, the outputs from \
-             the model are class probabilities, so the prediction sets are now discrete sets of the type:")
-    st.latex(r"\hat{C}(X_{n+1})\subseteq \{1,\dots,K\}")
-    st.write(r"where $K$ is the number of classes. This change in the output affects how we calculate the conformity scores.")
+    st.write("In the realm of regression analysis, the model generates continuous uncertainty bands around the predicted values, offering an interval estimation of the output variable. However, as we transition to classification problems, the nature of the output changes substantively. In classification, the model generates discrete outputs, which are class probabilities. The prediction set now takes the form of a discrete subset of the available classes, mathematically represented as:")
+    st.latex(r"\hat{C}(X_{n+1}) \subseteq \{1, \ldots, K\}")
+    st.write("In this formalism, $\hat{C}(X_{n+1})$ is the prediction set corresponding to a new input $X_{n+1}$, and $K$ signifies the total number of unique classes.")
+
     
-    st.write("We will use the MNIST dataset. The 60k training samples are split into two parts: the training set, which consists of 59900 images, and the calibration set, which has 100 images. The test set consists of 10k images.")
+    st.write("We will use the MNIST dataset. The 60,000 training samples are split into two parts: the training set, which consists of 59950 images, and the calibration set, which has 50 images. The test set consists of 10k images.")
     
     X_train, y_train, X_test, y_test, X_calib, y_calib = get_data()
     
@@ -245,12 +202,12 @@ def main():
     net = train_model(net, train_data)
     print("Test accuracy of the model is", get_test_accuracy(X_test, y_test, net))
     
-    st.write("For training, we will use a simple MLP. **Test accuracy** of the model is", get_test_accuracy(X_test, y_test, net))
+    st.write("For training, we will use a simple Multi-layer Perceptron. The **test accuracy** of the model is", get_test_accuracy(X_test, y_test, net))
     
     st.subheader("How to calculate Conformity Scores?")
     st.write("The method of calculating conformity scores is a modelling decision. Here, we will use a simple \
               method based on the softmax scores. The score is calculated by the following formula:")
-    st.write(r"$s_i=1-\hat{\pi}_{x_i}(y_i)$ for a sample $(x_i, y_i)$ from the calibration set.")
+    st.write("$s_i=1-\\hat{\\pi}_{x_i}(y_i)$ for a sample $(x_i, y_i)$ from the calibration set, where $\\hat{\\pi}_{x_i}(y_i)$ represents the softmax score of the true class $(y_i)$.")
     
     st.write(r"The sample score $s_i$ is equal to 1 minus the softmax output of the true class.  If the softmax value \
              of the true class is low, it means that the model is uncertain. The score in such a case will be high.")
@@ -260,8 +217,8 @@ def main():
     st.write(r"We will get the prediction set for a test sample $(x_{n+1}, y_{n+1})$ by:")
     st.latex(r"\hat{C}(x_{n+1})=\{y'\in K:\hat{\pi}_{x_{n+1}}(y') \ge 1-{q_{val}}\}")
     st.write(r"The prediction set $C$ consists of all the classes for which the softmax score is above a threshold \
-             value 1-${q_{val}}$. ${q}$ is calculated as $\frac{{\lceil (1 - \alpha) \cdot (n + 1) \rceil}}{{n}}$ \
-             quantile of the scores from the calibration set.")
+             value 1-${q_{val}}$. ${q}$ is calculated as the $\frac{{\lceil (1 - \alpha) \cdot (n + 1) \rceil}}{{n}}$ quantile of the scores from the calibration set.")
+    
     n = len(X_calib)
     scores = get_scores(net, (X_calib, y_calib))
     alpha = st.slider("Select a value for alpha:", min_value=0.01, max_value=1.0, step=0.001, value=0.04)
@@ -270,9 +227,18 @@ def main():
     q = np.quantile(scores, q_val, method="higher")
     histogram_plot(scores, q, alpha)
     # st.pyplot(fig)
-    st.write(r"For this value of alpha, the threshold value 1-${q_{val}}$"+ " is {:.4f}".format(1 - q))
+    st.markdown(r"For this value of alpha, the threshold value $1-q_{\text{val}}$ is " + f'<span style="font-size:20px;">{1-q:.4f}</span>', unsafe_allow_html=True)
     
+    st.write("""
+### Understanding the Predicted Set
+The 'predicted set' refers to the set of classes that the model deems probable for the given input. 
+A class is included in the predicted set if its softmax score is above a predetermined threshold. This threshold 
+is influenced by the selected value of alpha and the computed quantile from the calibration data. The predicted set 
+gives us an indication of the model's confidence in its classification. If the set contains multiple classes, it 
+indicates that the model is less certain about the true class label.
+""")
     st.write("For example, select an image from the below slider. The softmax scores for the classes can be seen in the plot on the right side. If the score is above the threshold value, then the class is in the predicted set.")
+
     
     pred_sets = get_pred_sets(net, (X_test, y_test), q, alpha)
     print("hello", pred_sets[0])
@@ -312,11 +278,29 @@ def main():
              set contains only one element because the model is confident about its prediction. This is reflected by \
              the high softmax scores of the true classes.")
     
-    st.write("The average size of prediction sets for all the images from the test set is {:.3f}. \
-             *What does the average size mean?* We observe that the average size of the prediction set decreases when \
+    st.markdown(f"The average size of prediction sets for all the images from the test set is <span style='font-size:20px;'>{mean_set_size(pred_sets)}</span>", unsafe_allow_html=True)
+
+
+    st.write(f" **What does the average size mean?**")
+    st.write(f"We observe that the average size of the prediction set decreases when \
              value of alpha is increased. This is because of our method for computing conformity scores, where we only \
              take into account the softmax scores of the correct class when calculating 𝑞̂. With increasing alpha, the \
-             softmax scores for the classes decreases and thus there are lesser scores above the threshold value.".format(mean_set_size(pred_sets)))    
+             softmax scores for the classes decreases and thus there are lesser scores above the threshold value. {mean_set_size(pred_sets)}")
+    
+    st.title("Conclusion")
+    st.write("""
+As we navigated the complexities and intricacies of Conformal Prediction, what emerged is a technique that is not just innovative but foundational to modern machine learning practices. Its distinctive characteristics—ranging from applicability in high-stakes domains to its model-agnostic nature—demonstrate its potential to revolutionize the way we think about, and apply, machine learning.
+##### Implications in High-Stakes Domains
+Conformal Prediction isn't merely a theoretical novelty; its implications are deeply impactful, particularly in sectors where prediction reliability is paramount, such as medical diagnostics, autonomous vehicles, and finance. Traditional machine learning methods often supply a point estimate without a gauge of prediction uncertainty. However, in life-critical applications like diagnosing illnesses, a mere point estimate is insufficient; medical practitioners require a measure of certainty accompanying each diagnosis.
+
+##### Model-Agnostic Nature
+One of the most salient features of Conformal Prediction is its model-agnosticism. This is a breakthrough for the ML community, which often struggles with integrating uncertainty quantification techniques that are specific to particular types of models. The model-agnosticism of Conformal Prediction means that it can be applied across various machine learning algorithms without needing algorithm-specific tuning. This is not only computationally efficient but also invaluable for researchers who may be dealing with multiple types of models.
+
+##### Data Distribution Independence
+Conformal Prediction doesn't make strong assumptions about the data distribution, making it robust in the face of non-ideal or 'dirty' data, often encountered in real-world applications. This characteristic facilitates its application in diverse industries without the need for extensive data preprocessing or assumption validations.
+
+""")
+
 
     st.subheader("References:")
     st.write(r"[A Gentle Introduction to Conformal Prediction and Distribution-Free Uncertainty Quantification](https://people.eecs.berkeley.edu/~angelopoulos/publications/downloads/gentle_intro_conformal_dfuq.pdf)")

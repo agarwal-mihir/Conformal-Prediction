@@ -15,14 +15,14 @@ np.random.seed(42)
 # Function to generate synthetic training and calibration data
 
 def get_simple_data_train(coef_1, coef_2, coef_3, coef_4, n_cal):
-    print("running simple data")
+    # print("running simple data")
     # Generate data points for the custom function with some noise
-    x = np.linspace(-.2, 1, 300)
+    x = np.linspace(-.2, 1, 20)
     eps = coef_4 * np.random.randn(x.shape[0])
     y = coef_1 * np.sin(2 * np.pi*(x)) + coef_2 * np.cos(4 * np.pi *(x)) + coef_3 * x+ eps
     x = torch.from_numpy(x).float()[:, None]
     y = torch.from_numpy(y).float()
-    print("running regression data")
+    # print("running regression data")
     # Split data into calibration and training sets
     cal_idx = np.random.choice(x.shape[0], n_cal, replace=False)
     mask = np.zeros(len(x), dtype=bool)
@@ -30,9 +30,9 @@ def get_simple_data_train(coef_1, coef_2, coef_3, coef_4, n_cal):
     x_cal, y_cal = x[mask], y[mask]
     x_train, y_train = x[~mask], y[~mask]
     return x_train, y_train, x_cal, y_cal
-@st.cache_data
-def display_equation(coef_1, coef_2, coef_3, coef_4):
-    print("running display equation")
+# @st.cache_data
+def display_equation(coef_1, coef_2, coef_3):
+    # print("running display equation")
     equation = r"f(x, \varepsilon) = {:.2f} \sin(2\pi(x)) + {:.2f} \cos(4\pi(x)) + {:.2f}x + \varepsilon".format(coef_1, coef_2, coef_3)
     st.latex(equation)
 
@@ -40,7 +40,7 @@ def display_equation(coef_1, coef_2, coef_3, coef_4):
 # Function to train a neural network model
 
 def train(_net, _train_data, epochs=1000):
-    print("running training")
+    # print("running training")
     x_train, y_train = _train_data
     optimizer = torch.optim.Adam(params=_net.parameters(), lr=1e-3)
     criterion = nn.MSELoss()
@@ -71,8 +71,8 @@ def get_data():
     X_train = X_train.view(-1, 28*28)
     X_test = X_test.view(-1, 28*28)
 
-    X_calib, X_train = X_train[59900:], X_train[:59900]
-    y_calib, y_train = y_train[59900:], y_train[:59900]
+    X_calib, X_train = X_train[59950:], X_train[:59950]
+    y_calib, y_train = y_train[59950:], y_train[:59950]
 
     return X_train, y_train, X_test, y_test, X_calib, y_calib
 
@@ -83,10 +83,10 @@ def class_label(i):
     return labels[i]
 
 # Function to calculate the test accuracy of a neural network model
-@st.cache_data
+# @st.cache_data
 def get_test_accuracy(_X_test, _y_test, _net):
     # Create a DataLoader for the test dataset
-    print("running test accuracy")
+    # print("running test accuracy")
     test_dataset = torch.utils.data.TensorDataset(_X_test, _y_test.squeeze().long())
     test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=64, shuffle=False)  # No need to shuffle for testing
     def calculate_accuracy(outputs, labels):
@@ -148,7 +148,7 @@ def get_pred_sets(net, test_data, q, alpha):
 def get_pred_str(pred):
     pred_str = "{"
     for i, j in enumerate(pred):
-        print(j)
+        # print(j)
         if j:
             pred_str += class_label(i) + ', '  # Use comma instead of space
     pred_str = pred_str.rstrip(', ') + "}"  # Remove the trailing comma and add closing curly brace
@@ -183,14 +183,14 @@ def train_model(_net, _train_data):
             # running_accuracy += accuracy(outputs, targets)
 
             if batch_idx % 100 == 99:
-                print(f"Epoch [{epoch+1}/{num_epochs}] Batch [{batch_idx+1}/{len(train_loader)}] Loss: {running_loss / 100:.4f} Train Accuracy: {running_accuracy / 100:.4f}")
+                # print(f"Epoch [{epoch+1}/{num_epochs}] Batch [{batch_idx+1}/{len(train_loader)}] Loss: {running_loss / 100:.4f} Train Accuracy: {running_accuracy / 100:.4f}")
                 running_loss = 0.0
                 running_accuracy = 0.0    
     return _net
 
-@st.cache_data
+# @st.cache_data
 def conformal_prediction_regression(_x_cal, _y_cal, _net, alpha):
-    print("Conformal prediction for regression")
+    # print("Conformal prediction for regression")
     x_test = torch.linspace(-.5, 1.5, 1000)[:, None]
     y_preds = _net(x_test).clone().detach().numpy()
     _y_cal_preds = _net(_x_cal).clone().detach()
@@ -235,7 +235,7 @@ def fashion_mnist():
 #Fashion MNIST Predictions
 def get_test_preds_and_smx(selected_img_tensor, index, pred_sets, net, q, alpha):
     # Note: Instead of passing X_test, we pass the selected_img_tensor directly
-    print(net(selected_img_tensor.unsqueeze(0)))  # Unsqueeze to add batch dimension
+    # print(net(selected_img_tensor.unsqueeze(0)))  # Unsqueeze to add batch dimension
     test_smx = nn.functional.softmax(net(selected_img_tensor.unsqueeze(0)), dim=1).detach().numpy()
 
     sample_smx = test_smx[0]  # Since we're using only one image, get the first (and only) softmax output
