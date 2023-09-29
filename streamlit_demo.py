@@ -62,9 +62,9 @@ def main():
 
     st.write("To illustrate, consider a scenario where a machine learning model was fine-tuned to classify green apples and oranges. Utilizing the fast.ai library, a ResNet18 model was deployed and fed a myriad of images containing these fruits. However, when exposed to images of other objects that were green—such as frogs, green tennis balls, and even green oranges—the model overwhelmingly classified these as 'green apples' with high confidence. You can see the examples as follows:")
     image_paths = [
-    "/Users/mihiragarwal/Desktop/SRIP 2023/Conformal-Prediction/Screenshot 2023-09-29 at 3.56.30 PM.png",
-    "/Users/mihiragarwal/Desktop/SRIP 2023/Conformal-Prediction/Screenshot 2023-09-29 at 3.56.50 PM.png",
-    "/Users/mihiragarwal/Desktop/SRIP 2023/Conformal-Prediction/Screenshot 2023-09-29 at 3.56.57 PM.png"
+    "../Conformal-Prediction/Screenshot 2023-09-29 at 3.56.30 PM.png",
+    "../Conformal-Prediction/Screenshot 2023-09-29 at 3.56.50 PM.png",
+    "../Conformal-Prediction/Screenshot 2023-09-29 at 3.56.57 PM.png"
     # Add more image paths here
 ]
 
