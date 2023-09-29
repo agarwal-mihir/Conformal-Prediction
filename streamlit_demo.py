@@ -168,7 +168,7 @@ with a desired coverage probability. Thus, conformal prediction serves as a tool
 
     x_test, y_preds, q, resid = conformal_prediction_regression(x_cal, y_cal, net1,alpha)
 
-    # histogram_plot(resid, q, alpha)
+    histogram_plot(resid, q, alpha)
     st.write(r"The $q^{th}$ quantile is:")
     # st.latex(r"q_{{\text{{value}}}} = {:.4f}".format(q))
     st.markdown(f'<span style=" top: 2px;font-size:50px;"><center> $q_{{\\text{{value}}}} = {q:.4f}$</center></span>', unsafe_allow_html=True)
