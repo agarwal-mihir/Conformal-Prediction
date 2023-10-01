@@ -172,8 +172,9 @@ with a desired coverage probability. Thus, conformal prediction serves as a tool
     net1 = MLP(hidden_dim=hidden_dim, n_hidden_layers=n_hidden_layers)
     net1 = train(net1, (x_train, y_train), epochs=epochs)
     y_preds = net1(x_test).clone().detach().numpy()
+    y_cal_preds = net1(x_cal).clone().detach().numpy()
     
-    fig, ax = plot_predictions(x_train, y_train, x_cal, y_cal, x_test, y_preds, coef_1=coef_1, coef_2=coef_2, coef_3=coef_3, coef_4=coef_4)
+    fig, ax = plot_predictions(x_train, y_train, x_cal, y_cal, x_test, y_preds, y_cal_preds, coef_1=coef_1, coef_2=coef_2, coef_3=coef_3, coef_4=coef_4)
     st.pyplot(fig)
 
 

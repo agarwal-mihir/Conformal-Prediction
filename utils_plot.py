@@ -46,11 +46,17 @@ def plot_generic(_x_train, _y_train, _x_cal, _y_cal, _add_to_plot=None, coef_1=0
     return fig, ax
 
 
-def plot_predictions(_x_train, _y_train, _x_cal, _y_cal, _x_test, _y_preds, coef_1=0.3, coef_2=0.02, coef_3=0.1, coef_4=0.02):
+def plot_predictions(_x_train, _y_train, _x_cal, _y_cal, _x_test, _y_preds, y_cal_preds, coef_1=0.3, coef_2=0.02, coef_3=0.1, coef_4=0.02):
     # print("running predictions")
     def add_predictions(ax):
         # Plot the neural network prediction curve as a line
         ax.plot(_x_test, _y_preds, 'y-', linewidth=3, label='neural net prediction')
+        
+        #Plot Score Lines
+        ax.vlines(_x_cal[0], min(_y_cal[0], y_cal_preds[0]) ,max(_y_cal[0], y_cal_preds[0]), color='black', linestyle='dashed', linewidth=2, alpha = 0.7, label = "Scores")
+        for i in range(1, len(_x_cal)):
+            ax.vlines(_x_cal[i], min(_y_cal[i], y_cal_preds[i]) ,max(_y_cal[i], y_cal_preds[i]), color='black', linestyle='dashed', linewidth=2, alpha = 0.7)
+              
     fig, ax = plot_generic(_x_train, _y_train, _x_cal, _y_cal, add_predictions, coef_1, coef_2, coef_3, coef_4)
     plt.title("Plot of Training, Calibration, and Neural Network Predictions", fontsize=15)
     return fig, ax
