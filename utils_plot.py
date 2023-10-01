@@ -148,10 +148,12 @@ def plot_conformal_prediction( x_train, y_train, x_cal, y_cal, x_test, y_preds, 
     #     contains " + f"{cov:.2%}" + " of the ground truth."
     # st.write(s)
     s = r"""Below is the plot of the predictions with uncertainty bands. We want the uncertainty band to
-        contain (1-$\alpha$) = <span style='font-size:20px;'>""" + f"{1-alpha:.2%}" + """</span> of the ground truth. 
+        contain <br>(1-$\alpha$) = <span style='font-size:20px;'>""" + f"{1-alpha:.2%}" + """</span> of the ground truth. 
         Empirically, the prediction set contains <span style='font-size:20px;'>""" + f"{cov:.2%}" + """</span> of the ground truth."""
 
+    st.markdown("<div style=\"text-align: justify;\">", unsafe_allow_html=True)
     st.markdown(s, unsafe_allow_html=True)
+    st.markdown("</div>", unsafe_allow_html=True)
 
     plt.title("Plot of confidence interval for the conformal prediction", fontsize=15)
     st.pyplot(fig)
