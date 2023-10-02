@@ -266,3 +266,12 @@ def render_svg(svg):
 
     html = r'<div align="center"><img src="data:image/svg+xml;base64,%s" width="%d"/></div><br>' % (b64, width_value)
     st.write(html, unsafe_allow_html=True)
+    
+def get_references():
+    return {
+        "angelopoulos": [1],
+        "uva_dl": [2],
+        "vovk": [3],
+        "fastai": [4],
+        "olympic_data": [5],
+    }

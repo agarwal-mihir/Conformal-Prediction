@@ -28,7 +28,7 @@ np.random.seed(42)
 # Define the main function to create the Streamlit app
 def main():
 
-
+    references = utils.get_references()
    
     st.markdown('<h1 style="text-align: center;font-size:50px;">Conformal Prediction: <br>A Visual Introduction</h1>', unsafe_allow_html=True)
 
@@ -61,7 +61,7 @@ def main():
 
     st.markdown('<div style=\"text-align: justify;\">Understanding the nuances of uncertainty is pivotal in numerous domains, ranging from financial forecasting to healthcare diagnostics and autonomous vehicle control. The accurate quantification of uncertainty enables robust decision-making and engenders trust in machine learning models. For instance, in medical settings, a false negative could result in untreated disease progression, while a false positive might lead to unnecessary treatments—both with life-altering implications.</div>', unsafe_allow_html=True)
     st.markdown('<br>', unsafe_allow_html=True)
-    st.markdown("<div style=\"text-align: justify;\">To illustrate, consider a scenario where a machine learning model was fine-tuned to classify green apples and oranges. Utilizing the fast.ai library, a ResNet18 model was deployed and fed a myriad of images containing these fruits. However, when exposed to images of other objects that were green—such as frogs, green tennis balls, and even green oranges—the model overwhelmingly classified these as 'green apples' with high confidence. You can see the examples as follows:</div>", unsafe_allow_html=True)
+    st.markdown(f"<div style=\"text-align: justify;\">To illustrate, consider a scenario where a machine learning model was fine-tuned to classify green apples and oranges. Utilizing the fast.ai<sup><a href='#references'>{references['fastai']}</a></sup> library, a ResNet18 model was deployed and fed a myriad of images containing these fruits. However, when exposed to images of other objects that were green—such as frogs, green tennis balls, and even green oranges—the model overwhelmingly classified these as 'green apples' with high confidence. You can see the examples as follows:</div>", unsafe_allow_html=True)
     image_paths = [
     "Screenshot 2023-09-29 at 3.56.30 PM.png",
     "Screenshot 2023-09-29 at 3.56.50 PM.png",
@@ -102,7 +102,7 @@ def main():
     
     st.markdown("<br>", unsafe_allow_html=True)
     
-    st.markdown("<div style=\"text-align: justify;\">Conformal Prediction is an efficacious framework in machine learning that delivers well-calibrated measures of uncertainty associated with predictions. It extends beyond the provision of mere point estimates, constructing prediction intervals that encapsulate the realm of plausible outcomes.</div>", unsafe_allow_html=True)
+    st.markdown(f"""<div style=\"text-align: justify;\">Conformal Prediction<sup><a href='#references'>{references["vovk"]}</a></sup> is an efficacious framework in machine learning that delivers well-calibrated measures of uncertainty associated with predictions. It extends beyond the provision of mere point estimates, constructing prediction intervals that encapsulate the realm of plausible outcomes.</div>""", unsafe_allow_html=True)
 
     st.markdown("<br>", unsafe_allow_html=True)
 
@@ -162,11 +162,12 @@ with a desired coverage probability. Thus, conformal prediction serves as a tool
     
     st.markdown("<br>", unsafe_allow_html=True)
     
-    st.markdown("""
-This dataset captures the pace of Olympic Gold Medal Marathon winners 
+    st.markdown(f"""
+This dataset<sup><a href='#references'>{references["olympic_data"]}</a></sup> captures the pace of Olympic Gold Medal Marathon winners 
 from 1896 to the present. The 1904 outlier is due to organizational issues.
 The objective is to model and understand the trend over the years.
-""")
+""", unsafe_allow_html = True)
+    
     # st.write(r"The true function $f(x)$ is given by: ")
     # Sliders with custom styles
     # display_equation(coef_1, coef_2, coef_3)
@@ -228,7 +229,7 @@ The objective is to model and understand the trend over the years.
         true_1 = "won"
     else:
         true_1 = "lost"
-    st.markdown("Alan Turing, often considered the father of modern computing, was also a formidable athlete. He completed a marathon—covering a distance of 26 miles and 385 yards—in just 2 hours, 46 minutes, and 3 seconds. This performance equates to an impressive pace of approximately **3.94 minutes per kilometer**. Utilizing conformal prediction, we aim to estimate whether Turing would have won a hypothetical Olympic gold medal in the marathon had the Olympics been held in 1946.")
+    st.markdown(f"Alan Turing, often considered the father of modern computing, was also a formidable athlete. He completed a marathon—covering a distance of 26 miles and 385 yards—in just 2 hours, 46 minutes, and 3 seconds<sup><a href='#references'>{references['olympic_data']}</a></sup>. This performance equates to an impressive pace of approximately **3.94 minutes per kilometer**. Utilizing conformal prediction, we aim to estimate whether Turing would have won a hypothetical Olympic gold medal in the marathon had the Olympics been held in 1946.", unsafe_allow_html=True)
 
     st.image('image_720.png')
     st.markdown(
@@ -408,7 +409,23 @@ Conformal Prediction doesn't make strong assumptions about the data distribution
     unsafe_allow_html=True,
 )
 
-
+    st.markdown(
+    '''
+    <div style="font-family: Times New Roman; font-size: 16px; color: grey;">
+        [4] Howard, Jeremy and others, "fastai: A Layered API for Deep Learning", GitHub, [Online]. Available: <a style="color: grey;" href=https://github.com/fastai/fastai>https://github.com/fastai/fastai</a>.
+    </div>
+    ''',
+    unsafe_allow_html=True,
+)
+    
+    st.markdown(
+    '''
+    <div style="font-family: Times New Roman; font-size: 16px; color: grey;">
+        [5] Neil D. Lawrence, "Deep Gaussian Processes", [Online]. Available: <a style="color: grey;" href=http://inverseprobability.com/talks/notes/deep-gaussian-processes.html>http://inverseprobability.com/talks/notes/deep-gaussian-processes.html</a>.
+    </div>
+    ''',
+    unsafe_allow_html=True,
+)
 
     
 if __name__ == "__main__":
