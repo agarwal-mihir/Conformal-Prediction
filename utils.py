@@ -262,5 +262,7 @@ def get_svg(img_path):
 def render_svg(svg):
     """Renders the given svg string."""
     b64 = base64.b64encode(svg.encode('utf-8')).decode("utf-8")
-    html = r'<div align="center"><img src="data:image/svg+xml;base64,%s"/></div><br>' % b64
+    width_value = 700
+
+    html = r'<div align="center"><img src="data:image/svg+xml;base64,%s" width="%d"/></div><br>' % (b64, width_value)
     st.write(html, unsafe_allow_html=True)
