@@ -86,8 +86,20 @@ def main():
     apple_prob = dict[test_img_idx]["apple"]    
     orange_prob = dict[test_img_idx]["orange"]
 
-    st.markdown(f"<div style='font-family: \"Helvetica, Arial, sans-serif\"; font-size:21px;'><b><span style='color:green;'>Probability it's an green apple: {apple_prob}</span><br><span style='color:orange;'>Probability it's an orange: {orange_prob}</span></b></div>", unsafe_allow_html=True)
-    st.markdown("<br>", unsafe_allow_html=True)
+    # st.markdown(f"<div style='font-family: \"Helvetica, Arial, sans-serif\"; font-size:21px;'><b><span style='color:green;'>Probability it's an green apple: {apple_prob}</span><br><span style='color:orange;'>Probability it's an orange: {orange_prob}</span></b></div>", unsafe_allow_html=True)
+    # st.markdown("<br>", unsafe_allow_html=True)
+
+    if test_img_idx == 0:
+        utils.get_svg("example1.svg")
+        st.markdown("<div style=\"text-align: justify;\">The model assigns a high probability to categorize this tennis ball as a green apple due to its resemblance in both shape and color. However, this is an incorrect classification, and it is essential to incorporate a level of uncertainty into this prediction.</div><br>", unsafe_allow_html=True)
+        
+    elif test_img_idx == 1:
+        utils.get_svg("example2.svg")
+        st.markdown("<div style=\"text-align: justify;\">This image depicts an orange, but the model erroneously labels it as a green apple with high probability solely because of its green hue.</div><br>", unsafe_allow_html=True)
+    else:
+        utils.get_svg("example3.svg")
+        st.markdown("<div style=\"text-align: justify;\">The classification of this image featuring a frog as a green apple is once more the result of the predominant green color. In real life scenarios, a false classification like this may have significant implications.</div><br>", unsafe_allow_html=True)
+
 
     st.markdown("<div style=\"text-align: justify;\">This example vividly illustrates the pitfalls of biased training and the lack of uncertainty quantification. A traditional classification model would provide point estimates—single labels with associated probabilities—that could be misleading. Such deterministic outputs can have far-reaching consequences, from flawed recommendations to incorrect automated decisions.</div>", unsafe_allow_html=True)
     

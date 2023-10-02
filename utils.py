@@ -7,6 +7,7 @@ import matplotlib.pyplot as plt
 import torchvision.datasets as datasets
 import torchvision.transforms as transforms
 import PIL
+import base64
 
 # Set random seeds for reproducibility
 torch.manual_seed(42)
@@ -256,3 +257,16 @@ def get_test_preds_and_smx(selected_img_tensor, index, pred_sets, net, q, alpha)
 
     
     return fig, axs, pred_sets, get_pred_str(list(pred_sets))
+
+def get_svg(img_path):
+    f = open(img_path,"r")
+    lines = f.readlines()
+    line_string=''.join(lines)
+
+    render_svg(line_string)
+
+def render_svg(svg):
+    """Renders the given svg string."""
+    b64 = base64.b64encode(svg.encode('utf-8')).decode("utf-8")
+    html = r'<div align="center"><img src="data:image/svg+xml;base64,%s"/></div><br>' % b64
+    st.write(html, unsafe_allow_html=True)
