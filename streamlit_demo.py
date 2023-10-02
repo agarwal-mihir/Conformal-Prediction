@@ -73,18 +73,15 @@ def main():
     all_images = [np.array(Image.open(path).convert("RGB")) for path in image_paths]
 
 # Streamlit image selection widget
-    test_img_idx = st_image.image_select(label="Select an image", images=all_images, return_value="index", use_container_width=False)
+    with st.container():
+        st.write("", "", "")  # Adding some spacing at the top if needed
+        col1, col2, col3 = st.columns([0.1, .7, .1])
+        with col2:
+            test_img_idx = st_image.image_select(label="Select an image", images=all_images, return_value="index", use_container_width=False)
+
     # dict = {0: "Probability it's a apple: 0.9947, Probability it's a orange: 0.0053", 1: "Probability it's a apple: 0.9753, Probability it's a orange: 0.0247", 2: "Probability it's a apple: 0.9936, Probability it's a orange: 0.0064"}
     # st.write(dict[test_img_idx])
-    dict = {
-    0: {"apple": 0.9947, "orange": 0.0053},
-    1: {"apple": 0.9753, "orange": 0.0247},
-    2: {"apple": 0.9936, "orange": 0.0064}
-}
-
-
-    apple_prob = dict[test_img_idx]["apple"]    
-    orange_prob = dict[test_img_idx]["orange"]
+    
 
     # st.markdown(f"<div style='font-family: \"Helvetica, Arial, sans-serif\"; font-size:21px;'><b><span style='color:green;'>Probability it's an green apple: {apple_prob}</span><br><span style='color:orange;'>Probability it's an orange: {orange_prob}</span></b></div>", unsafe_allow_html=True)
     # st.markdown("<br>", unsafe_allow_html=True)
@@ -181,7 +178,7 @@ The objective is to model and understand the trend over the years.
     st.markdown(r"The calibration data is used to estimate the quantiles ($q_{val}$) for the prediction intervals. You can choose the number of calibration data points $(n)$ using the slider below.")
     # Display the equation based on user-selected coefficients
 
-    n_cal = st.slider("Number of calibration data points $(n)$", min_value=10, max_value=20, value=10, step=2)
+    n_cal = st.slider("Number of calibration data points $(n)$", min_value=10, max_value=20, value=14, step=2)
 
     x_train, y_train, x_cal, y_cal =  get_simple_data_train(n_cal)
     
@@ -232,7 +229,15 @@ The objective is to model and understand the trend over the years.
     else:
         true_1 = "lost"
     st.markdown("Alan Turing, often considered the father of modern computing, was also a formidable athlete. He completed a marathon—covering a distance of 26 miles and 385 yards—in just 2 hours, 46 minutes, and 3 seconds. This performance equates to an impressive pace of approximately **3.94 minutes per kilometer**. Utilizing conformal prediction, we aim to estimate whether Turing would have won a hypothetical Olympic gold medal in the marathon had the Olympics been held in 1946.")
-    st.write(r"For $\alpha$ = {:.2f}, the prediction interval is: [{:.2f}, {:.2f}]. Therefore, he would have **{}** the gold medal.".format(alpha,y_preds_46-q, y_preds_46+q, true_1))
+
+    st.image('image_720.png')
+    st.markdown(
+    '<p style="color:grey; font-size:14px;">Figure: Newspaper Clipping of Alan Turing\'s Marathon time, '
+    '<a href="https://www.turing.org.uk/book/update/part6.html" style="color:grey; font-size:14px;">Source: Alan Turing Internet Scrapbook</a></p>',
+    unsafe_allow_html=True
+)
+
+    st.write(r"The model predicts that the time for the Olympic gold medalist in 1946 would have been {:.2f} minutes. With a significance level of $\alpha = {:.2f}$, the uncertainty band calculated using conformal prediction ranges from {:.2f} to {:.2f} minutes. Therefore, based on this model, Alan Turing would have **{}** the gold medal.".format(y_preds_46, alpha, y_preds_46 - q, y_preds_46 + q, true_1))
     
 
 
@@ -256,8 +261,6 @@ The objective is to model and understand the trend over the years.
     net = MLP1()
     
     train_data = (X_train, y_train)
-    # calib_data = (X_calib, y_calib)
-    # test_data = (X_test, y_test)
     
     net = train_model(net, train_data)
     
@@ -377,10 +380,36 @@ Conformal Prediction doesn't make strong assumptions about the data distribution
 """, unsafe_allow_html = True)
 
 
-    st.subheader("References:")
-    st.write(r"[A Gentle Introduction to Conformal Prediction and Distribution-Free Uncertainty Quantification](https://people.eecs.berkeley.edu/~angelopoulos/publications/downloads/gentle_intro_conformal_dfuq.pdf)")
-    st.write(r"[Tutorial on Conformal Predictions](https://uvadlc-notebooks.readthedocs.io/en/latest/tutorial_notebooks/DL2/Bayesian_Neural_Networks/dl2_bnn_tut2_student_with_answers.html#Conformal-prediction)")
-    st.write(r"[A Tutorial on Conformal Predictions by Glenn Shafer and Vladimir Vovk](https://www.jmlr.org/papers/volume9/shafer08a/shafer08a.pdf)")
+    st.markdown("## **References:**")
+    st.markdown(
+    '''
+    <div style="font-family: Times New Roman; font-size: 16px; color: grey;">
+        [1] A. Angelopoulos, "A Gentle Introduction to Conformal Prediction and Distribution-Free Uncertainty Quantification," [Online]. Available: <a style="color: grey;" href='https://people.eecs.berkeley.edu/~angelopoulos/publications/downloads/gentle_intro_conformal_dfuq.pdf'>https://people.eecs.berkeley.edu/~angelopoulos/publications/downloads/gentle_intro_conformal_dfuq.pdf</a>.
+    </div>
+    ''',
+    unsafe_allow_html=True,
+)
+
+    st.markdown(
+    '''
+    <div style="font-family: Times New Roman; font-size: 16px; color: grey;">
+        [2] I. A. Auzina, L. Bereska, A. Timans, and E. Nalisnick, "Tutorial on Conformal Predictions," in UvA DL Notebooks, [Online]. Available: <a style="color: grey;" href='https://uvadlc-notebooks.readthedocs.io/en/latest/tutorial_notebooks/DL2/Bayesian_Neural_Networks/dl2_bnn_tut2_student_with_answers.html#Conformal-prediction'>https://uvadlc-notebooks.readthedocs.io/en/latest/tutorial_notebooks/DL2/Bayesian_Neural_Networks/dl2_bnn_tut2_student_with_answers.html#Conformal-prediction</a>.
+    </div>
+    ''',
+    unsafe_allow_html=True,
+)
+
+    st.markdown(
+    '''
+    <div style="font-family: Times New Roman; font-size: 16px; color: grey;">
+        [3] G. Shafer and V. Vovk, "A Tutorial on Conformal Predictions," Journal of Machine Learning Research, vol. 9, no. 12, pp. 371-421, 2008. [Online]. Available: <a style="color: grey;" href='https://www.jmlr.org/papers/volume9/shafer08a/shafer08a.pdf'>https://www.jmlr.org/papers/volume9/shafer08a/shafer08a.pdf</a>.
+    </div>
+    ''',
+    unsafe_allow_html=True,
+)
+
+
+
     
 if __name__ == "__main__":
     main()

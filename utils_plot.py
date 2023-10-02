@@ -146,12 +146,12 @@ def plot_conformal_prediction(x_train, y_train, x_cal, y_cal, y_cal_preds, q, al
     plt.xlabel("Year", fontsize=20)
     plt.ylabel("Pace min/km", fontsize=20)
 
-    ax.plot(x_true, y_true, 'b-', linewidth=3, label="true function")
+    ax.plot(x_true, y_true, 'b-', linewidth=3, label="predicted function")
     ax.scatter(x_train, y_train, c='g', s=150, label="training data")
     ax.scatter(x_cal, y_cal, c='r', s=125, label="calibration data")
     # ax.plot(x_test, y_preds, '-', linewidth=3, color="y", label="predictive mean")
     ax.fill_between(x_true.ravel(), y_true - q, y_true + q, alpha=0.6, color='y', zorder=5)
-
+    ax.scatter(1946, 3.94, c='black', s=150, label="Alan Turing's Speed")
     plt.legend(loc='best', fontsize=15, frameon=False)
     st.write("The prediction interval is calculated as:")
     st.latex(r"\hat{C}(X_{n+1}) = [ \hat{f}(x_{n+1}) - {q_{val}}, \, \hat{f}(x_{n+1}) + {q_{val}} ]")
