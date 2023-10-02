@@ -178,21 +178,14 @@ The objective is to model and understand the trend over the years.
     st.write(f"You can choose the number of calibration data points $(n)$ using the slider below.")
    
     # Display the equation based on user-selected coefficients
-    x = np.array([1896,1900,1904,1908,1912,1920,1924,1928,1932,1936,1948,1952,1956,1960,1964,1968,1972,1976,1980,1984,1988,1992,1996,2000,2004,2008,2012])
-    y = np.array([4.47083333333333,4.46472925981123,5.22208333333333,4.1546786744085,3.90331674958541,3.5695126705653,3.8245447722874,3.62483706600308,3.59284275388079,3.53880791562981,3.6701030927835,3.39029110874116,3.43642611683849,3.2058300746534,3.13275664573212,3.32819844373346,3.13583757949204,3.07895880238575,3.10581822490816,3.06552909112454,3.09357348817,3.16111703598373,3.14255243512264,3.08527866650867,3.1026582928467,2.99877552632618,3.03392977050993])
-    n_cal = st.slider("Number of calibration data points $(n)$", min_value=10, max_value=len(x), value=10, step=2)
+    
+    n_cal = st.slider("Number of calibration data points $(n)$", min_value=10, max_value=20, value=10, step=2)
     # x_train, x_cal, y_train, y_cal = train_test_split(x, y, test_size=0.5, random_state=42)
     # n_cal = 10
-    cal_idx = np.random.choice(x.shape[0], n_cal, replace=False)
-    mask = np.zeros(len(x), dtype=bool)
-    mask[cal_idx] = True
-    x_cal, y_cal = x[mask], y[mask]
-    x_train, y_train = x[~mask], y[~mask]
-    x_train, y_train, x_cal, y_cal = torch.tensor(x_train, dtype=torch.float).unsqueeze(1), torch.tensor(y_train, dtype=torch.float), torch.tensor(x_cal, dtype=torch.float).unsqueeze(1), torch.tensor(y_cal, dtype=torch.float)
-    print(x_train.shape, y_train.shape, x_cal.shape, y_cal.shape)
+    x_train, y_train, x_cal, y_cal =  get_simple_data_train(n_cal)
     # x_train, y_train, x_cal, y_cal = get_simple_data_train(coef_1, coef_2, coef_3, coef_4, n_cal)
-    # print(x_train.shape, y_train.shape, x_cal.shape, y_cal.shape)
-    # print(type(y_train))
+    
+    
     # fig, ax = plot_generic(x_train, y_train, x_cal, y_cal, coef_1=coef_1, coef_2=coef_2, coef_3=coef_3, coef_4=coef_4)
     # plt.title("Plot of Training and Calibration Data", fontsize=15)
     # st.pyplot(fig)
@@ -214,8 +207,8 @@ The objective is to model and understand the trend over the years.
     x_cal_scaled = torch.tensor(scaler.transform(x_cal), dtype= torch.float)
     y_cal_preds = net1(x_cal_scaled).clone().detach().numpy()
     y_preds_46 = net1(torch.tensor(scaler.transform(np.array([1946]).reshape(-1,1)), dtype= torch.float)).clone().detach().numpy()
-    print(f"Predicted value for 1946 is {y_preds_46}")
-    # print(y_cal_preds)
+    
+    
     fig, ax = plot_predictions(x_train, y_train, x_cal, y_cal, x_test, y_preds, y_cal_preds, coef_1=coef_1, coef_2=coef_2, coef_3=coef_3, coef_4=coef_4)
     st.pyplot(fig)
 
@@ -273,7 +266,7 @@ The objective is to model and understand the trend over the years.
     # test_data = (X_test, y_test)
     
     net = train_model(net, train_data)
-    # print("Test accuracy of the model is", get_test_accuracy(X_test, y_test, net))
+    
     
     st.write("For training, we will use a simple Multi-layer Perceptron. The **test accuracy** of the model is", get_test_accuracy(X_test, y_test, net))
     
@@ -328,7 +321,7 @@ indicates that the model is less certain about the true class label.</div>
     st.markdown("<br>", unsafe_allow_html=True)
     
     pred_sets = get_pred_sets(net, (X_test, y_test), q, alpha)
-    print("hello", pred_sets[0])
+    
     fashion_mnist_data = utils.fashion_mnist()
     fashion_idx = [5, 18]
     idxs = [300,149,1782,195, 1, 2]

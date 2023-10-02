@@ -14,7 +14,7 @@ np.random.seed(42)
 # Function to plot generic data visualization
 
 def plot_generic(x_train, y_train, x_cal, y_cal, _add_to_plot=None, coef_1=0.3, coef_2=0.02, coef_3=0.1, coef_4=0.02):
-    # print("running plot_generic")
+
     fig, ax = plt.subplots(figsize=(10, 5))
     # plt.xlim([1975, 2020])
     # plt.ylim([2, 5])
@@ -25,9 +25,9 @@ def plot_generic(x_train, y_train, x_cal, y_cal, _add_to_plot=None, coef_1=0.3, 
     # Generate true function curve
     # x_true = np.linspace(-.5, 1.5, 1000)
     # y_true = coef_1 * np.sin(2 * np.pi * x_true) + coef_2 * np.cos(4 * np.pi * x_true) + coef_3 * x_true
-    # print(x_train.shape, y_train.shape, x_cal.shape, y_cal.shape)
-    print("hello 2 2 2 2")
-    print(x_train.shape, y_train.shape, x_cal.shape, y_cal.shape)
+
+
+
     # Plot training data as green scatter points
     ax.scatter(x_train, y_train, c='green', s=150, label="training data")
 
@@ -48,11 +48,11 @@ def plot_generic(x_train, y_train, x_cal, y_cal, _add_to_plot=None, coef_1=0.3, 
 
 
 def plot_predictions(x_train, y_train, x_cal, y_cal, _x_test, _y_preds, y_cal_preds, coef_1=0.3, coef_2=0.02, coef_3=0.1, coef_4=0.02):
-    # print("running predictions")
+
     def add_predictions(ax):
         # Plot the neural network prediction curve as a line
         # ax.plot(_x_test, _y_preds, 'y-', linewidth=3, label='neural net prediction')
-        print(f"_y_preds: {_y_preds.shape}")
+
         ax.plot(x_cal, y_cal_preds, 'y-', linewidth=3, label='neural net prediciton')
 
         #Plot Score Lines
@@ -93,7 +93,7 @@ def plot_calibration_scores(x_cal, scores):
 
 
 def histogram_plot(scores, q, alpha):
-    # print("running histogram")
+
     fig, ax = plt.subplots(1, 2, figsize=(12, 3))
     # Plot scores of calibration data
     ax[0].bar(np.arange(len(scores)), height = scores, alpha = 0.7, color = 'b')
@@ -117,7 +117,7 @@ def histogram_plot(scores, q, alpha):
     st.pyplot(fig)
 
 def show_samples(X_test, idxs, pred_sets, net, q, alpha):
-    # print("running show samples")
+
     fig, axes = plt.subplots(1, 10, figsize = (12, 2))
     axes = axes.flatten()
 
@@ -133,12 +133,12 @@ def show_samples(X_test, idxs, pred_sets, net, q, alpha):
 
 
 def plot_conformal_prediction(x_train, y_train, x_cal, y_cal, y_cal_preds, q, alpha, scaler, net1):
-    # print("running conformal prediction")
+
     x_true = np.arange(1891, 2020, 4)
     x_true_scale = scaler.transform(x_true.reshape(-1, 1))
     x_true_scale = torch.from_numpy(x_true_scale).float()
     y_true = net1(x_true_scale).detach().numpy()
-    print(y_true)
+
     # y_true = coef_1 * np.sin(2 * np.pi*(x_true)) + coef_2 * np.cos(4 * np.pi *(x_true )) + coef_3 * x_true
     fig, ax = plt.subplots(figsize=(10, 5))
     # plt.xlim([-.5, 1.5])
