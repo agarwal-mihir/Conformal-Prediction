@@ -175,18 +175,16 @@ The objective is to model and understand the trend over the years.
     # display_equation(coef_1, coef_2, coef_3)
     coef_4 = 2
     # coef_4 = st.slider(r"Coefficient for noise $(\epsilon)$", min_value=0.1, max_value=1.0, value=0.3, step=0.01, format="%.2f")
-    st.write(f"You can choose the number of calibration data points $(n)$ using the slider below.")
-   
-    # Display the equation based on user-selected coefficients
     
+    st.markdown("<h4 style=' color: black;'>Model</h4>", unsafe_allow_html=True)
+    st.markdown("<div style=\"text-align: justify;\">The model which is a Multi Layer Perceptron (MLP) will be trained on the training data and used to generate predictions on the calibration data.</div>", unsafe_allow_html=True)
+    st.markdown(r"The calibration data is used to estimate the quantiles ($q_{val}$) for the prediction intervals. You can choose the number of calibration data points $(n)$ using the slider below.")
+    # Display the equation based on user-selected coefficients
+
     n_cal = st.slider("Number of calibration data points $(n)$", min_value=10, max_value=20, value=10, step=2)
 
     x_train, y_train, x_cal, y_cal =  get_simple_data_train(n_cal)
-
-    st.markdown("<h4 style=' color: black;'>Model</h4>", unsafe_allow_html=True)
-    st.markdown("<div style=\"text-align: justify;\">The model which is a Multi Layer Perceptron (MLP) will be trained on the training data and used to generate predictions on the calibration data.</div>", unsafe_allow_html=True)
-    st.markdown("<br>", unsafe_allow_html=True)
-    st.markdown(r"The calibration data is used to estimate the quantiles ($q_{val}$) for the prediction intervals.")
+    
     # Train the model (MLP) on the generated data
     scaler = StandardScaler()
     hidden_dim = 30
@@ -214,6 +212,9 @@ The objective is to model and understand the trend over the years.
              It measures the discrepancy between the true values and their corresponding predictions, providing a measure \
              of model fit to the calibration data.")
     st.markdown("</div>", unsafe_allow_html=True)
+    
+    st.markdown(r"Use the below slider to choose the error-rate $\alpha$. With probability 1-$\alpha$, our computed uncertainty band $\hat{C}(X_{n+1})$ will contain the true value $Y_{n+1}$.")
+    
     
     alpha = st.slider(r"Select a value for $\alpha$:", min_value=0.15, max_value=1.0, step=0.001, value=0.16)
 
