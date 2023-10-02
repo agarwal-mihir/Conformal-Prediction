@@ -6,3 +6,4 @@ torch
 torchvision
 streamlit-image-select
 scikit-learn
+sklearn
