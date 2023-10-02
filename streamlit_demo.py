@@ -180,16 +180,9 @@ The objective is to model and understand the trend over the years.
     # Display the equation based on user-selected coefficients
     
     n_cal = st.slider("Number of calibration data points $(n)$", min_value=10, max_value=20, value=10, step=2)
-    # x_train, x_cal, y_train, y_cal = train_test_split(x, y, test_size=0.5, random_state=42)
-    # n_cal = 10
+
     x_train, y_train, x_cal, y_cal =  get_simple_data_train(n_cal)
-    # x_train, y_train, x_cal, y_cal = get_simple_data_train(coef_1, coef_2, coef_3, coef_4, n_cal)
-    
-    
-    # fig, ax = plot_generic(x_train, y_train, x_cal, y_cal, coef_1=coef_1, coef_2=coef_2, coef_3=coef_3, coef_4=coef_4)
-    # plt.title("Plot of Training and Calibration Data", fontsize=15)
-    # st.pyplot(fig)
-    # st.write("Model")
+
     st.markdown("<h4 style=' color: black;'>Model</h4>", unsafe_allow_html=True)
     st.markdown("<div style=\"text-align: justify;\">The model which is a Multi Layer Perceptron (MLP) will be trained on the training data and used to generate predictions on the calibration data.</div>", unsafe_allow_html=True)
     st.markdown("<br>", unsafe_allow_html=True)
@@ -200,16 +193,16 @@ The objective is to model and understand the trend over the years.
     n_hidden_layers = 2
     epochs = 1000
     x_train_scaled = torch.tensor(scaler.fit_transform(x_train), dtype= torch.float)
-    x_test = torch.linspace(-.5, 1.5, 3000)[:, None]
+
     net1 = MLP(hidden_dim=hidden_dim, n_hidden_layers=n_hidden_layers)
     net1 = train(net1, (x_train_scaled, y_train), epochs=epochs)
-    y_preds = net1(x_test).clone().detach().numpy()
+
     x_cal_scaled = torch.tensor(scaler.transform(x_cal), dtype= torch.float)
     y_cal_preds = net1(x_cal_scaled).clone().detach().numpy()
     y_preds_46 = net1(torch.tensor(scaler.transform(np.array([1946]).reshape(-1,1)), dtype= torch.float)).clone().detach().numpy()
     
     
-    fig, ax = plot_predictions(x_train, y_train, x_cal, y_cal, x_test, y_preds, y_cal_preds, coef_1=coef_1, coef_2=coef_2, coef_3=coef_3, coef_4=coef_4)
+    fig, ax = plot_predictions(x_train, y_train, x_cal, y_cal, y_cal_preds, coef_1=coef_1, coef_2=coef_2, coef_3=coef_3, coef_4=coef_4)
     st.pyplot(fig)
 
 

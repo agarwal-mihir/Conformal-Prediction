@@ -47,7 +47,7 @@ def plot_generic(x_train, y_train, x_cal, y_cal, _add_to_plot=None, coef_1=0.3, 
     return fig, ax
 
 
-def plot_predictions(x_train, y_train, x_cal, y_cal, _x_test, _y_preds, y_cal_preds, coef_1=0.3, coef_2=0.02, coef_3=0.1, coef_4=0.02):
+def plot_predictions(x_train, y_train, x_cal, y_cal, y_cal_preds, coef_1=0.3, coef_2=0.02, coef_3=0.1, coef_4=0.02):
 
     def add_predictions(ax):
         # Plot the neural network prediction curve as a line
