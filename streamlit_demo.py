@@ -232,9 +232,9 @@ The objective is to model and understand the trend over the years.
 
     st.image('image_720.png')
     st.markdown(
-    '<p style="color:grey; font-size:14px;">Figure: Newspaper Clipping of Alan Turing\'s Marathon time, '
+    '<p style="color:grey; font-size:14px; text-align:center;">Figure: Newspaper Clipping of Alan Turing\'s Marathon time, '
     '<a href="https://www.turing.org.uk/book/update/part6.html" style="color:grey; font-size:14px;">Source: Alan Turing Internet Scrapbook</a></p>',
-    unsafe_allow_html=True
+    unsafe_allow_html=True  # Make sure to enable this for rendering HTML
 )
 
     st.write(r"The model predicts that the time for the Olympic gold medalist in 1946 would have been {:.2f} minutes. With a significance level of $\alpha = {:.2f}$, the uncertainty band calculated using conformal prediction ranges from {:.2f} to {:.2f} minutes. Therefore, based on this model, Alan Turing would have **{}** the gold medal.".format(y_preds_46, alpha, y_preds_46 - q, y_preds_46 + q, true_1))
