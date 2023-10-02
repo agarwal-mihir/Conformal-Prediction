@@ -14,7 +14,7 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
 # from tqdm.auto import trange, tqdm
 import utils
-# Import utility functions and model classes from custom modules
+# Import utility func        tions and model classes from custom modules
 from utils import get_simple_data_train, display_equation, train, get_data, get_test_preds_and_smx, get_scores, quantile, get_pred_sets, mean_set_size, get_test_accuracy, train_model, conformal_prediction_regression, tensor_to_img
 from utils_plot import plot_generic, plot_predictions, histogram_plot, show_samples, plot_conformal_prediction
 from model import MLP, MLP1
@@ -134,6 +134,10 @@ def main():
 6. **Future Predictions**: Make new predictions with confidence levels.
 """)
 
+ ########################################################################################################################################################
+    ########################################################################################################################################################
+    ########################################################################################################################################################
+    ########################################################################################################################################################
     st.title("Conformal Prediction for Regression")
     
     st.markdown("""<div style=\"text-align: justify;\">
@@ -149,8 +153,12 @@ with a desired coverage probability. Thus, conformal prediction serves as a tool
     
     st.markdown("<br>", unsafe_allow_html=True)
     
-    st.write("Let us consider a simple regression problem with a single input variable $x$ and a single output variable $y$.")
-    st.write(r"The true function $f(x)$ is given by: ")
+    st.markdown("""
+This dataset captures the pace of Olympic Gold Medal Marathon winners 
+from 1896 to the present. The 1904 outlier is due to organizational issues.
+The objective is to model and understand the trend over the years.
+""")
+    # st.write(r"The true function $f(x)$ is given by: ")
     # Sliders with custom styles
     # display_equation(coef_1, coef_2, coef_3)
     coef_4 = 2
@@ -176,8 +184,10 @@ with a desired coverage probability. Thus, conformal prediction serves as a tool
     # fig, ax = plot_generic(x_train, y_train, x_cal, y_cal, coef_1=coef_1, coef_2=coef_2, coef_3=coef_3, coef_4=coef_4)
     # plt.title("Plot of Training and Calibration Data", fontsize=15)
     # st.pyplot(fig)
-    st.subheader("Model")
-    st.markdown("<div style=\"text-align: justify;\">The model will be trained on the training data and used to generate predictions on the calibration data.</div>", unsafe_allow_html=True)
+    # st.write("Model")
+    st.markdown("<h4 style=' color: black;'>Model</h4>", unsafe_allow_html=True)
+    st.markdown("<div style=\"text-align: justify;\">The model which is a Multi Layer Perceptron (MLP) will be trained on the training data and used to generate predictions on the calibration data.</div>", unsafe_allow_html=True)
+    st.markdown("<br>", unsafe_allow_html=True)
     st.markdown(r"The calibration data is used to estimate the quantiles ($q_{val}$) for the prediction intervals.")
     # Train the model (MLP) on the generated data
     scaler = StandardScaler()
@@ -191,6 +201,8 @@ with a desired coverage probability. Thus, conformal prediction serves as a tool
     y_preds = net1(x_test).clone().detach().numpy()
     x_cal_scaled = torch.tensor(scaler.transform(x_cal), dtype= torch.float)
     y_cal_preds = net1(x_cal_scaled).clone().detach().numpy()
+    y_preds_46 = net1(torch.tensor(scaler.transform(np.array([1946]).reshape(-1,1)), dtype= torch.float)).clone().detach().numpy()
+    print(f"Predicted value for 1946 is {y_preds_46}")
     # print(y_cal_preds)
     fig, ax = plot_predictions(x_train, y_train, x_cal, y_cal, x_test, y_preds, y_cal_preds, coef_1=coef_1, coef_2=coef_2, coef_3=coef_3, coef_4=coef_4)
     st.pyplot(fig)
@@ -216,6 +228,14 @@ with a desired coverage probability. Thus, conformal prediction serves as a tool
 
 
     plot_conformal_prediction(x_train, y_train, x_cal, y_cal, y_cal_preds, q, alpha, scaler, net1)
+    if(y_preds_46-q<=3.94 and  y_preds_46+q>=3.94):
+        true_1 = "won"
+    else:
+        true_1 = "lost"
+    st.markdown("Alan Turing, often considered the father of modern computing, was also a formidable athlete. He completed a marathon—covering a distance of 26 miles and 385 yards—in just 2 hours, 46 minutes, and 3 seconds. This performance equates to an impressive pace of approximately **3.94 minutes per kilometer**. Utilizing conformal prediction, we aim to estimate whether Turing would have won a hypothetical Olympic gold medal in the marathon had the Olympics been held in 1946.")
+    st.write(r"For $\alpha$ = {:.2f}, the prediction interval is: [{:.2f}, {:.2f}]. Therefore he would have **{}** gold medal ".format(alpha,y_preds_46-q, y_preds_46+q, true_1))
+    
+
 
     ########################################################################################################################################################
     ########################################################################################################################################################

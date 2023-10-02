@@ -16,10 +16,10 @@ np.random.seed(42)
 def plot_generic(x_train, y_train, x_cal, y_cal, _add_to_plot=None, coef_1=0.3, coef_2=0.02, coef_3=0.1, coef_4=0.02):
     # print("running plot_generic")
     fig, ax = plt.subplots(figsize=(10, 5))
-    # plt.xlim([-.5, 1.5])
-    # plt.ylim([-1.5, 2.5])
-    plt.xlabel("X", fontsize=30)
-    plt.ylabel("Y", fontsize=30)
+    # plt.xlim([1975, 2020])
+    # plt.ylim([2, 5])
+    plt.xlabel("Year", fontsize=20)
+    plt.ylabel("Pace min/km", fontsize=20)
     plt.title("Plot of Training and Calibration Data with True Function", fontsize=20)
 
     # Generate true function curve
@@ -59,7 +59,7 @@ def plot_predictions(x_train, y_train, x_cal, y_cal, _x_test, _y_preds, y_cal_pr
         ax.vlines(x_cal[0], min(y_cal[0], y_cal_preds[0]) ,max(y_cal[0], y_cal_preds[0]), color='black', linestyle='dashed', linewidth=2, alpha = 0.7, label = "Scores")
         for i in range(1, len(x_cal)):
             ax.vlines(x_cal[i], min(y_cal[i], y_cal_preds[i]) ,max(y_cal[i], y_cal_preds[i]), color='black', linestyle='dashed', linewidth=2, alpha = 0.7)
-    print("hello")
+
 
     fig, ax = plot_generic(x_train, y_train, x_cal, y_cal, add_predictions, coef_1, coef_2, coef_3, coef_4)
     plt.title("Plot of Training, Calibration, and Neural Network Predictions", fontsize=15)
@@ -143,8 +143,8 @@ def plot_conformal_prediction(x_train, y_train, x_cal, y_cal, y_cal_preds, q, al
     fig, ax = plt.subplots(figsize=(10, 5))
     # plt.xlim([-.5, 1.5])
     # plt.ylim([-1.5, 2.5])
-    plt.xlabel("X", fontsize=30)
-    plt.ylabel("Y", fontsize=30)
+    plt.xlabel("Year", fontsize=20)
+    plt.ylabel("Pace min/km", fontsize=20)
 
     ax.plot(x_true, y_true, 'b-', linewidth=3, label="true function")
     ax.scatter(x_train, y_train, c='g', s=150, label="training data")
