@@ -221,9 +221,9 @@ The objective is to model and understand the trend over the years.
     q, resid = conformal_prediction_regression(x_cal, y_cal_preds,alpha, y_cal)
 
     histogram_plot(resid, q, alpha)
-    st.write(r"The $q^{th}$ quantile is:")
+    st.write(r"Now, we compute $q_{val}$ by calculating the $\left\lceil \frac{(n+1)(1-\alpha)}{n} \right\rceil$th quantile of the conformity scores.")
     # st.latex(r"q_{{\text{{value}}}} = {:.4f}".format(q))
-    st.markdown(f'<span style=" top: 2px;font-size:50px;"><center> $q_{{\\text{{value}}}} = {q:.4f}$</center></span>', unsafe_allow_html=True)
+    st.markdown(f'<span style=" top: 2px;font-size:50px;"><center> $q_{{\\text{{val}}}} = {q:.4f}$</center></span>', unsafe_allow_html=True)
 
 
     plot_conformal_prediction(x_train, y_train, x_cal, y_cal, y_cal_preds, q, alpha, scaler, net1)
@@ -232,7 +232,7 @@ The objective is to model and understand the trend over the years.
     else:
         true_1 = "lost"
     st.markdown("Alan Turing, often considered the father of modern computing, was also a formidable athlete. He completed a marathon—covering a distance of 26 miles and 385 yards—in just 2 hours, 46 minutes, and 3 seconds. This performance equates to an impressive pace of approximately **3.94 minutes per kilometer**. Utilizing conformal prediction, we aim to estimate whether Turing would have won a hypothetical Olympic gold medal in the marathon had the Olympics been held in 1946.")
-    st.write(r"For $\alpha$ = {:.2f}, the prediction interval is: [{:.2f}, {:.2f}]. Therefore he would have **{}** gold medal ".format(alpha,y_preds_46-q, y_preds_46+q, true_1))
+    st.write(r"For $\alpha$ = {:.2f}, the prediction interval is: [{:.2f}, {:.2f}]. Therefore, he would have **{}** the gold medal.".format(alpha,y_preds_46-q, y_preds_46+q, true_1))
     
 
 
