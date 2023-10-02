@@ -44,11 +44,11 @@ def main():
             IIT Gandhinagar
         </div> <br>
         <div style='position: relative; left: 13px; top:30px;display: inline-block; margin-right: 10px;font-size: 14px;'>
-            <b>Zeel B Patel</b> <br>
+            <b><a href="https://patel-zeel.github.io/">Zeel B Patel</a></b> <br>
             IIT Gandhinagar
         </div>
         <div style='position: relative; left: 5px; top: 30px;display: inline-block; margin-left: 90px;font-size: 14px;'>
-            <b>Nipun Batra</b> <br>
+            <b><a href="https://nipunbatra.github.io/">Nipun Batra</a></b> <br>
             IIT Gandhinagar
         </div>
     </div>
