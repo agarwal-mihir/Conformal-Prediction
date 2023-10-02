@@ -9,8 +9,9 @@ import torchvision.datasets as datasets
 import torchvision.transforms as transforms
 import matplotlib.pyplot as plt
 import streamlit_image_select as st_image
+from sklearn.preprocessing import StandardScaler
 # from tueplots import axes, bundles
-
+from sklearn.model_selection import train_test_split
 # from tqdm.auto import trange, tqdm
 import utils
 # Import utility functions and model classes from custom modules
@@ -85,7 +86,7 @@ def main():
     apple_prob = dict[test_img_idx]["apple"]    
     orange_prob = dict[test_img_idx]["orange"]
 
-    st.markdown(f"<div style='font-family: \"Helvetica, Arial, sans-serif\"; font-size:21px;'><b><span style='color:green;'>Probability it's an apple: {apple_prob}</span><br><span style='color:orange;'>Probability it's an orange: {orange_prob}</span></b></div>", unsafe_allow_html=True)
+    st.markdown(f"<div style='font-family: \"Helvetica, Arial, sans-serif\"; font-size:21px;'><b><span style='color:green;'>Probability it's an green apple: {apple_prob}</span><br><span style='color:orange;'>Probability it's an orange: {orange_prob}</span></b></div>", unsafe_allow_html=True)
     st.markdown("<br>", unsafe_allow_html=True)
 
     st.markdown("<div style=\"text-align: justify;\">This example vividly illustrates the pitfalls of biased training and the lack of uncertainty quantification. A traditional classification model would provide point estimates—single labels with associated probabilities—that could be misleading. Such deterministic outputs can have far-reaching consequences, from flawed recommendations to incorrect automated decisions.</div>", unsafe_allow_html=True)
@@ -151,13 +152,27 @@ with a desired coverage probability. Thus, conformal prediction serves as a tool
     st.write("Let us consider a simple regression problem with a single input variable $x$ and a single output variable $y$.")
     st.write(r"The true function $f(x)$ is given by: ")
     # Sliders with custom styles
-    display_equation(coef_1, coef_2, coef_3)
-    coef_4 = st.slider(r"Coefficient for noise $(\epsilon)$", min_value=0.1, max_value=1.0, value=0.3, step=0.01, format="%.2f")
+    # display_equation(coef_1, coef_2, coef_3)
+    coef_4 = 2
+    # coef_4 = st.slider(r"Coefficient for noise $(\epsilon)$", min_value=0.1, max_value=1.0, value=0.3, step=0.01, format="%.2f")
     st.write(f"You can choose the number of calibration data points $(n)$ using the slider below.")
-    n_cal = st.slider("Number of calibration data points $(n)$", min_value=10, max_value=20, value=10, step=2)
+   
     # Display the equation based on user-selected coefficients
-    
-    x_train, y_train, x_cal, y_cal = get_simple_data_train(coef_1, coef_2, coef_3, coef_4, n_cal)
+    x = np.array([1896,1900,1904,1908,1912,1920,1924,1928,1932,1936,1948,1952,1956,1960,1964,1968,1972,1976,1980,1984,1988,1992,1996,2000,2004,2008,2012])
+    y = np.array([4.47083333333333,4.46472925981123,5.22208333333333,4.1546786744085,3.90331674958541,3.5695126705653,3.8245447722874,3.62483706600308,3.59284275388079,3.53880791562981,3.6701030927835,3.39029110874116,3.43642611683849,3.2058300746534,3.13275664573212,3.32819844373346,3.13583757949204,3.07895880238575,3.10581822490816,3.06552909112454,3.09357348817,3.16111703598373,3.14255243512264,3.08527866650867,3.1026582928467,2.99877552632618,3.03392977050993])
+    n_cal = st.slider("Number of calibration data points $(n)$", min_value=10, max_value=len(x), value=10, step=2)
+    # x_train, x_cal, y_train, y_cal = train_test_split(x, y, test_size=0.5, random_state=42)
+    # n_cal = 10
+    cal_idx = np.random.choice(x.shape[0], n_cal, replace=False)
+    mask = np.zeros(len(x), dtype=bool)
+    mask[cal_idx] = True
+    x_cal, y_cal = x[mask], y[mask]
+    x_train, y_train = x[~mask], y[~mask]
+    x_train, y_train, x_cal, y_cal = torch.tensor(x_train, dtype=torch.float).unsqueeze(1), torch.tensor(y_train, dtype=torch.float), torch.tensor(x_cal, dtype=torch.float).unsqueeze(1), torch.tensor(y_cal, dtype=torch.float)
+    print(x_train.shape, y_train.shape, x_cal.shape, y_cal.shape)
+    # x_train, y_train, x_cal, y_cal = get_simple_data_train(coef_1, coef_2, coef_3, coef_4, n_cal)
+    # print(x_train.shape, y_train.shape, x_cal.shape, y_cal.shape)
+    # print(type(y_train))
     # fig, ax = plot_generic(x_train, y_train, x_cal, y_cal, coef_1=coef_1, coef_2=coef_2, coef_3=coef_3, coef_4=coef_4)
     # plt.title("Plot of Training and Calibration Data", fontsize=15)
     # st.pyplot(fig)
@@ -165,15 +180,18 @@ with a desired coverage probability. Thus, conformal prediction serves as a tool
     st.markdown("<div style=\"text-align: justify;\">The model will be trained on the training data and used to generate predictions on the calibration data.</div>", unsafe_allow_html=True)
     st.markdown(r"The calibration data is used to estimate the quantiles ($q_{val}$) for the prediction intervals.")
     # Train the model (MLP) on the generated data
+    scaler = StandardScaler()
     hidden_dim = 30
-    n_hidden_layers = 1
+    n_hidden_layers = 2
     epochs = 1000
+    x_train_scaled = torch.tensor(scaler.fit_transform(x_train), dtype= torch.float)
     x_test = torch.linspace(-.5, 1.5, 3000)[:, None]
     net1 = MLP(hidden_dim=hidden_dim, n_hidden_layers=n_hidden_layers)
-    net1 = train(net1, (x_train, y_train), epochs=epochs)
+    net1 = train(net1, (x_train_scaled, y_train), epochs=epochs)
     y_preds = net1(x_test).clone().detach().numpy()
-    y_cal_preds = net1(x_cal).clone().detach().numpy()
-    
+    x_cal_scaled = torch.tensor(scaler.transform(x_cal), dtype= torch.float)
+    y_cal_preds = net1(x_cal_scaled).clone().detach().numpy()
+    # print(y_cal_preds)
     fig, ax = plot_predictions(x_train, y_train, x_cal, y_cal, x_test, y_preds, y_cal_preds, coef_1=coef_1, coef_2=coef_2, coef_3=coef_3, coef_4=coef_4)
     st.pyplot(fig)
 
@@ -189,7 +207,7 @@ with a desired coverage probability. Thus, conformal prediction serves as a tool
     
     alpha = st.slider(r"Select a value for $\alpha$:", min_value=0.15, max_value=1.0, step=0.001, value=0.16)
 
-    x_test, y_preds, q, resid = conformal_prediction_regression(x_cal, y_cal, net1,alpha)
+    q, resid = conformal_prediction_regression(x_cal, y_cal_preds,alpha, y_cal)
 
     histogram_plot(resid, q, alpha)
     st.write(r"The $q^{th}$ quantile is:")
@@ -197,7 +215,7 @@ with a desired coverage probability. Thus, conformal prediction serves as a tool
     st.markdown(f'<span style=" top: 2px;font-size:50px;"><center> $q_{{\\text{{value}}}} = {q:.4f}$</center></span>', unsafe_allow_html=True)
 
 
-    plot_conformal_prediction(x_train, y_train, x_cal, y_cal, x_test, y_preds, q, coef_1, coef_2, coef_3, alpha)
+    plot_conformal_prediction(x_train, y_train, x_cal, y_cal, y_cal_preds, q, alpha, scaler, net1)
 
     ########################################################################################################################################################
     ########################################################################################################################################################

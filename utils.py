@@ -189,11 +189,11 @@ def train_model(_net, _train_data):
     return _net
 
 # @st.cache_data
-def conformal_prediction_regression(_x_cal, _y_cal, _net, alpha):
+def conformal_prediction_regression(_x_cal, _y_cal_preds, alpha,_y_cal):
     # print("Conformal prediction for regression")
-    x_test = torch.linspace(-.5, 1.5, 1000)[:, None]
-    y_preds = _net(x_test).clone().detach().numpy()
-    _y_cal_preds = _net(_x_cal).clone().detach()
+    # x_test = torch.linspace(-.5, 1.5, 1000)[:, None]
+    # y_preds = _net(x_test).clone().detach().numpy()
+    # _y_cal_preds = _net(_x_cal).clone().detach()
     
     resid = torch.abs(_y_cal - _y_cal_preds).numpy()
     
@@ -201,7 +201,7 @@ def conformal_prediction_regression(_x_cal, _y_cal, _net, alpha):
     q_val = np.ceil((1 - alpha) * (n + 1)) / n
     q = np.quantile(resid, q_val, method="higher")
 
-    return x_test, y_preds, q, resid
+    return q, resid
 
 def tensor_to_img(X_test, idx):
     # fig, ax = plt.subplots(figsize=(10, 5))

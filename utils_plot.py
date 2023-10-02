@@ -13,28 +13,29 @@ np.random.seed(42)
 
 # Function to plot generic data visualization
 
-def plot_generic(_x_train, _y_train, _x_cal, _y_cal, _add_to_plot=None, coef_1=0.3, coef_2=0.02, coef_3=0.1, coef_4=0.02):
+def plot_generic(x_train, y_train, x_cal, y_cal, _add_to_plot=None, coef_1=0.3, coef_2=0.02, coef_3=0.1, coef_4=0.02):
     # print("running plot_generic")
     fig, ax = plt.subplots(figsize=(10, 5))
-    plt.xlim([-.5, 1.5])
-    plt.ylim([-1.5, 2.5])
+    # plt.xlim([-.5, 1.5])
+    # plt.ylim([-1.5, 2.5])
     plt.xlabel("X", fontsize=30)
     plt.ylabel("Y", fontsize=30)
     plt.title("Plot of Training and Calibration Data with True Function", fontsize=20)
 
     # Generate true function curve
-    x_true = np.linspace(-.5, 1.5, 1000)
-    y_true = coef_1 * np.sin(2 * np.pi * x_true) + coef_2 * np.cos(4 * np.pi * x_true) + coef_3 * x_true
-    print(_x_train.shape, _y_train.shape, _x_cal.shape, _y_cal.shape)
-
+    # x_true = np.linspace(-.5, 1.5, 1000)
+    # y_true = coef_1 * np.sin(2 * np.pi * x_true) + coef_2 * np.cos(4 * np.pi * x_true) + coef_3 * x_true
+    # print(x_train.shape, y_train.shape, x_cal.shape, y_cal.shape)
+    print("hello 2 2 2 2")
+    print(x_train.shape, y_train.shape, x_cal.shape, y_cal.shape)
     # Plot training data as green scatter points
-    ax.scatter(_x_train, _y_train, c='green', s=150, label="training data")
+    ax.scatter(x_train, y_train, c='green', s=150, label="training data")
 
     # Plot calibration data as red scatter points
-    ax.scatter(_x_cal, _y_cal, c='red', s=125, label="calibration data")
+    ax.scatter(x_cal, y_cal, c='red', s=125, label="calibration data")
 
     # Plot the true function as a blue line
-    ax.plot(x_true, y_true, 'b-', linewidth=3, label="true function")
+    # ax.plot(x_true, y_true, 'b-', linewidth=3, label="true function")
 
     # If additional plot elements are provided, add them using the '_add_to_plot' function
     if _add_to_plot is not None:
@@ -46,18 +47,21 @@ def plot_generic(_x_train, _y_train, _x_cal, _y_cal, _add_to_plot=None, coef_1=0
     return fig, ax
 
 
-def plot_predictions(_x_train, _y_train, _x_cal, _y_cal, _x_test, _y_preds, y_cal_preds, coef_1=0.3, coef_2=0.02, coef_3=0.1, coef_4=0.02):
+def plot_predictions(x_train, y_train, x_cal, y_cal, _x_test, _y_preds, y_cal_preds, coef_1=0.3, coef_2=0.02, coef_3=0.1, coef_4=0.02):
     # print("running predictions")
     def add_predictions(ax):
         # Plot the neural network prediction curve as a line
-        ax.plot(_x_test, _y_preds, 'y-', linewidth=3, label='neural net prediction')
-        
+        # ax.plot(_x_test, _y_preds, 'y-', linewidth=3, label='neural net prediction')
+        print(f"_y_preds: {_y_preds.shape}")
+        ax.plot(x_cal, y_cal_preds, 'y-', linewidth=3, label='neural net prediciton')
+
         #Plot Score Lines
-        ax.vlines(_x_cal[0], min(_y_cal[0], y_cal_preds[0]) ,max(_y_cal[0], y_cal_preds[0]), color='black', linestyle='dashed', linewidth=2, alpha = 0.7, label = "Scores")
-        for i in range(1, len(_x_cal)):
-            ax.vlines(_x_cal[i], min(_y_cal[i], y_cal_preds[i]) ,max(_y_cal[i], y_cal_preds[i]), color='black', linestyle='dashed', linewidth=2, alpha = 0.7)
-              
-    fig, ax = plot_generic(_x_train, _y_train, _x_cal, _y_cal, add_predictions, coef_1, coef_2, coef_3, coef_4)
+        ax.vlines(x_cal[0], min(y_cal[0], y_cal_preds[0]) ,max(y_cal[0], y_cal_preds[0]), color='black', linestyle='dashed', linewidth=2, alpha = 0.7, label = "Scores")
+        for i in range(1, len(x_cal)):
+            ax.vlines(x_cal[i], min(y_cal[i], y_cal_preds[i]) ,max(y_cal[i], y_cal_preds[i]), color='black', linestyle='dashed', linewidth=2, alpha = 0.7)
+    print("hello")
+
+    fig, ax = plot_generic(x_train, y_train, x_cal, y_cal, add_predictions, coef_1, coef_2, coef_3, coef_4)
     plt.title("Plot of Training, Calibration, and Neural Network Predictions", fontsize=15)
     return fig, ax
 
@@ -128,38 +132,42 @@ def show_samples(X_test, idxs, pred_sets, net, q, alpha):
     st.pyplot(fig)
 
 
-def plot_conformal_prediction( x_train, y_train, x_cal, y_cal, x_test, y_preds, q, coef_1, coef_2, coef_3, alpha):
+def plot_conformal_prediction(x_train, y_train, x_cal, y_cal, y_cal_preds, q, alpha, scaler, net1):
     # print("running conformal prediction")
-    x_true = np.linspace(-.5, 1.5, 1000)
-    y_true = coef_1 * np.sin(2 * np.pi*(x_true)) + coef_2 * np.cos(4 * np.pi *(x_true )) + coef_3 * x_true
+    x_true = np.arange(1891, 2020, 4)
+    x_true_scale = scaler.transform(x_true.reshape(-1, 1))
+    x_true_scale = torch.from_numpy(x_true_scale).float()
+    y_true = net1(x_true_scale).detach().numpy()
+    print(y_true)
+    # y_true = coef_1 * np.sin(2 * np.pi*(x_true)) + coef_2 * np.cos(4 * np.pi *(x_true )) + coef_3 * x_true
     fig, ax = plt.subplots(figsize=(10, 5))
-    plt.xlim([-.5, 1.5])
-    plt.ylim([-1.5, 2.5])
+    # plt.xlim([-.5, 1.5])
+    # plt.ylim([-1.5, 2.5])
     plt.xlabel("X", fontsize=30)
     plt.ylabel("Y", fontsize=30)
 
     ax.plot(x_true, y_true, 'b-', linewidth=3, label="true function")
     ax.scatter(x_train, y_train, c='g', s=150, label="training data")
     ax.scatter(x_cal, y_cal, c='r', s=125, label="calibration data")
-    ax.plot(x_test, y_preds, '-', linewidth=3, color="y", label="predictive mean")
-    ax.fill_between(x_test.ravel(), y_preds - q, y_preds + q, alpha=0.6, color='y', zorder=5)
+    # ax.plot(x_test, y_preds, '-', linewidth=3, color="y", label="predictive mean")
+    ax.fill_between(x_true.ravel(), y_true - q, y_true + q, alpha=0.6, color='y', zorder=5)
 
     plt.legend(loc='best', fontsize=15, frameon=False)
     st.write("The prediction interval is calculated as:")
     st.latex(r"\hat{C}(X_{n+1}) = [ \hat{f}(x_{n+1}) - {q_{val}}, \, \hat{f}(x_{n+1}) + {q_{val}} ]")
     
-    cov = np.mean(((y_preds - q) <= y_true) * ((y_preds + q) >= y_true))
+    # cov = np.mean(((y_cal_preds - q) <= y_cal) * ((y_cal_preds + q) >= y_cal))
     # s = r"Below is the plot of the predictions with uncertainty bands. We want the uncertainty band to\
     #     contain (1-$\alpha$) = " + f"{1-alpha:.2%}" + " of the ground truth. Empirically, the prediction set\
     #     contains " + f"{cov:.2%}" + " of the ground truth."
     # st.write(s)
-    s = r"""Below is the plot of the predictions with uncertainty bands. We want the uncertainty band to
-        contain <br>(1-$\alpha$) = <span style='font-size:20px;'>""" + f"{1-alpha:.2%}" + """</span> of the ground truth. 
-        Empirically, the prediction set contains <span style='font-size:20px;'>""" + f"{cov:.2%}" + """</span> of the ground truth."""
+    # s = r"""Below is the plot of the predictions with uncertainty bands. We want the uncertainty band to
+    #     contain <br>(1-$\alpha$) = <span style='font-size:20px;'>""" + f"{1-alpha:.2%}" + """</span> of the ground truth. 
+    #     Empirically, the prediction set contains <span style='font-size:20px;'>""" + f"{cov:.2%}" + """</span> of the ground truth."""
 
-    st.markdown("<div style=\"text-align: justify;\">", unsafe_allow_html=True)
-    st.markdown(s, unsafe_allow_html=True)
-    st.markdown("</div>", unsafe_allow_html=True)
+    # st.markdown("<div style=\"text-align: justify;\">", unsafe_allow_html=True)
+    # st.markdown(s, unsafe_allow_html=True)
+    # st.markdown("</div>", unsafe_allow_html=True)
 
     plt.title("Plot of confidence interval for the conformal prediction", fontsize=15)
     st.pyplot(fig)
