@@ -4,8 +4,13 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Conformal Prediction: A Brief Overview</title>
+  <title>Conformal Prediction: A Visual Introduction</title>
   <script defer src="js/template.v2.js"></script>
+
+  <script type="text/javascript" async
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML">
+  </script>
+
   <link rel="stylesheet" type="text/css" href="css/styles.css">
 
 </head>
@@ -15,7 +20,7 @@
   <d-front-matter>
     <script id='distill-front-matter' type="text/json">
       {
-        "title": "Conformal Prediction: A Brief Overview",
+        "title": "Conformal Prediction: A Visual Introduction",
         "description": "Uncertainty Estimation for Predictions in Machine Learning.",
         "authors": [{
             "author": "Mihir Agarwal",
@@ -62,221 +67,272 @@
   </d-front-matter>
 
   <d-title style="padding-bottom: 0">
-    <p>Uncertainty Estimation for Predictions in Machine Learning</p>
+    <!-- <p>Uncertainty Estimation for Predictions in Machine Learning</p> -->
   </d-title>
 
   <d-byline></d-byline>
 
   <d-article style="overflow-x: unset;">
+    
+    <h1>Introduction</h1>
     <p>
-      Conformal Prediction is a powerful framework in machine learning that provides a well-calibrated of 
-      uncertainty in predictions. Conformal prediction can construct prediction intervals that quantify the 
-      range of potential outcomes even for point estimate models.
+        Understanding the nuances of uncertainty is pivotal in numerous domains, ranging from financial forecasting to healthcare diagnostics and autonomous vehicle control. The accurate quantification of uncertainty enables robust decision-making and engenders trust in machine learning models. For instance, in medical settings, a false negative could result in untreated disease progression, while a false positive might lead to unnecessary treatments—both with life-altering implications.
+    </p>
+
+    <p> <!-- Add citation in this paragraph  -->
+        To illustrate, consider a scenario where a machine learning model was fine-tuned to classify green apples and oranges. Utilizing the fast.ai<sup><a href="#References"></a></sup> library, a ResNet18 model was deployed and fed a myriad of images containing these fruits. However, when exposed to images of other objects that were green—such as frogs, green tennis balls, and even green oranges—the model overwhelmingly classified these as 'green apples' with high confidence. You can see the examples as follows:
     </p>
 
     <p>
-      The lack of uncertainty quantification in machine learning models, particularly neural networks, 
-      poses challenges in decision making and trust. Let us consider a scenario where we fine-tuned a 
-      ResNet18 model for binary classification, distinguishing between green apple and orange images. 
-      The model exhibited good accuracy in this task, effectively identifying the fruit type in question. 
-      However, when presented with the image of a frog, the model confidently classified the image as a 
-      green apple. This example shows the critical need for uncertainty quantification in machine learning.
+        <ul><li>Tennis ball and frog images section</li></ul>
     </p>
 
-    <ul><li>Frog Image</li></ul>
-
-    <p>
-      Understanding and assessing a model's level of certainty in its predictions is essential, especially
-      in domains where erroneous, overly confident predictions can have dire consequences, such as medical
-      diagnostics. To navigate these challenges effectively, we must have insight into how certain or 
-      uncertain our model is about its predictions before proceeding with decisions. Conformal prediction's
-      distribution-free nature makes it robust without strong assumptions about the data distribution 
-      or the model. This instills confidence in the reliability of model predictions.
+    <p> <!-- Add citation in this paragraph  -->
+        This example vividly illustrates the pitfalls of biased training and the lack of uncertainty quantification. A traditional classification model would provide point estimates—single labels with associated probabilities—that could be misleading. Such deterministic outputs can have far-reaching consequences, from flawed recommendations to incorrect automated decisions.
     </p>
 
     <p>
-      The significance of conformal prediction lies in its ability to provide a confidence level
-      for the predictions, allowing users to understand the reliability of the model's output. This is
-      especially crucial in critical applications where understanding the uncertainty is essential.
+        Conformal Prediction is an efficacious framework in machine learning that delivers well-calibrated measures of uncertainty associated with predictions. It extends beyond the provision of mere point estimates, constructing prediction intervals that encapsulate the realm of plausible outcomes.
     </p>
 
-    <ol>
-      <li><strong>Data Processing:</strong> Split the training data into train and calibration sets.</li>
-      <li><strong>Model Predictions:</strong> Use a pre-trained model <d-math>f(x)</d-math> to get predictions.</li>
-      <li><strong>Score Function:</strong> Define a score function <d-math>((f(x), y))</d-math> to measure prediction discrepancy.</li>
-      <li><strong>Quantile Computation:</strong> Compute quantile <d-math>q_{val}</d-math> based on calibration data and confidence level.</li>
-      <li><strong>Prediction Intervals:</strong> Form prediction intervals for new examples using quantile <d-math>q_{val}</d-math>.</li>
-    </ol>
+    <p>
+        The absence of uncertainty quantification in many machine learning models, especially neural networks, presents obstacles in decision-making processes and undermines trustworthiness. It is imperative, therefore, to comprehend and assess the confidence level of a model’s predictions.
+    </p>
 
-    <h1>Conformal Predictions for Regression</h1>
+    <p>
+        Conformal Prediction is both robust and computationally efficient, eliminating the need for data or model-specific assumptions. Its computational complexity can be as low as O(n), outperforming Bayesian methods like MC Dropout.
+    </p>
+
+    <p>
+        For any test sample \((\hat{X}_{n+1}, \hat{Y}_{n+1})\), the calculated uncertainty bands will satisfy the following property:
+    </p>
+
+    <p align = "center">
+        \[
+        \quad P(\hat{Y}_{n+1} \in \hat{C}(X_{n+1})) \geq 1 - \alpha
+        \]
+    </p>
+
+    <p>
+        This means that with probability at least \(1 - \alpha\), the computed uncertainty band \(\hat{\mathcal{X}}_{n+1}\) and \(\hat{C}(x_{n+1})\) around the point estimate \(\hat{x}_{n+1}\) and \(\hat{y}_{n+1}\) will contain the true unknown value \(x_{n+1}\) and \(y_{n+1}\). Here, \(\alpha\) is a user-chosen error rate.
+        <br>
+        This mathematical guarantee on prediction intervals makes it invaluable in mission-critical applications.
+    </p>
+
+    <h3>
+        How Conformal Prediction Works
+    </h3>
+
+    <p>
+        <ol>
+            <li><strong>Data Split:</strong> Divide data into a Training and a Calibration Set.</li>
+            <li><strong>Model Training:</strong> Train your model on the Training Set.</li>
+            <li><strong>Scoring Rule:</strong> Create a rule to evaluate model predictions.</li>
+            <li><strong>Calibration:</strong> Fine-tune the model on the Calibration Set.</li>
+            <li><strong>Confidence Level:</strong> Set a desired confidence level.</li>
+            <li><strong>Future Predictions:</strong> Make new predictions with confidence levels.</li>
+        </ol>
+    </p>
+
+    <h1>
+        Conformal Prediction for Regression
+    </h1>
+
+    <p>
+        In conformal prediction for regression, we aim to construct prediction intervals around our point estimates to offer a statistically valid level of confidence. The method leverages a calibration dataset to compute 'conformity scores,' which help us rank how well the model's predictions align with actual outcomes. These scores, in turn, guide the creation of prediction intervals with a desired coverage probability. Thus, conformal prediction serves as a tool for robust and interpretable prediction intervals.
+    </p>
+
+    <p> <!-- Add citation in this paragraph  -->
+        This dataset captures the pace of Olympic Gold Medal Marathon winners from 1896 to the present. The 1904 outlier is due to organizational issues. The objective is to model and understand the trend over the years.
+    </p>
+
+    <h3>
+        Model
+    </h3>
+
+    <p>
+        The model, which is a Multi Layer Perceptron (MLP), will be trained on the training data and used to generate predictions on the calibration data.<br>
+        The calibration data is used to estimate the quantiles (\(q_{\text{val}}\)) for the prediction intervals. You can choose the number of calibration data points (\(n\)) using the slider below.
+    </p>
+
+    <p>
+        <ul><li>Calibration Points Slider and Plot of Training, Calibration and Neural Network Predictions</li></ul>
+    </p>
+
+    <p align = "center">
+        \[
+        s_i = |y_i - \hat{y}_i|
+        \]
+    </p>
+
+    <p>
+        The score function \(s_i\) represents the absolute difference between the true output \(y_i\) and the model's predicted output \(\hat{y}_i\) for each calibration data point \(x_i\). It measures the discrepancy between the true values and their corresponding predictions, providing a measure of model fit to the calibration data.
+    </p>
+
+    <p>
+        Use the below slider to choose the error rate \(\alpha\). With probability \(1 - \alpha\), our computed uncertainty band \(\hat{\mathcal{C}}(\hat{x}_{n+1})\) will contain the true value \(\hat{y}_{n+1}\).
+    </p>
+
+    <p>
+        <ul><li>Alpha Slider and Histogram Plot</li></ul>
+    </p>
+
+    <p>
+        We compute \(q_{\text{val}}\) by calculating the \(\lceil \frac{(n+1)(1-\alpha)}{n} \rceil\)th quantile of the conformity scores.
+    </p>
+    <p align="center">
+        \[
+        q_{\text{val}} = 1.2391
+        \]
+    </p>
+
+    <p>
+        The prediction interval is calculated as:
+    </p>
+    <p align = "center">
+        \[
+        \hat{\mathcal{C}}(\hat{x}_{n+1}) = \left[ \hat{f}(\hat{x}_{n+1}) - q_{\text{val}}, \hat{f}(\hat{x}_{n+1}) + q_{\text{val}} \right]
+        \]
+    </p>
+
+    <p>
+        <ul><li>Prediction Plot</li></ul>
+    </p>
+
+    <p> <!-- Add citation in this paragraph  -->
+        Alan Turing, often considered the father of modern computing, was also a formidable athlete. He completed a marathon—covering a distance of 26 miles and 385 yards—in just 2 hours, 46 minutes, and 3 seconds. This performance equates to an impressive pace of approximately <b>3.94 minutes per kilometer</b>. Utilizing conformal prediction, we aim to estimate whether Turing would have won a hypothetical Olympic gold medal in the marathon had the Olympics been held in 1946.
+    </p>
     
     <p>
-      Conformal prediction in regression provides prediction intervals that quantify
-      the uncertainty associated with the model's predictions.
+        <ul><li>Newspaper Cutting</li></ul>
     </p>
 
     <p>
-      The process involves 2 steps:
+        The model predicts that the time for the Olympic gold medalist in 1946 would have been 3.55 minutes. 
+        With a significance level of \(\alpha = 0.16\), the uncertainty band calculated using conformal prediction ranges from 2.32 to 4.79 minutes. <br>
+        Therefore, based on this model, Alan Turing would have won the gold medal.
+    </p>
 
-      <ol>
-        <li>
-          First, we train a regression model on a training dataset.
-        </li>
-        <li>Next, we use a calibration dataset to estimate the quantiles <d-math>(q_{val})</d-math> based on a chosen 
-            confidence level for the prediction intervals. This represents the proportion of times the 
-            intervals will contain the true target value for future test instances.
-        </li>
-      </ol>
+    <h1>
+        Conformal Prediction for Classification
+    </h1>
 
+    <p>
+        In the realm of regression analysis, the model generates continuous uncertainty bands around the predicted values, offering an interval estimation of the output variable. However, as we transition to classification problems, the nature of the output changes substantively. In classification, the model generates discrete outputs, which are class probabilities. The prediction set now takes the form of a discrete subset of the available classes, mathematically represented as:
+    </p>
+
+    <p align = "center">
+        \( \hat{C}(X_{n+1}) \subseteq \{1, \ldots, K\} \)
     </p>
 
     <p>
-      To compute the prediction intervals, we calculate the residuals for the calibration dataset. The quantile of 
-      these residuals based on the chosen confidence level determines the width of the prediction intervals, 
-      reflecting the uncertainty in the model's predictions.
+        In this formalism, \( \hat{C}(X_{n+1}) \) is the prediction set corresponding to a new input \( \hat{X}_{n+1} \), and \( K \) signifies the total number of unique classes.
     </p>
 
-    <h3>Function</h3>
+    <p>
+        We will use the MNIST dataset. The 60,000 training samples are split into two parts: the training set, which consists of 59950 images, and the calibration set, which has 50 images. The test set consists of 10k images. For training, we will use a simple Multi-layer Perceptron. The test accuracy of the model is <b>0.912</b>.
+    </p>
+
+    <h3>
+        How to calculate conformity scores?
+    </h3>
+
+    <p>
+        The method of calculating conformity scores is a modelling decision. Here, we will use a simple method based on the softmax scores. The score is calculated by the following formula:
+    </p>
+
+    <p>
+        \[ s_i = 1 - \hat{\pi}_{x_i}(y_i) \]
+    </p>
+
+    <p>
+        For a sample \((x_i, y_i)\) from the calibration set, where \(\hat{\pi}_{x_i}(y_i)\) represents the softmax score of the true class \((y_i)\), the sample score \(s_i\) is equal to \(1\) minus the softmax output of the true class. If the softmax value of the true class is low, it means that the model is uncertain. The score in such a case will be high.
+    </p>
+
+    <p>
+        After calculating the scores from the calibration set, we choose an error rate \(\alpha\). The probability that the prediction set contains the correct class will be approximately \(1 - \alpha\). If \(\alpha = 0.05\), then the probability that the prediction set contains the true class is \(0.95\).
+    </p>
+
+    <p>
+        We will get the prediction set for a test sample \((\hat{x}_{n+1}, \hat{y}_{n+1})\) \((x_{n+1}, y_{n+1})\) by:
+    </p>
+    <p>
+        \[
+        \hat{\mathcal{C}}(x_{n+1}) = \left\{ y' \in \mathcal{K} : \hat{\pi}_{x_{n+1}}(y') \geq 1 - q_{\text{val}} \right\}
+        \]
+    </p>
+
+    <p>
+        The prediction set \(C\) consists of all the classes for which the softmax score is above a threshold value \(1 - q_{\text{val}}\). \(q_{\text{val}}\) is calculated as the \(\lceil \frac{(n+1)(1-\alpha)}{n} \rceil\)-th quantile of the scores from the calibration set.
+    </p>
+
+    <p>
+        <ul><li>Alpha Slider and Histogram Plot</li></ul>
+    </p>
+
+    <p>
+        For this value of \(\alpha\), the threshold value \(1 - q_{\text{val}}\) is {}.
+    </p>
+
+    <h3>
+        Understanding the Predicted Set
+    </h3>
+
+    <p>
+        The 'predicted set' refers to the set of classes that the model deems probable for the given input. A class is included in the predicted set if its softmax score is above a predetermined threshold. This threshold is influenced by the selected value of alpha and the computed quantile from the calibration data. The predicted set gives us an indication of the model's confidence in its classification. If the set contains multiple classes, it indicates that the model is less certain about the true class label.
+    </p>
+
+    <p>
+        For example, select an image from the below slider. The softmax scores for the classes can be seen in the plot on the right side. If the score is above the threshold value, then the class is in the predicted set.
+    </p>
+
+    <p>
+        <ul><li>Image Selector and Predictions</li></ul>
+    </p>
+
+    <p>
+        Prediction Set for this image: {}
+    </p>
+
+    <p>
+        In the above examples, the first 2 images are sourced from the Fashion-MNIST dataset. The model is uncertain about these images, which can be seen by the larger predicted set sizes. This is a property we want, as the size of the predicted set indicates the model's uncertainty. In contrast, for the last 2 images, the predicted set contains only one element because the model is confident about its prediction. This is reflected by the high softmax scores of the true classes.
+    </p>
+
+    <p>
+        The average size of prediction sets for all the images from the test set is {}
+    </p>
+
+    <p>
+        <b>What does the average size mean?</b><br>
+        We observe that the average size of the prediction set decreases when value of alpha is increased. This is because of our method for computing conformity scores, where we only take into account the softmax scores of the correct class when calculating \(\hat{q}\). With increasing alpha, the softmax scores for the classes decreases and thus there are lesser scores above the threshold value.
+    </p>
+
+    <h1>
+        Conclusion
+    </h1>   
+    <p>
+        As we navigated the complexities and intricacies of Conformal Prediction, what emerged is a technique that is not just innovative but foundational to modern machine learning practices. Its distinctive characteristics—ranging from applicability in high-stakes domains to its model-agnostic nature—demonstrate its potential to revolutionize the way we think about, and apply, machine learning.
+    </p>
+
+    <h3>
+        Implications in High-Stakes Domains
+    </h3>
+    <p>
+        Conformal Prediction isn't merely a theoretical novelty; its implications are deeply impactful, particularly in sectors where prediction reliability is paramount, such as medical diagnostics, autonomous vehicles, and finance. Traditional machine learning methods often supply a point estimate without a gauge of prediction uncertainty. However, in life-critical applications like diagnosing illnesses, a mere point estimate is insufficient; medical practitioners require a measure of certainty accompanying each diagnosis.
+    </p>
+
+    <h3>
+        Model-Agnostic Nature
+    </h3>
+    <p>
+        One of the most salient features of Conformal Prediction is its model-agnosticism. This is a breakthrough for the ML community, which often struggles with integrating uncertainty quantification techniques that are specific to particular types of models. The model-agnosticism of Conformal Prediction means that it can be applied across various machine learning algorithms without needing algorithm-specific tuning. This is not only computationally efficient but also invaluable for researchers who may be dealing with multiple types of models.
+    </p>
     
-    <ul>
-      <li>Slider  for Noise</li>
-      <li>Slider for Number of Calibration Points</li>
-    </ul>
-
-    <p>${\(f(x, \epsilon) = 0.30 \sin(2\pi x) + 0.30 \cos(4\pi x) + 0.10x + \epsilon\)}$</p>
-    
-    <p>Plot of Calibration and Training Data</p>
-
-    <h3>Model</h3>
-
+    <h3>
+        Data Distribution Independence
+    </h3>
     <p>
-      The model will be trained on the training data and used to generate predictions on the calibration data.
-      The calibration data is used to estimate the quantiles <d-math>(q_{val})</d-math> for the prediction intervals.
-    </p>
-
-    <ul>
-      <li>Plot of Training, Calibration and Neural Network Predictions</li>
-      <li>s_{i} = |y_{i} - \haty_{i}|</li>
-    </ul>
-
-    <p> <!-- y hat error -->
-      The score function <d-math>s_{i}</d-math> represents the absolute difference between the true output
-      <d-math>y_{i}</d-math> and the model's predicted output $y\hat_{i}$ for each calibration data 
-      point <d-math>x_{i}</d-math> It measures the discrepancy between the true values and their corresponding 
-      predictions, providing a measure of model fit to the calibration data.
-    </p>
-
-    <ul>
-      <li>Alpha Slider</li>
-      <li>Histogram</li>
-    </ul>
-
-    <p>
-      The <d-math>q^{th}</d-math> quantile is:
-      <ul>
-        <li>
-          <d-math>q_{value} = </d-math>
-        </li>
-      </ul>
-      
-      The prediction interval is calculated as: <br>
-        <d-math>\hat{C}(X_{n+1}) = [\hat{f}(x_{n+1}) - q_{val}, \, \hat{f}(x_{n+1}) + q_{val} ]</d-math>
-
-    </p>
-
-    <p>
-      Below is the plot of the predictions with uncertainty bands. We want the uncertainty band to
-      contain <d-math>1 - \alpha</d-math> = {percentage}% of the ground truth. Empirically, the prediction
-      set contains {percentage}% of the ground truth.
-    </p>
-
-    <ul>
-      <li>Plot of Confidence Interval for Conformal Prediction</li>
-    </ul>
-
-    <h1>Conformal Predictions in Classification</h1>
-
-    <p>
-      In regression, we had the predictions as continuous uncertainty bands. Now for classification, 
-      the outputs from the model are class probabilities, so the prediction sets are now discrete sets of the type: <br>
-
-          \hat{C}(X_{n+1})\subseteq \{1,\dots,K\}
-
-      <br>where <d-math>K</d-math> is the number of classes. 
-      This change in the output affects how we calculate the conformity scores.
-      
-    </p>
-
-    <p>
-      We will use the MNIST dataset. The <d-math>60k</d-math> training samples are split into two parts: 
-      the training set, which consists of <d-math>59500</d-math> images, and the calibration set, which has <d-math>500</d-math> images. 
-      The test set consists of <d-math>10k</d-math> images.
-    </p>
-
-    <p>For training, we will use a simple Multi-Layer Perceptron. Test accuracy of the model is {percentage}%</p>
-
-    <h3>How To Calculate Conformity Scores?</h3>
-
-    <p>
-      The method of calculating conformity scores is a modelling decision. Here, we will use a simple method 
-      based on the softmax scores. The score is calculated by the following formula:
-      $s_i=1-\hat{\pi}_{x_i}(y_i)$ for a sample <d-math>(x_{i}, y_{i})</d-math> from the
-      calibration set.
-    </p>
-
-    <p>
-      The sample score <d-math>s_{i}</d-math> is equal to 1 minus the softmax output of the true class. 
-      If the softmax value of the true class is low, it means that the model is uncertain. 
-      The score in such a case will be high.
-    </p>
-
-    <p>
-      After calculating the scores from the calibration set, we choose an error rate <d-math>\alpha</d-math>. 
-      The probability that the prediction set contains the correct class will be approximately <d-math>1-\alpha</d-math>.
-      If <d-math>\alpha = 0.05</d-math>, then the probability that the prediction set contains the true class is <d-math>0.95</d-math>.
-    </p>
-
-    <p>
-      We will get the prediction set for a test sample <d-math>(x_{n+1}, y_{n+1})</d-math> by:
-
-      <ul><li>\hat{C}(x_{n+1})=\{y'\in K:\hat{\pi}_{x_{n+1}}(y') \ge 1-{q_{val}}\}</li></ul>
-    </p>
-
-    <p>
-      The prediction set <d-math>C</d-math> consists of all the classes for which the softmax
-      score is above a threshold value <d-math>1-q_{val}</d-math>. <d-math>q</d-math> is calculated as 
-      $\frac{{\lceil (1 - \alpha) \cdot (n + 1) \rceil}}{{n}}$
-    quantile of the scores from the calibration set.
-    </p>
-
-    <p>
-      <ul>
-        <li>Alpha Slider</li>
-        <li>q = \frac{{\lceil (1 - \alpha) \cdot (n + 1) \rceil}}{{n}} = {value}</li>
-        <li>Histogram</li>
-      </ul>
-    </p>
-
-    <p>
-      For this value of alpha, the threshold value <d-math>1-q_{val}</d-math> is {value}.
-      For example, select an image from below. The softmax scores for the classes can be seen in the plot 
-      on the right side. If the score is above the threshold value, then the class is in the predicted set.
-
-      <ul>
-        <li>Image Selection Slider</li>
-        <li>Sample Image and Class Scores</li>
-        <li>Prediction set for this image: </li>
-        <li>The average size of prediction sets for all the images from the test set is{number}</li>
-      </ul>
-
-    </p>
-
-    <p>
-      <i>What does the average size mean?</i> We observe that the average size of the prediction set 
-      decreases when value of alpha is increased. This is because of our method for computing 
-      conformity scores, where we only take into account the softmax scores of the correct class 
-      when calculating 𝑞̂. With increasing alpha, the softmax scores for the classes decreases and thus 
-      there are lesser scores above the threshold value.
+        Conformal Prediction doesn't make strong assumptions about the data distribution, making it robust in the face of non-ideal or 'dirty' data, often encountered in real-world applications. This characteristic facilitates its application in diverse industries without the need for extensive data preprocessing or assumption validations.
     </p>
 
   </d-article>
