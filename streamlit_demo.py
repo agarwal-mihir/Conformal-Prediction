@@ -211,7 +211,7 @@ The objective is to model and understand the trend over the years.
     
     # fig, ax = plot_predictions(x_train, y_train, x_cal, y_cal, y_cal_preds, coef_1=coef_1, coef_2=coef_2, coef_3=coef_3, coef_4=coef_4)
     # st.pyplot(fig)
-    st.image(f'../Conformal-Prediction/Generated_Images/Regression_Prediction_Plot_{n_cal}.png')
+    st.image(f'./Generated_Images/Regression_Prediction_Plot_{n_cal}.png')
 
     st.latex(r"s_i = |y_i - \hat{y}_i|")
     
@@ -231,7 +231,7 @@ The objective is to model and understand the trend over the years.
     # q, resid = conformal_prediction_regression(x_cal, y_cal_preds,alpha, y_cal)
     q = loaded_dict[f"{n_cal}"][f"{alpha}"]["q"]
 
-    st.image(f'../Conformal-Prediction/Generated_Images/Regression_Histogram_plot_{n_cal}_for_{alpha}.png')
+    st.image(f'./Generated_Images/Regression_Histogram_plot_{n_cal}_for_{alpha}.png')
     # histogram_plot(resid, q, alpha)
     st.write(r"Now, we compute $q_{val}$ by calculating the $\left\lceil \frac{(n+1)(1-\alpha)}{n} \right\rceil$th quantile of the conformity scores.")
     # st.latex(r"q_{{\text{{value}}}} = {:.4f}".format(q))
