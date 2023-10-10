@@ -6,63 +6,102 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import torchvision.datasets as datasets
 import torchvision.transforms as transforms
-
+import matplotlib as mpl
+# mpl.rcParams.update(mpl.rcParamsDefault)
+# plt.rcParams['text.usetex'] = True
 # Set random seeds for reproducibility
 torch.manual_seed(42)
 np.random.seed(42)
 
 # Function to plot generic data visualization
 
-def plot_generic(x_train, y_train, x_cal, y_cal, _add_to_plot=None, coef_1=0.3, coef_2=0.02, coef_3=0.1, coef_4=0.02):
+# def plot_generic(x_train, y_train, x_cal, y_cal, _add_to_plot=None, coef_1=0.3, coef_2=0.02, coef_3=0.1, coef_4=0.02):
 
+#     fig, ax = plt.subplots(figsize=(10, 5))
+#     # plt.xlim([1975, 2020])
+#     # plt.ylim([2, 5])
+#     plt.xlabel("Year", fontsize=20)
+#     plt.ylabel("Pace min/km", fontsize=20)
+#     plt.title("Plot of Training and Calibration Data with True Function", fontsize=20)
+
+#     # Generate true function curve
+#     # x_true = np.linspace(-.5, 1.5, 1000)
+#     # y_true = coef_1 * np.sin(2 * np.pi * x_true) + coef_2 * np.cos(4 * np.pi * x_true) + coef_3 * x_true
+
+
+
+#     # Plot training data as green scatter points
+#     ax.scatter(x_train, y_train, c='green', s=150, label="training data")
+
+#     # Plot calibration data as red scatter points
+#     ax.scatter(x_cal, y_cal, c='red', s=125, label="calibration data")
+
+#     # Plot the true function as a blue line
+#     # ax.plot(x_true, y_true, 'b-', linewidth=3, label="true function")
+
+#     # If additional plot elements are provided, add them using the '_add_to_plot' function
+#     if _add_to_plot is not None:
+#         _add_to_plot(ax)
+
+#     # Add a legend to the plot
+#     plt.legend(loc='best', fontsize=15, frameon=False)
+
+#     return fig, ax
+
+
+# def plot_predictions(x_train, y_train, x_cal, y_cal, y_cal_preds, coef_1=0.3, coef_2=0.02, coef_3=0.1, coef_4=0.02):
+
+#     def add_predictions(ax):
+#         # Plot the neural network prediction curve as a line
+#         # ax.plot(_x_test, _y_preds, 'y-', linewidth=3, label='neural net prediction')
+
+#         ax.plot(x_cal, y_cal_preds, 'y-', linewidth=3, label='neural net prediciton')
+
+#         #Plot Score Lines
+#         ax.vlines(x_cal[0], min(y_cal[0], y_cal_preds[0]) ,max(y_cal[0], y_cal_preds[0]), color='black', linestyle='dashed', linewidth=2, alpha = 0.7, label = "Scores")
+#         for i in range(1, len(x_cal)):
+#             ax.vlines(x_cal[i], min(y_cal[i], y_cal_preds[i]) ,max(y_cal[i], y_cal_preds[i]), color='black', linestyle='dashed', linewidth=2, alpha = 0.7)
+
+
+#     fig, ax = plot_generic(x_train, y_train, x_cal, y_cal, add_predictions, coef_1, coef_2, coef_3, coef_4)
+#     plt.title("Plot of Training, Calibration, and Neural Network Predictions", fontsize=15)
+#     return fig, ax
+
+def plot_generic(x_train, y_train, x_cal, y_cal, _add_to_plot=None, coef_1=0.3, coef_2=0.02, coef_3=0.1, coef_4=0.02):
     fig, ax = plt.subplots(figsize=(10, 5))
-    # plt.xlim([1975, 2020])
-    # plt.ylim([2, 5])
     plt.xlabel("Year", fontsize=20)
     plt.ylabel("Pace min/km", fontsize=20)
     plt.title("Plot of Training and Calibration Data with True Function", fontsize=20)
 
-    # Generate true function curve
-    # x_true = np.linspace(-.5, 1.5, 1000)
-    # y_true = coef_1 * np.sin(2 * np.pi * x_true) + coef_2 * np.cos(4 * np.pi * x_true) + coef_3 * x_true
-
-
-
     # Plot training data as green scatter points
-    ax.scatter(x_train, y_train, c='green', s=150, label="training data")
+    ax.scatter(x_train, y_train, c='green', s=150, label="Training data")
 
     # Plot calibration data as red scatter points
-    ax.scatter(x_cal, y_cal, c='red', s=125, label="calibration data")
-
-    # Plot the true function as a blue line
-    # ax.plot(x_true, y_true, 'b-', linewidth=3, label="true function")
+    ax.scatter(x_cal, y_cal, c='red', s=125, label="Calibration data")
 
     # If additional plot elements are provided, add them using the '_add_to_plot' function
     if _add_to_plot is not None:
         _add_to_plot(ax)
 
+    # Add grid lines for easier interpretation
+    ax.grid(True, linestyle='--', linewidth=0.5, color='gray', alpha=0.6)
+    
     # Add a legend to the plot
     plt.legend(loc='best', fontsize=15, frameon=False)
 
     return fig, ax
 
-
 def plot_predictions(x_train, y_train, x_cal, y_cal, y_cal_preds, coef_1=0.3, coef_2=0.02, coef_3=0.1, coef_4=0.02):
-
     def add_predictions(ax):
-        # Plot the neural network prediction curve as a line
-        # ax.plot(_x_test, _y_preds, 'y-', linewidth=3, label='neural net prediction')
-
-        ax.plot(x_cal, y_cal_preds, 'y-', linewidth=3, label='neural net prediciton')
-
-        #Plot Score Lines
-        ax.vlines(x_cal[0], min(y_cal[0], y_cal_preds[0]) ,max(y_cal[0], y_cal_preds[0]), color='black', linestyle='dashed', linewidth=2, alpha = 0.7, label = "Scores")
+        ax.plot(x_cal, y_cal_preds, 'y-', linewidth=3, label='Neural Net Prediction')
+        ax.vlines(x_cal[0], min(y_cal[0], y_cal_preds[0]), max(y_cal[0], y_cal_preds[0]), color='black', linestyle='dashed', linewidth=2, alpha=0.7, label="Scores")
+        
         for i in range(1, len(x_cal)):
-            ax.vlines(x_cal[i], min(y_cal[i], y_cal_preds[i]) ,max(y_cal[i], y_cal_preds[i]), color='black', linestyle='dashed', linewidth=2, alpha = 0.7)
-
+            ax.vlines(x_cal[i], min(y_cal[i], y_cal_preds[i]), max(y_cal[i], y_cal_preds[i]), color='black', linestyle='dashed', linewidth=2, alpha=0.7)
 
     fig, ax = plot_generic(x_train, y_train, x_cal, y_cal, add_predictions, coef_1, coef_2, coef_3, coef_4)
     plt.title("Plot of Training, Calibration, and Neural Network Predictions", fontsize=15)
+
     return fig, ax
 
 # @st.cache_data

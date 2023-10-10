@@ -19,11 +19,14 @@ from utils import get_simple_data_train, display_equation, train, get_data, get_
 from utils_plot import plot_generic, plot_predictions, histogram_plot, show_samples, plot_conformal_prediction
 from model import MLP, MLP1
 from PIL import Image
+import json
 # Set random seeds for reproducibility
 torch.manual_seed(42)
 np.random.seed(42)
 # plt.rcParams.update(bundles.icml2022())
-
+# plt.rcParams['text.usetex'] = True
+with open('nested_dict.json', 'r') as f:
+        loaded_dict = json.load(f)
 
 # Define the main function to create the Streamlit app
 def main():
@@ -155,7 +158,15 @@ valid level of confidence. The method leverages a calibration dataset to compute
 how well the model's predictions align with actual outcomes. These scores, in turn, guide the creation of prediction intervals 
 with a desired coverage probability. Thus, conformal prediction serves as a tool for robust and interpretable prediction intervals.
 </div>""", unsafe_allow_html=True)
-    
+    st.markdown("<br>", unsafe_allow_html=True)
+    st.markdown(f"Alan Turing, often considered the father of modern computing, was also a formidable athlete. He completed a marathon—covering a distance of 26 miles and 385 yards—in just 2 hours, 46 minutes, and 3 seconds<sup><a href='#references'>{references['olympic_data']}</a></sup>. This performance equates to an impressive pace of approximately **3.94 minutes per kilometer**. Utilizing conformal prediction, we aim to estimate whether Turing would have won a hypothetical Olympic gold medal in the marathon had the Olympics been held in 1946. Let's see if he wins the medal", unsafe_allow_html=True)
+
+    st.image('image_720.png')
+    st.markdown(
+    '<p style="color:grey; font-size:14px; text-align:center;">Figure: Newspaper Clipping of Alan Turing\'s Marathon time, '
+    '<a href="https://www.turing.org.uk/book/update/part6.html" style="color:grey; font-size:14px;">Source: Alan Turing Internet Scrapbook</a></p>',
+    unsafe_allow_html=True  # Make sure to enable this for rendering HTML
+)
     coef_1 = 0.3
     coef_2 = 0.3
     coef_3 = 0.1
@@ -184,25 +195,26 @@ The objective is to model and understand the trend over the years.
     x_train, y_train, x_cal, y_cal =  get_simple_data_train(n_cal)
     
     # Train the model (MLP) on the generated data
-    scaler = StandardScaler()
-    hidden_dim = 30
-    n_hidden_layers = 2
-    epochs = 1000
-    x_train_scaled = torch.tensor(scaler.fit_transform(x_train), dtype= torch.float)
+    # scaler = StandardScaler()
+    # hidden_dim = 30
+    # n_hidden_layers = 2
+    # epochs = 1000
+    # x_train_scaled = torch.tensor(scaler.fit_transform(x_train), dtype= torch.float)
 
-    net1 = MLP(hidden_dim=hidden_dim, n_hidden_layers=n_hidden_layers)
-    net1 = train(net1, (x_train_scaled, y_train), epochs=epochs)
+    # net1 = MLP(hidden_dim=hidden_dim, n_hidden_layers=n_hidden_layers)
+    # net1 = train(net1, (x_train_scaled, y_train), epochs=epochs)
 
-    x_cal_scaled = torch.tensor(scaler.transform(x_cal), dtype= torch.float)
-    y_cal_preds = net1(x_cal_scaled).clone().detach().numpy()
-    y_preds_46 = net1(torch.tensor(scaler.transform(np.array([1946]).reshape(-1,1)), dtype= torch.float)).clone().detach().numpy()
+    # x_cal_scaled = torch.tensor(scaler.transform(x_cal), dtype= torch.float)
+    # y_cal_preds = net1(x_cal_scaled).clone().detach().numpy()
+    # y_preds_46 = net1(torch.tensor(scaler.transform(np.array([1946]).reshape(-1,1)), dtype= torch.float)).clone().detach().numpy()
     
     
-    fig, ax = plot_predictions(x_train, y_train, x_cal, y_cal, y_cal_preds, coef_1=coef_1, coef_2=coef_2, coef_3=coef_3, coef_4=coef_4)
-    st.pyplot(fig)
-
+    # fig, ax = plot_predictions(x_train, y_train, x_cal, y_cal, y_cal_preds, coef_1=coef_1, coef_2=coef_2, coef_3=coef_3, coef_4=coef_4)
+    # st.pyplot(fig)
+    st.image(f'../Conformal-Prediction/Generated_Images/Regression_Prediction_Plot_{n_cal}.png')
 
     st.latex(r"s_i = |y_i - \hat{y}_i|")
+    
     
     st.markdown("<div style=\"text-align: right;\">", unsafe_allow_html=True)
     st.write("The score function $s_i$ represents the absolute difference between the true \
@@ -214,29 +226,25 @@ The objective is to model and understand the trend over the years.
     st.markdown(r"Use the below slider to choose the error-rate $\alpha$. With probability 1-$\alpha$, our computed uncertainty band $\hat{C}(X_{n+1})$ will contain the true value $Y_{n+1}$.")
     
     
-    alpha = st.slider(r"Select a value for $\alpha$:", min_value=0.15, max_value=1.0, step=0.001, value=0.16)
+    alpha = st.slider(r"Select a value for $\alpha$:", min_value=0.1, max_value=1.0, step=0.1, value=0.1)
 
-    q, resid = conformal_prediction_regression(x_cal, y_cal_preds,alpha, y_cal)
+    # q, resid = conformal_prediction_regression(x_cal, y_cal_preds,alpha, y_cal)
+    q = loaded_dict[f"{n_cal}"][f"{alpha}"]["q"]
 
-    histogram_plot(resid, q, alpha)
+    st.image(f'../Conformal-Prediction/Generated_Images/Regression_Histogram_plot_{n_cal}_for_{alpha}.png')
+    # histogram_plot(resid, q, alpha)
     st.write(r"Now, we compute $q_{val}$ by calculating the $\left\lceil \frac{(n+1)(1-\alpha)}{n} \right\rceil$th quantile of the conformity scores.")
     # st.latex(r"q_{{\text{{value}}}} = {:.4f}".format(q))
+    
     st.markdown(f'<span style=" top: 2px;font-size:50px;"><center> $q_{{\\text{{val}}}} = {q:.4f}$</center></span>', unsafe_allow_html=True)
-
-
-    plot_conformal_prediction(x_train, y_train, x_cal, y_cal, y_cal_preds, q, alpha, scaler, net1)
+    
+    y_preds_46 = loaded_dict[f"{n_cal}"][f"{alpha}"]["y_preds_46"]
+    # plot_conformal_prediction(x_train, y_train, x_cal, y_cal, y_cal_preds, q, alpha, scaler, net1)
     if(y_preds_46-q<=3.94 and  y_preds_46+q>=3.94):
         true_1 = "won"
     else:
         true_1 = "lost"
-    st.markdown(f"Alan Turing, often considered the father of modern computing, was also a formidable athlete. He completed a marathon—covering a distance of 26 miles and 385 yards—in just 2 hours, 46 minutes, and 3 seconds<sup><a href='#references'>{references['olympic_data']}</a></sup>. This performance equates to an impressive pace of approximately **3.94 minutes per kilometer**. Utilizing conformal prediction, we aim to estimate whether Turing would have won a hypothetical Olympic gold medal in the marathon had the Olympics been held in 1946.", unsafe_allow_html=True)
-
-    st.image('image_720.png')
-    st.markdown(
-    '<p style="color:grey; font-size:14px; text-align:center;">Figure: Newspaper Clipping of Alan Turing\'s Marathon time, '
-    '<a href="https://www.turing.org.uk/book/update/part6.html" style="color:grey; font-size:14px;">Source: Alan Turing Internet Scrapbook</a></p>',
-    unsafe_allow_html=True  # Make sure to enable this for rendering HTML
-)
+    
 
     st.write(r"The model predicts that the time for the Olympic gold medalist in 1946 would have been {:.2f} minutes. With a significance level of $\alpha = {:.2f}$, the uncertainty band calculated using conformal prediction ranges from {:.2f} to {:.2f} minutes. Therefore, based on this model, Alan Turing would have **{}** the gold medal.".format(y_preds_46, alpha, y_preds_46 - q, y_preds_46 + q, true_1))
     
