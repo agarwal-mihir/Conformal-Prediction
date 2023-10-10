@@ -226,7 +226,7 @@ The objective is to model and understand the trend over the years.
     st.markdown(r"Use the below slider to choose the error-rate $\alpha$. With probability 1-$\alpha$, our computed uncertainty band $\hat{C}(X_{n+1})$ will contain the true value $Y_{n+1}$.")
     
     
-    alpha = st.slider(r"Select a value for $\alpha$:", min_value=0.1, max_value=1.0, step=0.1, value=0.1)
+    alpha = st.slider(r"Select a value for $\alpha$:", min_value=0.1, max_value=1.0, step=0.1, value=0.4)
 
     # q, resid = conformal_prediction_regression(x_cal, y_cal_preds,alpha, y_cal)
     q = loaded_dict[f"{n_cal}"][f"{alpha}"]["q"]
@@ -274,7 +274,7 @@ The objective is to model and understand the trend over the years.
     net = train_model(net, train_data)
     
     
-    st.write("For training, we will use a simple Multi-layer Perceptron. The **test accuracy** of the model is", get_test_accuracy(X_test, y_test, net))
+    st.write("For training, we will use a simple Multi-layer Perceptron. The **test accuracy** of the model is: 0.9066")
     
     st.subheader("How to calculate Conformity Scores?")
     st.markdown("<div style=\"text-align: justify;\">The method of calculating conformity scores is a modelling decision. Here, we will use a simple \
@@ -302,13 +302,15 @@ The objective is to model and understand the trend over the years.
     
     n = len(X_calib)
     scores = get_scores(net, (X_calib, y_calib))
-    alpha = st.slider(r"Select a value for $\alpha$:", min_value=0.01, max_value=1.0, step=0.001, value=0.04)
+    alpha = st.slider(r"Select a value for $\alpha$:", min_value=0.1, max_value=1.0, step=0.1, value=0.1)
     q_val = np.ceil((1 - alpha) * (n + 1)) / n
     # st.latex(r"q_{\text{val}} = \frac{{\lceil (1 - \alpha) \cdot (n + 1) \rceil}}{{n}} = {:.4f}".format(q_val))
     st.latex(r"q_{{\text{{val}}}} = \frac{{\lceil (1 - \alpha) \cdot (n + 1) \rceil}}{{n}} = {:.4f}".format(q_val))
 
     q = np.quantile(scores, q_val, method="higher")
-    histogram_plot(scores, q, alpha)
+    # histogram_plot(scores, q, alpha)
+    st.image(f'./Generated_Images/Classification_Histogram_{alpha}.png')
+
     # st.pyplot(fig)
     st.markdown(r"For this value of alpha, the threshold value $1-q_{\text{val}}$ is " + f'<span style="font-size:20px;">{1-q:.4f}</span>', unsafe_allow_html=True)
     
