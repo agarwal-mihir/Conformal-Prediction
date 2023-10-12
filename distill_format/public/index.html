@@ -6,13 +6,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Conformal Prediction: A Visual Introduction</title>
   <script defer src="js/template.v2.js"></script>
+  <script defer src="js/frog_example.js"></script>
+  <script defer src="js/regression.js"></script>
 
   <script type="text/javascript" async
   src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML">
   </script>
 
   <link rel="stylesheet" type="text/css" href="css/styles.css">
-
 </head>
 
 <body>
@@ -83,9 +84,40 @@
         To illustrate, consider a scenario where a machine learning model was fine-tuned to classify green apples and oranges. Utilizing the fast.ai<sup><a href="#References"></a></sup> library, a ResNet18 model was deployed and fed a myriad of images containing these fruits. However, when exposed to images of other objects that were green—such as frogs, green tennis balls, and even green oranges—the model overwhelmingly classified these as 'green apples' with high confidence. You can see the examples as follows:
     </p>
 
-    <p>
-        <ul><li>Tennis ball and frog images section</li></ul>
-    </p>
+    <div>
+        <ul><li>Select one of the three images:</li></ul>
+        <div class="frog-container">
+            <div class="frog-column" style="flex: 3;">
+                <div class="frog-wrapper">
+                    <div class="frog-section">
+                        <div class="frog-image-preview selected" onclick="selectImage(0)">
+                            <img src="images/frog_tennis/0.png" alt="Tennis Balls">
+                            <!-- <p>Image 1</p> -->
+                        </div>
+                        <div class="frog-image-preview" onclick="selectImage(1)">
+                            <img src="images/frog_tennis/1.png" alt="Green Colored Oranges">
+                            <!-- <p>Image 2</p> -->
+                        </div>
+                        <div class="frog-image-preview" onclick="selectImage(2)">
+                            <img src="images/frog_tennis/2.png" alt="Frog">
+                            <!-- <p>Image 3</p> -->
+                        </div>
+                    </div>
+                    <div class="frog-section">
+                        <div class="frog-result">
+                            <div class="frog-image-container">
+                                <img id="frog-result-image" src="images/frog_tennis/example0.svg" alt="Result Image" style="max-width: 100%;">
+                            </div>
+                            <div id="frog-result-text">
+                                <!-- Result text will be updated dynamically -->
+                                The model assigns a high probability to categorize this tennis ball as a green apple due to its resemblance in both shape and color. However, this is an incorrect classification, and it is essential to incorporate a level of uncertainty into this prediction.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <p> <!-- Add citation in this paragraph  -->
         This example vividly illustrates the pitfalls of biased training and the lack of uncertainty quantification. A traditional classification model would provide point estimates—single labels with associated probabilities—that could be misleading. Such deterministic outputs can have far-reaching consequences, from flawed recommendations to incorrect automated decisions.
@@ -143,6 +175,14 @@
     </p>
 
     <p> <!-- Add citation in this paragraph  -->
+        Alan Turing, often considered the father of modern computing, was also a formidable athlete. He completed a marathon—covering a distance of 26 miles and 385 yards—in just 2 hours, 46 minutes, and 3 seconds[5]. This performance equates to an impressive pace of approximately 3.94 minutes per kilometer. Utilizing conformal prediction, we aim to estimate whether Turing would have won a hypothetical Olympic gold medal in the marathon had the Olympics been held in 1946. Let's see if he wins the medal.
+    </p>
+
+    <img src = "images/newspaper_cutting.png">
+    <p style="color:grey; font-size:14px; text-align:center;">Figure: Newspaper Clipping of Alan Turing\'s Marathon time,
+    <a href="https://www.turing.org.uk/book/update/part6.html" style="color:grey; font-size:14px;">Source: Alan Turing Internet Scrapbook</a></p>
+
+    <p> <!-- Add citation in this paragraph  -->
         This dataset captures the pace of Olympic Gold Medal Marathon winners from 1896 to the present. The 1904 outlier is due to organizational issues. The objective is to model and understand the trend over the years.
     </p>
 
@@ -155,61 +195,98 @@
         The calibration data is used to estimate the quantiles (\(q_{\text{val}}\)) for the prediction intervals. You can choose the number of calibration data points (\(n\)) using the slider below.
     </p>
 
-    <p>
-        <ul><li>Calibration Points Slider and Plot of Training, Calibration and Neural Network Predictions</li></ul>
-    </p>
+    <div>
+        <!-- Slider for n_cal -->
+        <div class="gif-slider">
+            <div align="center"> Number of Calibration points: <span id="slider-value">14<br></span></div>
+            <div class="controls">
+                <!-- Left button for decreasing n_cal -->
+                <div>
+                    <button onclick="changeSlider(this.parentNode.parentNode, false, 'n_cal')">
+                        <!-- Left-pointing triangle icon -->
+                        <svg width="10" height="10" viewBox="0 0 10 10" style="margin-top: 3px; margin-left: -1px;">
+                            <path d="M 10 0 L 0 5 L 10 10 z" fill="#888"></path>
+                        </svg>
+                    </button>
+                </div>
+                <div class="slidecontainer">
+                    <!-- Display current value of n_cal above the slider -->
+                    <!-- Slider input for n_cal, with defined range and step, and an event handler to update the value -->
+                    <input type="range" min="10" max="20" step="2" value="14" class="slider" oninput="updateSliderValue(this.value);">
+                </div>
+                <!-- Right button for increasing n_cal -->
+                <div>
+                    <button onclick="changeSlider(this.parentNode.parentNode, true, 'n_cal')">
+                        <!-- Right-pointing triangle icon -->
+                        <svg width="10" height="10" viewBox="0 0 10 10" style="margin-top: 3px;">
+                            <path d="M 0 0 L 10 5 L 0 10 z" fill="#888"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <!-- Display the image corresponding to n_cal, with a 40% reduction in size -->
+            <img src="images/Generated_Images/Regression_Prediction_Plot_14.png" id="calib-display" style="width: 95%; height: auto;">
+        </div>
+    
+        <p align = "center">
+            \[
+            s_i = |y_i - \hat{y}_i|
+            \]
+        </p>
+    
+        <p>
+            The score function \(s_i\) represents the absolute difference between the true output \(y_i\) and the model's predicted output \(\hat{y}_i\) for each calibration data point \(x_i\). It measures the discrepancy between the true values and their corresponding predictions, providing a measure of model fit to the calibration data.
+        </p>
+    
+        <p>
+            Use the below slider to choose the error rate \(\alpha\). With probability \(1 - \alpha\), our computed uncertainty band \(\hat{\mathcal{C}}(\hat{x}_{n+1})\) will contain the true value \(\hat{y}_{n+1}\).
+        </p>
+    
 
-    <p align = "center">
-        \[
-        s_i = |y_i - \hat{y}_i|
-        \]
-    </p>
-
-    <p>
-        The score function \(s_i\) represents the absolute difference between the true output \(y_i\) and the model's predicted output \(\hat{y}_i\) for each calibration data point \(x_i\). It measures the discrepancy between the true values and their corresponding predictions, providing a measure of model fit to the calibration data.
-    </p>
-
-    <p>
-        Use the below slider to choose the error rate \(\alpha\). With probability \(1 - \alpha\), our computed uncertainty band \(\hat{\mathcal{C}}(\hat{x}_{n+1})\) will contain the true value \(\hat{y}_{n+1}\).
-    </p>
-
-    <p>
-        <ul><li>Alpha Slider and Histogram Plot</li></ul>
-    </p>
+        <!-- Slider for alpha -->
+        <div class="gif-slider">
+            <div align="center"> Value of \(\alpha\) :  <span id="alpha-slider-value">0.4<br></span></div>
+            <div class="controls">
+                <!-- Left button for decreasing alpha -->
+                <div>
+                    <button onclick="changeAlpha(this.parentNode.parentNode, false)">
+                        <!-- Left-pointing triangle icon -->
+                        <svg width="10" height="10" viewBox="0 0 10 10" style="margin-top: 3px; margin-left: -1px;">
+                            <path d="M 10 0 L 0 5 L 10 10 z" fill="#888"></path>
+                        </svg>
+                    </button>
+                </div>
+                <div class="slidecontainer">
+                    <!-- Display current value of alpha above the slider -->
+                    
+                    <!-- Slider input for alpha, with defined range and step, and an event handler to update the value -->
+                    <input type="range" min="0.1" max="1.0" step="0.1" value="0.4" class="slider" oninput="updateAlphaValue(this.value);">
+                </div>
+                <!-- Right button for increasing alpha -->
+                <div>
+                    <button onclick="changeAlpha(this.parentNode.parentNode, true)">
+                        <!-- Right-pointing triangle icon -->
+                        <svg width="10" height="10" viewBox="0 0 10 10" style="margin-top: 3px;">
+                            <path d="M 0 0 L 10 5 L 0 10 z" fill="#888"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <!-- Display the image corresponding to alpha, with a 40% reduction in size -->
+            <img src="images/Generated_Images/Regression_Histogram_plot_14_for_0.4.png" id="alpha-image-display" style="width: 95%; height: auto;">
+        </div>
+    </div>
 
     <p>
         We compute \(q_{\text{val}}\) by calculating the \(\lceil \frac{(n+1)(1-\alpha)}{n} \rceil\)th quantile of the conformity scores.
     </p>
     <p align="center">
-        \[
-        q_{\text{val}} = 1.2391
-        \]
+        \(q_{\text{val}} = \) <span id = "regression_qval">0.3545</span>
     </p>
 
     <p>
-        The prediction interval is calculated as:
-    </p>
-    <p align = "center">
-        \[
-        \hat{\mathcal{C}}(\hat{x}_{n+1}) = \left[ \hat{f}(\hat{x}_{n+1}) - q_{\text{val}}, \hat{f}(\hat{x}_{n+1}) + q_{\text{val}} \right]
-        \]
-    </p>
-
-    <p>
-        <ul><li>Prediction Plot</li></ul>
-    </p>
-
-    <p> <!-- Add citation in this paragraph  -->
-        Alan Turing, often considered the father of modern computing, was also a formidable athlete. He completed a marathon—covering a distance of 26 miles and 385 yards—in just 2 hours, 46 minutes, and 3 seconds. This performance equates to an impressive pace of approximately <b>3.94 minutes per kilometer</b>. Utilizing conformal prediction, we aim to estimate whether Turing would have won a hypothetical Olympic gold medal in the marathon had the Olympics been held in 1946.
-    </p>
-    
-    <p>
-        <ul><li>Newspaper Cutting</li></ul>
-    </p>
-
-    <p>
-        The model predicts that the time for the Olympic gold medalist in 1946 would have been 3.55 minutes. 
-        With a significance level of \(\alpha = 0.16\), the uncertainty band calculated using conformal prediction ranges from 2.32 to 4.79 minutes. <br>
+        The model predicts that the time for the Olympic gold medalist in 1946 would have been <span id = "predicted-time">3.28</span> minutes. 
+        With a significance level of \(\alpha = \) <span id="significance-level">0.40</span>, the uncertainty band calculated using conformal prediction ranges from <span id = "time-lower_bound">2.92</span> to <span id = "time-upper_bound">3.63</span> minutes. <br>
         Therefore, based on this model, Alan Turing would have won the gold medal.
     </p>
 
