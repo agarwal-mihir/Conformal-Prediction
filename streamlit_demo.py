@@ -28,6 +28,9 @@ np.random.seed(42)
 with open('nested_dict.json', 'r') as f:
         loaded_dict = json.load(f)
 
+with open('classification.json', 'r') as f:
+        classification_dict = json.load(f)
+
 # Define the main function to create the Streamlit app
 def main():
 
@@ -352,12 +355,24 @@ indicates that the model is less certain about the true class label.</div>
         selected_img_tensor = fashion_mnist_data[fashion_idx[test_img_idx]]
     else:
         # adjust the index to match the X_test list
-        test_img_idx -= len(fashion_idx)
-        selected_img_tensor = X_test[idxs[test_img_idx]]
+        # test_img_idx -= len(fashion_idx)
+        selected_img_tensor = X_test[idxs[test_img_idx-2]]
 
     # Continue with the rest of your code
     fig, ax, pred, pred_str = get_test_preds_and_smx(selected_img_tensor, test_img_idx, pred_sets, net, q, alpha)
     st.pyplot(fig)
+    plt.savefig(f'./Generated_Images/Classification_Prediction_{test_img_idx}_for_{alpha}.png')
+    
+    print(classification_dict)
+    classification_dict[f"{float(alpha)}"][f"{test_img_idx}"] = {"pred_str": pred_str}
+    classification_dict[f"{float(alpha)}"]["q_val"] = q_val
+    classification_dict[f"{float(alpha)}"]["avg_size"] = mean_set_size(pred_sets)
+    
+    print(classification_dict)
+    
+    with open("classification.json", "w") as outfile: 
+        json.dump(classification_dict, outfile)
+    
     st.write("Prediction Set for this image: ", pred_str)
     
     st.markdown("<div style=\"text-align: justify;\">In the above examples, the first 2 images are sourced from the Fashion-MNIST dataset. The model is \

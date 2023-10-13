@@ -8,6 +8,7 @@
   <script defer src="js/template.v2.js"></script>
   <script defer src="js/frog_example.js"></script>
   <script defer src="js/regression.js"></script>
+  <script defer src="js/classification.js"></script>
 
   <script type="text/javascript" async
   src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML">
@@ -343,40 +344,119 @@
         The prediction set \(C\) consists of all the classes for which the softmax score is above a threshold value \(1 - q_{\text{val}}\). \(q_{\text{val}}\) is calculated as the \(\lceil \frac{(n+1)(1-\alpha)}{n} \rceil\)-th quantile of the scores from the calibration set.
     </p>
 
-    <p>
-        <ul><li>Alpha Slider and Histogram Plot</li></ul>
+    <p align = "center">
+        \(q_{\text{val}} = \lceil \frac{(n+1)(1-\alpha)}{n} \rceil = \) <span id = "q_val">0.9200</span>
     </p>
 
-    <p>
-        For this value of \(\alpha\), the threshold value \(1 - q_{\text{val}}\) is {}.
-    </p>
+    <div>
+        <div class="gif-slider">
+            <div align="center"> Select a value for \(\alpha\) : <span id="c_alpha-slider-value">0.1<br></span></div>
+            <div class="controls">
+                <div>
+                    <button onclick="c_changeAlpha(this.parentNode.parentNode, false)">
+                        <svg width="10" height="10" viewBox="0 0 10 10" style="margin-top: 3px; margin-left: -1px;">
+                            <path d="M 10 0 L 0 5 L 10 10 z" fill="#888"></path>
+                        </svg>
+                    </button>
+                </div>
+                <div class="slidecontainer">
+                    <input type="range" min="0.1" max="1.0" step="0.1" value="0.1" class="slider" oninput="c_updateAlphaValue(this.value);">
+                </div>
+                <div>
+                    <button onclick="c_changeAlpha(this.parentNode.parentNode, true)">
+                        <svg width="10" height="10" viewBox="0 0 10 10" style="margin-top: 3px;">
+                            <path d="M 0 0 L 10 5 L 0 10 z" fill="#888"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <img src="images/Generated_Images/Classification_Histogram_0.1.png" id="c_alpha-image-display" style="width: 95%; height: auto;">
+        </div>
+    
+        <p>
+            For this value of \(\alpha\), the threshold value \(1 - q_{\text{val}}\) is <span id="c_threshold-value">0.6468</span>.
+        </p>
+    
+        <h3>
+            Understanding the Predicted Set
+        </h3>
+    
+        <p>
+            The 'predicted set' refers to the set of classes that the model deems probable for the given input. A class is included in the predicted set if its softmax score is above a predetermined threshold. This threshold is influenced by the selected value of alpha and the computed quantile from the calibration data. The predicted set gives us an indication of the model's confidence in its classification. If the set contains multiple classes, it indicates that the model is less certain about the true class label.
+        </p>
+    
+        <p>
+            For example, select an image from the below slider. The softmax scores for the classes can be seen in the plot on the right side. If the score is above the threshold value, then the class is in the predicted set.
+        </p>
+    
+        <!-- <div class="gif-slider">
+            <div align="center"> Image Selector: <span id="c_image-selector-value">0</span></div>
+            <div class="controls">
+                <div>
+                    <button onclick="c_changeImage(this.parentNode.parentNode, -1)">
+                        <svg width="10" height="10" viewBox="0 0 10 10" style="margin-top: 3px; margin-left: -1px;">
+                            <path d="M 10 0 L 0 5 L 10 10 z" fill="#888"></path>
+                        </svg>
+                    </button>
+                </div>
+                <div class="slidecontainer">
+                    <input type="range" min="0" max="7" step="1" value="0" class="slider" oninput="c_updateImageValue(this.value);">
+                </div>
+                <div>
+                    <button onclick="c_changeImage(this.parentNode.parentNode, 1)">
+                        <svg width="10" height="10" viewBox="0 0 10 10" style="margin-top: 3px;">
+                            <path d="M 0 0 L 10 5 L 0 10 z" fill="#888"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <img src="images/Generated_Images/Classification_Prediction_0_for_0.1.png" id="c_image-display" style="width: 95%; height: auto;">
+        </div> -->
+        <div class="image-selector">
+            <div><ul><li>Select an Image from below: </li></ul><span id="c_image-selector-value"></span></div>
 
-    <h3>
-        Understanding the Predicted Set
-    </h3>
-
-    <p>
-        The 'predicted set' refers to the set of classes that the model deems probable for the given input. A class is included in the predicted set if its softmax score is above a predetermined threshold. This threshold is influenced by the selected value of alpha and the computed quantile from the calibration data. The predicted set gives us an indication of the model's confidence in its classification. If the set contains multiple classes, it indicates that the model is less certain about the true class label.
-    </p>
-
-    <p>
-        For example, select an image from the below slider. The softmax scores for the classes can be seen in the plot on the right side. If the score is above the threshold value, then the class is in the predicted set.
-    </p>
-
-    <p>
-        <ul><li>Image Selector and Predictions</li></ul>
-    </p>
-
-    <p>
-        Prediction Set for this image: {}
-    </p>
+            <div class="image-container">
+                <button onclick="c_changeImage(0)" class = "image-button">
+                    <img src="images/mnist_img/img_0.png" alt="Image 0">
+                </button>
+                <button onclick="c_changeImage(1)" class = "image-button">
+                    <img src="images/mnist_img/img_1.png" alt="Image 1">
+                </button>
+                <button onclick="c_changeImage(2)" class = "image-button">
+                    <img src="images/mnist_img/img_2.png" alt="Image 2">
+                </button>
+                <button onclick="c_changeImage(3)" class = "image-button">
+                    <img src="images/mnist_img/img_3.png" alt="Image 3">
+                </button>
+                <button onclick="c_changeImage(4)" class = "image-button">
+                    <img src="images/mnist_img/img_4.png" alt="Image 4">
+                </button>
+                <button onclick="c_changeImage(5)" class = "image-button">
+                    <img src="images/mnist_img/img_5.png" alt="Image 5">
+                </button>
+                <button onclick="c_changeImage(6)" class = "image-button">
+                    <img src="images/mnist_img/img_6.png" alt="Image 6">
+                </button>
+                <button onclick="c_changeImage(7)" class = "image-button">
+                    <img src="images/mnist_img/img_7.png" alt="Image 7">
+                </button>
+            </div>
+            <br>
+            
+            <img src = "images/Generated_Images/Classification_Prediction_0_for_0.1.png" id = "c_image-display" style="width: 95%; height: auto;">
+        </div>
+    
+        <p>
+            Prediction Set for this image: <span id="c_prediction-set">{}</span>
+        </p>
+    </div>
 
     <p>
         In the above examples, the first 2 images are sourced from the Fashion-MNIST dataset. The model is uncertain about these images, which can be seen by the larger predicted set sizes. This is a property we want, as the size of the predicted set indicates the model's uncertainty. In contrast, for the last 2 images, the predicted set contains only one element because the model is confident about its prediction. This is reflected by the high softmax scores of the true classes.
     </p>
 
     <p>
-        The average size of prediction sets for all the images from the test set is {}
+        The average size of prediction sets for all the images from the test set is <span id = "avg_size"></span>
     </p>
 
     <p>
