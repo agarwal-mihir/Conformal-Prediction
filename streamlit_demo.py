@@ -64,7 +64,7 @@ def main():
 
     st.markdown('<div style=\"text-align: justify;\">Understanding the nuances of uncertainty is pivotal in numerous domains, ranging from financial forecasting to healthcare diagnostics and autonomous vehicle control. The accurate quantification of uncertainty enables robust decision-making and engenders trust in machine learning models. For instance, in medical settings, a false negative could result in untreated disease progression, while a false positive might lead to unnecessary treatments—both with life-altering implications.</div>', unsafe_allow_html=True)
     st.markdown('<br>', unsafe_allow_html=True)
-    st.markdown(f"<div style=\"text-align: justify;\">To illustrate, consider a scenario where a machine learning model was fine-tuned to classify green apples and oranges. Utilizing the fast.ai<sup><a href='#references'>{references['fastai']}</a></sup> library, a ResNet18 model was deployed and fed a myriad of images containing these fruits. However, when exposed to images of other objects that were green—such as frogs, green tennis balls, and even green oranges—the model overwhelmingly classified these as 'green apples' with high confidence. You can see the examples as follows:</div>", unsafe_allow_html=True)
+    st.markdown(f"<div style=\"text-align: justify;\">To illustrate, consider a scenario where a machine learning model was fine-tuned to classify green apples and oranges. Utilizing the fast.ai<sup><a href='#references'>{references['fastai']}</a></sup> library, a ResNet18 model was deployed and fed a myriad of images containing these fruits<sup><a href='#references'>{references['resnet_demo']}</a></sup>. However, when exposed to images of other objects that were green—such as frogs, green tennis balls, and even green oranges—the model overwhelmingly classified these as 'green apples' with high confidence. You can see the examples as follows:</div>", unsafe_allow_html=True)
     image_paths = [
     "Screenshot 2023-09-29 at 3.56.30 PM.png",
     "Screenshot 2023-09-29 at 3.56.50 PM.png",
@@ -437,7 +437,24 @@ Conformal Prediction doesn't make strong assumptions about the data distribution
     ''',
     unsafe_allow_html=True,
 )
+    
+    st.markdown(
+    '''
+    <div style="font-family: Times New Roman; font-size: 16px; color: grey;">
+        [6] "Resnet Example for Green Apples and Oranges", [Online]. Available: <a style="color: grey;" href=https://www.kaggle.com/mihiragarwal1710/is-it-a-bird-creating-a-model-from-your-ow-920b0c>https://www.kaggle.com/mihiragarwal1710/is-it-a-bird-creating-a-model-from-your-ow-920b0c</a>.
+    </div>
+    ''',
+    unsafe_allow_html=True,
+    )
 
+    st.markdown(
+    '''
+    <div style="font-family: Times New Roman; font-size: 16px; color: grey;">
+        [7] Valery Manokhin, "Awesome Conformal Prediction", GitHub, [Online]. Available: <a style="color: grey;" href=https://github.com/valeman/awesome-conformal-prediction>https://github.com/valeman/awesome-conformal-prediction</a>.
+    </div>
+    ''',
+    unsafe_allow_html=True,
+    )
     
 if __name__ == "__main__":
     main()

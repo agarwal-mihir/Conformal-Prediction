@@ -274,4 +274,6 @@ def get_references():
         "vovk": [3],
         "fastai": [4],
         "olympic_data": [5],
+        "resnet_demo": [6],
+        "awesome-conformal": [7]
     }
