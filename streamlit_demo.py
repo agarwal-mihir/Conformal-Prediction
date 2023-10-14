@@ -456,6 +456,33 @@ Conformal Prediction doesn't make strong assumptions about the data distribution
     unsafe_allow_html=True,
     )
     
+    st.markdown(
+    '''
+    <div style="font-family: Times New Roman; font-size: 16px; color: grey;">
+        [8] Tennis Ball Image, [Online]. Available: <a style="color: grey;" href=https://www.tenniswarehouse.com.au/media/catalog/product/cache/1/image/9df78eab33525d08d6e5fb8d27136e95/g/r/green_2balls.1601957941.jpg>https://www.tenniswarehouse.com.au/media/catalog/product/cache/1/image/9df78eab33525d08d6e5fb8d27136e95/g/r/green_2balls.1601957941.jpg</a>.
+    </div>
+    ''',
+    unsafe_allow_html=True,
+    )
+    
+    st.markdown(
+    '''
+    <div style="font-family: Times New Roman; font-size: 16px; color: grey;">
+        [9] Green Colored Orange Image, [Online]. Available: <a style="color: grey;" href=https://thumbs.dreamstime.com/z/green-orange-fruits-over-white-background-green-orange-fruits-127174164.jpg>https://thumbs.dreamstime.com/z/green-orange-fruits-over-white-background-green-orange-fruits-127174164.jpg</a>.
+    </div>
+    ''',
+    unsafe_allow_html=True,
+    )
+    
+    st.markdown(
+    '''
+    <div style="font-family: Times New Roman; font-size: 16px; color: grey;">
+        [10] Frog Image, [Online]. Available: <a style="color: grey;" href=https://wallup.net/wp-content/uploads/2016/01/214917-animals-wildlife-nature-frog-amphibian-Red-Eyed_Tree_Frogs.jpg>https://wallup.net/wp-content/uploads/2016/01/214917-animals-wildlife-nature-frog-amphibian-Red-Eyed_Tree_Frogs.jpg</a>.
+    </div>
+    ''',
+    unsafe_allow_html=True,
+    )
+    
 if __name__ == "__main__":
     main()
 
