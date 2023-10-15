@@ -20,6 +20,8 @@ from utils_plot import plot_generic, plot_predictions, histogram_plot, show_samp
 from model import MLP, MLP1
 from PIL import Image
 import json
+
+plt.rcParams['image.cmap'] = 'gray'
 # Set random seeds for reproducibility
 torch.manual_seed(42)
 np.random.seed(42)
@@ -27,6 +29,8 @@ np.random.seed(42)
 # plt.rcParams['text.usetex'] = True
 with open('nested_dict.json', 'r') as f:
         loaded_dict = json.load(f)
+with open('class_dict.json', 'r') as f:
+        class_dict = json.load(f)
 
 # Define the main function to create the Streamlit app
 def main():
@@ -38,13 +42,13 @@ def main():
     st.markdown("""
     <div style='position: relative;text-align: center; color: grey; font-size: 18px;'>
         <b>By</b> <br>
-        <div style='position: relative; left: 0px; top: 20px;display: inline-block; margin-right: 40px;font-size: 14px;'>
-            <b>Lalit Chandra Routhu</b> <br>
-            IIT Patna
-        </div>
-        <div style='position: relative; left: 0px; top: 20px;display: inline-block; margin-left: 40px;font-size: 14px;'>
-            <b>Mihir Agarwal</b> <br>
+        <div style='position: relative; left: 15px; top: 20px;display: inline-block; margin-right: 40px;font-size: 14px;'>
+            <b><a href="https://www.linkedin.com/in/mihir-agarwal-33b913188/">Mihir Agarwal</a></b> <br>
             IIT Gandhinagar
+        </div>
+        <div style='position: relative; left: 15px; top: 20px;display: inline-block; margin-left: 40px;font-size: 14px;'>
+            <b><a href="https://www.linkedin.com/in/lalit-chandra-routhu-3901aa225/?originalSubdomain=in">Lalit Chandra Routhu</a></b> <br>
+            IIT Patna
         </div> <br>
         <div style='position: relative; left: 13px; top:30px;display: inline-block; margin-right: 10px;font-size: 14px;'>
             <b><a href="https://patel-zeel.github.io/">Zeel B Patel</a></b> <br>
@@ -263,15 +267,15 @@ The objective is to model and understand the trend over the years.
    
     st.write("In this formalism, $\hat{C}(X_{n+1})$ is the prediction set corresponding to a new input $X_{n+1}$, and $K$ signifies the total number of unique classes.")
     
-    st.markdown("<div style=\"text-align: justify;\">We will use the MNIST dataset. The 60,000 training samples are split into two parts: the training set, which consists of 59950 images, and the calibration set, which has 50 images. The test set consists of 10k images.</div>", unsafe_allow_html=True)
+    st.markdown("<div style=\"text-align: justify;\">We will use the MNIST dataset. The 60,000 training samples are split into two parts: the training set, which consists of 55000 images, and the calibration set, which has 5000 images. The test set consists of 10,000 images.</div>", unsafe_allow_html=True)
     
     X_train, y_train, X_test, y_test, X_calib, y_calib = get_data()
     
-    net = MLP1()
+    # net = MLP1()
     
-    train_data = (X_train, y_train)
+    # train_data = (X_train, y_train)
     
-    net = train_model(net, train_data)
+    # net = train_model(net, train_data)
     
     
     st.write("For training, we will use a simple Multi-layer Perceptron. The **test accuracy** of the model is: 0.9066")
@@ -300,19 +304,20 @@ The objective is to model and understand the trend over the years.
     st.markdown("<div style=\"text-align: justify;\">The prediction set C consists of all the classes for which the softmax score is above a threshold value </div>", unsafe_allow_html=True)
     st.write(r"1-${q_{val}}$.  ${q_{val}}$ is calculated as the $\frac{{\lceil (1 - \alpha) \cdot (n + 1) \rceil}}{{n}}$ quantile of the scores from the calibration set.")
     
-    n = len(X_calib)
-    scores = get_scores(net, (X_calib, y_calib))
-    alpha = st.slider(r"Select a value for $\alpha$:", min_value=0.1, max_value=1.0, step=0.1, value=0.1)
-    q_val = np.ceil((1 - alpha) * (n + 1)) / n
+    # n = len(X_calib)
+    # scores = get_scores(net, (X_calib, y_calib))
+    # alpha = st.slider(r"Select a value for $\alpha$:", min_value=0.1, max_value=1.0, step=0.1, value=0.1)
+    # q_val = np.ceil((1 - alpha) * (n + 1)) / n
+    q_val = class_dict[f"{alpha}"]["q"]
     # st.latex(r"q_{\text{val}} = \frac{{\lceil (1 - \alpha) \cdot (n + 1) \rceil}}{{n}} = {:.4f}".format(q_val))
-    st.latex(r"q_{{\text{{val}}}} = \frac{{\lceil (1 - \alpha) \cdot (n + 1) \rceil}}{{n}} = {:.4f}".format(q_val))
+    st.latex(r"q_{{\text{{val}}}} = {:.4f}".format(q_val))
 
-    q = np.quantile(scores, q_val, method="higher")
+    # q = np.quantile(scores, q_val, method="higher")
     # histogram_plot(scores, q, alpha)
     st.image(f'./Generated_Images/Classification_Histogram_{alpha}.png')
 
     # st.pyplot(fig)
-    st.markdown(r"For this value of alpha, the threshold value $1-q_{\text{val}}$ is " + f'<span style="font-size:20px;">{1-q:.4f}</span>', unsafe_allow_html=True)
+    st.markdown(r"For this value of alpha, the threshold value $1-q_{\text{val}}$ is " + f'<span style="font-size:20px;">{1-q_val:.4f}</span>', unsafe_allow_html=True)
     
     st.markdown("""<div style=\"text-align: justify;\">
 <h3>Understanding the Predicted Set</h3>
@@ -328,7 +333,7 @@ indicates that the model is less certain about the true class label.</div>
     st.markdown("<div style=\"text-align: justify;\">For example, select an image from the below slider. The softmax scores for the classes can be seen in the plot on the right side. If the score is above the threshold value, then the class is in the predicted set.</div>", unsafe_allow_html=True)
     st.markdown("<br>", unsafe_allow_html=True)
     
-    pred_sets = get_pred_sets(net, (X_test, y_test), q, alpha)
+    # pred_sets = get_pred_sets(net, (X_test, y_test), q, alpha)
     
     fashion_mnist_data = utils.fashion_mnist()
     fashion_idx = [5, 18]
@@ -347,18 +352,21 @@ indicates that the model is less certain about the true class label.</div>
     test_img_idx = st_image.image_select(label="Select an image", images=all_images, return_value="index", use_container_width=False)
 
     # If the selected index is from fashion mnist data, handle accordingly
-    if test_img_idx < len(fashion_idx):
-        # handle fashion mnist image
-        selected_img_tensor = fashion_mnist_data[fashion_idx[test_img_idx]]
-    else:
-        # adjust the index to match the X_test list
-        test_img_idx -= len(fashion_idx)
-        selected_img_tensor = X_test[idxs[test_img_idx]]
+    # if test_img_idx < len(fashion_idx):
+    #     # handle fashion mnist image
+    #     selected_img_tensor = fashion_mnist_data[fashion_idx[test_img_idx]]
+    # else:
+    #     # adjust the index to match the X_test list
+    #     test_img_idx -= len(fashion_idx)
+    #     selected_img_tensor = X_test[idxs[test_img_idx]]
 
-    # Continue with the rest of your code
-    fig, ax, pred, pred_str = get_test_preds_and_smx(selected_img_tensor, test_img_idx, pred_sets, net, q, alpha)
-    st.pyplot(fig)
+    # # Continue with the rest of your code
+    # fig, ax, pred, pred_str = get_test_preds_and_smx(selected_img_tensor, test_img_idx, pred_sets, net, q, alpha)
+    # st.pyplot(fig)
+    pred_str = class_dict[f"{alpha}"][f"{test_img_idx}"]
+    mean = class_dict[f"{alpha}"]["mean_size"]
     
+    st.image(f'./Generated_Images/Classification_Final_Image_image_no_{test_img_idx}_{alpha}.png')
     st.write("Prediction Set for this image: ", pred_str)
     
     st.markdown("<div style=\"text-align: justify;\">In the above examples, the first 2 images are sourced from the Fashion-MNIST dataset. The model is \
@@ -367,7 +375,7 @@ indicates that the model is less certain about the true class label.</div>
              set contains only one element because the model is confident about its prediction. This is reflected by \
              the high softmax scores of the true classes.</div>", unsafe_allow_html=True)
     
-    st.markdown(f"The average size of prediction sets for all the images from the test set is <span style='font-size:20px;'>{mean_set_size(pred_sets)}</span>", unsafe_allow_html=True)
+    st.markdown(f"The average size of prediction sets for all the images from the test set is <span style='font-size:20px;'>{mean}</span>", unsafe_allow_html=True)
 
 
     st.write(f" **What does the average size mean?**")
