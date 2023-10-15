@@ -306,7 +306,7 @@ The objective is to model and understand the trend over the years.
     
     # n = len(X_calib)
     # scores = get_scores(net, (X_calib, y_calib))
-    # alpha = st.slider(r"Select a value for $\alpha$:", min_value=0.1, max_value=1.0, step=0.1, value=0.1)
+    alpha = st.slider(r"Select a value for $\alpha$:", min_value=0.1, max_value=1.0, step=0.1, value=0.1)
     # q_val = np.ceil((1 - alpha) * (n + 1)) / n
     q_val = class_dict[f"{alpha}"]["q"]
     # st.latex(r"q_{\text{val}} = \frac{{\lceil (1 - \alpha) \cdot (n + 1) \rceil}}{{n}} = {:.4f}".format(q_val))
