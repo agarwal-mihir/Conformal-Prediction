@@ -30,7 +30,7 @@ np.random.seed(42)
 # plt.rcParams['text.usetex'] = True
 with open('nested_dict.json', 'r') as f:
         loaded_dict = json.load(f)
-with open('class_dict.json', 'r') as f:
+with open('class_dict2.json', 'r') as f:
         class_dict = json.load(f)
 
 # Define the main function to create the Streamlit app
@@ -242,7 +242,13 @@ The objective is to model and understand the trend over the years.
     # st.image(f'./Generated_Images/Regression_Score_plot_{n_cal}_for_{0.1}.png')
     image = Image.open(f'./Generated_Images/Regression_Score_plot_{n_cal}_for_{0.1}.png')
     new_image = image.resize((800, 600))
-    st.image(new_image)
+    # st.image(new_image)
+    with st.container():
+        st.write("", "", "")  # Adding some spacing at the top if needed
+        col1, col2, col3 = st.columns([0.1, .7, .1])
+        with col2:
+            st.image(new_image)
+            
     st.markdown("</div>", unsafe_allow_html=True)
     st.markdown("<h4 style=' color: black;'>Calibration</h4>", unsafe_allow_html=True)
     st.markdown(r"Use the below slider to choose the $\alpha$. With probability 1-$\alpha$, our computed uncertainty band $\hat{C}(X_{n+1})$ will contain the true value $Y_{n+1}$.")
@@ -258,7 +264,13 @@ The objective is to model and understand the trend over the years.
     image = Image.open(f'./Generated_Images/Regression_Histogram_plot_{n_cal}_for_{alpha}.png')
     new_image = image.resize((800, 600))
     
-    st.image(new_image)
+    # st.image(new_image)
+    with st.container():
+        st.write("", "", "")  # Adding some spacing at the top if needed
+        col1, col2, col3 = st.columns([0.1, .7, .1])
+        with col2:
+            st.image(new_image)
+            
     # histogram_plot(resid, q, alpha)
     st.write(r"Now, we compute $q_{val}$ by calculating the $\left\lceil \frac{(n+1)(1-\alpha)}{n} \right\rceil$th quantile of the conformity scores.")
     # st.latex(r"q_{{\text{{value}}}} = {:.4f}".format(q))
@@ -334,7 +346,8 @@ Therefore, based on this model, Alan Turing would have <span style='font-size:19
     
     # n = len(X_calib)
     # scores = get_scores(net, (X_calib, y_calib))
-    alpha = st.slider(r"Select a value for $\alpha$:", min_value=0.1, max_value=1.0, step=0.1, value=0.1)
+    # alpha = st.slider(r"Select a value for $\alpha$:", min_value=0.1, max_value=1.0, step=0.1, value=0.1)
+    alpha = st.slider(r"Select a value for $\alpha$:", min_value=0.05, max_value=0.5, step=0.05, value=0.05)
     # q_val = np.ceil((1 - alpha) * (n + 1)) / n
     q_val = class_dict[f"{alpha}"]["q"]
     # st.latex(r"q_{\text{val}} = \frac{{\lceil (1 - \alpha) \cdot (n + 1) \rceil}}{{n}} = {:.4f}".format(q_val))
@@ -377,8 +390,12 @@ indicates that the model is less certain about the true class label.</div>
     all_images = fashion_images + xtest_images
 
     # Let user select an image using Streamlit widget
- 
-    test_img_idx = st_image.image_select(label="Select an image", images=all_images, return_value="index", use_container_width=False)
+    with st.container():
+        st.write("", "", "")  # Adding some spacing at the top if needed
+        col1, col2, col3 = st.columns([0.1, .7, .1])
+        with col2:
+            test_img_idx = st_image.image_select(label="Select an image", images=all_images, return_value="index", use_container_width=False)
+            
     if(test_img_idx==1 or test_img_idx==2):
          test_img_idx+=1
          
