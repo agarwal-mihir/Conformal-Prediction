@@ -296,15 +296,12 @@ The objective is to model and understand the trend over the years.
     
     st.markdown(f'<span style=" top: 2px;font-size:50px;"><center> $q_{{\\text{{val}}}} = {q:.4f}$</center></span>', unsafe_allow_html=True)
     image = Image.open(f'./Generated_Images/Regression_Histogram_plot_quantile_{n_cal}_for_{alpha}.png')
-    new_image = image.resize((800, 600))
+    new_image = image
     
     # st.image(new_image)
-    with st.container():
-        st.write("", "", "")  # Adding some spacing at the top if needed
-        col1, col2, col3 = st.columns([0.1, .7, .1])
-        with col2:
-            st.image(new_image)
-            st.markdown(
+    
+    st.image(new_image)
+    st.markdown(
     '<p style="color:grey; font-size:14px; text-align:center;">Figure 6: Quantile of the Scores',
     unsafe_allow_html=True  # Make sure to enable this for rendering HTML
 )
