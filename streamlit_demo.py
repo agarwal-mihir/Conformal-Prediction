@@ -6,6 +6,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import torchvision.datasets as datasets
+from PIL import Image
 import torchvision.transforms as transforms
 import matplotlib.pyplot as plt
 import streamlit_image_select as st_image
@@ -105,15 +106,26 @@ def main():
         st.markdown("<div style=\"text-align: justify;\">The classification of this image featuring a frog as a green apple is once more the result of the predominant green color. In real life scenarios, a false classification like this may have significant implications.</div><br>", unsafe_allow_html=True)
 
 
-    st.markdown("<div style=\"text-align: justify;\">This example vividly illustrates the pitfalls of biased training and the lack of uncertainty quantification. A traditional classification model would provide point estimates—single labels with associated probabilities—that could be misleading. Such deterministic outputs can have far-reaching consequences, from flawed recommendations to incorrect automated decisions.</div>", unsafe_allow_html=True)
+    # st.markdown("<div style=\"text-align: justify;\">This example vividly illustrates the pitfalls of biased training and the lack of uncertainty quantification. A traditional classification model would provide point estimates—single labels with associated probabilities—that could be misleading. Such deterministic outputs can have far-reaching consequences, from flawed recommendations to incorrect automated decisions.</div>", unsafe_allow_html=True)
     
-    st.markdown("<br>", unsafe_allow_html=True)
+    # st.markdown("<br>", unsafe_allow_html=True)
     
-    st.markdown(f"""<div style=\"text-align: justify;\">Conformal Prediction<sup><a href='#references'>{references["vovk"]}</a></sup> is an efficacious framework in machine learning that delivers well-calibrated measures of uncertainty associated with predictions. It extends beyond the provision of mere point estimates, constructing prediction intervals that encapsulate the realm of plausible outcomes.</div>""", unsafe_allow_html=True)
+    # st.markdown(f"""<div style=\"text-align: justify;\">Conformal Prediction<sup><a href='#references'>{references["vovk"]}</a></sup> is an efficacious framework in machine learning that delivers well-calibrated measures of uncertainty associated with predictions. It extends beyond the provision of mere point estimates, constructing prediction intervals that encapsulate the realm of plausible outcomes.</div>""", unsafe_allow_html=True)
 
-    st.markdown("<br>", unsafe_allow_html=True)
+    # st.markdown("<br>", unsafe_allow_html=True)
 
-    st.markdown("<div style=\"text-align: justify;\">The absence of uncertainty quantification in many machine learning models, especially neural networks, presents obstacles in decision-making processes and undermines trustworthiness. It is imperative, therefore, to comprehend and assess the confidence level of a model’s predictions.</div>", unsafe_allow_html=True)
+    # st.markdown("<div style=\"text-align: justify;\">The absence of uncertainty quantification in many machine learning models, especially neural networks, presents obstacles in decision-making processes and undermines trustworthiness. It is imperative, therefore, to comprehend and assess the confidence level of a model’s predictions.</div>", unsafe_allow_html=True)
+    st.markdown("This example highlights two key issues. First, if your training data is not representative or is biased, your model won't work well. Second, many models don't tell you how certain they are about their predictions, which can be risky.")
+
+    # st.markdown("<br>", unsafe_allow_html=True)
+
+    st.markdown("Conformal Prediction is an approach in machine learning that helps address the second issue. It doesn't just give a 'best guess' prediction; it also provides a range of possible outcomes. This helps you understand how confident you should be in the model's prediction.")
+
+    # st.markdown("<br>", unsafe_allow_html=True)
+
+    st.markdown("Not having a measure of uncertainty is a big issue, especially for neural networks which are often seen as 'black boxes.' If you don't know how sure a model is about its prediction, it's tough to make informed decisions. For this reason, understanding and measuring a model's level of certainty is important for trusting its outputs.")
+
+
 
 
     
@@ -127,7 +139,7 @@ def main():
 
     # st.write("The significance of Conformal Prediction is amplified in mission-critical applications where understanding uncertainty is of paramount importance. Its mathematical rigor and computational efficiency make it an excellent choice for real-time and resource-constrained environments.")
     
-    st.markdown("<br>", unsafe_allow_html=True)
+    # st.markdown("<br>", unsafe_allow_html=True)
     
     st.markdown("<div style=\"text-align: justify;\">Conformal Prediction is both robust and computationally efficient, eliminating the need for data or model-specific assumptions. Its computational complexity can be as low as O(n), outperforming Bayesian methods like MC Dropout.</div>", unsafe_allow_html=True)
     
@@ -182,7 +194,8 @@ This dataset<sup><a href='#references'>{references["olympic_data"]}</a></sup> ca
 from 1896 to the present. The 1904 outlier is due to organizational issues.
 The objective is to model and understand the trend over the years.
 """, unsafe_allow_html = True)
-    
+    n_cal = 14
+    st.image(f'./Generated_Images/Regression_Plot_{n_cal}.png')
     # st.write(r"The true function $f(x)$ is given by: ")
     # Sliders with custom styles
     # display_equation(coef_1, coef_2, coef_3)
@@ -195,7 +208,7 @@ The objective is to model and understand the trend over the years.
     st.markdown(r"The calibration data is used to estimate the quantiles ($q_{val}$) for the prediction intervals. You can choose the number of calibration data points $(n)$ using the slider below.")
     # Display the equation based on user-selected coefficients
 
-    n_cal = st.slider("Number of calibration data points $(n)$", min_value=10, max_value=20, value=14, step=2)
+    
 
     x_train, y_train, x_cal, y_cal =  get_simple_data_train(n_cal)
     
@@ -217,7 +230,7 @@ The objective is to model and understand the trend over the years.
     # fig, ax = plot_predictions(x_train, y_train, x_cal, y_cal, y_cal_preds, coef_1=coef_1, coef_2=coef_2, coef_3=coef_3, coef_4=coef_4)
     # st.pyplot(fig)
     st.image(f'./Generated_Images/Regression_Prediction_Plot_{n_cal}.png')
-
+    st.markdown("<h4 style=' color: black;'>Score Function</h4>", unsafe_allow_html=True)
     st.latex(r"s_i = |y_i - \hat{y}_i|")
     
     
@@ -226,9 +239,13 @@ The objective is to model and understand the trend over the years.
              output $y_i$ and the model's predicted output $\hat{y}_i$ for each calibration data point $x_i$. \
              It measures the discrepancy between the true values and their corresponding predictions, providing a measure \
              of model fit to the calibration data.")
+    # st.image(f'./Generated_Images/Regression_Score_plot_{n_cal}_for_{0.1}.png')
+    image = Image.open(f'./Generated_Images/Regression_Score_plot_{n_cal}_for_{0.1}.png')
+    new_image = image.resize((800, 600))
+    st.image(new_image)
     st.markdown("</div>", unsafe_allow_html=True)
-    
-    st.markdown(r"Use the below slider to choose the error-rate $\alpha$. With probability 1-$\alpha$, our computed uncertainty band $\hat{C}(X_{n+1})$ will contain the true value $Y_{n+1}$.")
+    st.markdown("<h4 style=' color: black;'>Calibration</h4>", unsafe_allow_html=True)
+    st.markdown(r"Use the below slider to choose the $\alpha$. With probability 1-$\alpha$, our computed uncertainty band $\hat{C}(X_{n+1})$ will contain the true value $Y_{n+1}$.")
     
     
     alpha = st.slider(r"Select a value for $\alpha$:", min_value=0.1, max_value=1.0, step=0.1, value=0.4)
@@ -237,7 +254,11 @@ The objective is to model and understand the trend over the years.
     
     q = loaded_dict[f"{n_cal}"][f"{alpha}"]["q"]
 
-    st.image(f'./Generated_Images/Regression_Histogram_plot_{n_cal}_for_{alpha}.png')
+    # st.image(f'./Generated_Images/Regression_Histogram_plot_{n_cal}_for_{alpha}.png')
+    image = Image.open(f'./Generated_Images/Regression_Histogram_plot_{n_cal}_for_{alpha}.png')
+    new_image = image.resize((800, 600))
+    
+    st.image(new_image)
     # histogram_plot(resid, q, alpha)
     st.write(r"Now, we compute $q_{val}$ by calculating the $\left\lceil \frac{(n+1)(1-\alpha)}{n} \right\rceil$th quantile of the conformity scores.")
     # st.latex(r"q_{{\text{{value}}}} = {:.4f}".format(q))
@@ -253,7 +274,11 @@ The objective is to model and understand the trend over the years.
         true_1 = "lost"
     
 
-    st.write(r"The model predicts that the time for the Olympic gold medalist in 1946 would have been {:.2f} minutes. With a significance level of $\alpha = {:.2f}$, the uncertainty band calculated using conformal prediction ranges from {:.2f} to {:.2f} minutes. Therefore, based on this model, Alan Turing would have **{}** the gold medal.".format(y_preds_46, alpha, y_preds_46 - q, y_preds_46 + q, true_1))
+    st.markdown("""The model predicts that the time for the Olympic gold medalist in 1946 would have been {:.2f} minutes. 
+With a significance level of &alpha; = {:.2f}, the uncertainty band calculated using conformal prediction ranges from {:.2f} to {:.2f} minutes. 
+Therefore, based on this model, Alan Turing would have <span style='font-size:19px;'><strong>{}</strong></span> the gold medal.""".format(y_preds_46, alpha, y_preds_46 - q, y_preds_46 + q, true_1), unsafe_allow_html=True)
+
+
     
 
 
@@ -339,8 +364,8 @@ indicates that the model is less certain about the true class label.</div>
     # pred_sets = get_pred_sets(net, (X_test, y_test), q, alpha)
     
     fashion_mnist_data = utils.fashion_mnist()
-    fashion_idx = [5, 18]
-    idxs = [376 , 673, 1000 ,2371 ,2394 ,2497]
+    fashion_idx = [5]
+    idxs = [376 , 673]
 
     # Get images from fashion mnist data
     fashion_images = [tensor_to_img(fashion_mnist_data, idx) for idx in fashion_idx]
@@ -352,8 +377,11 @@ indicates that the model is less certain about the true class label.</div>
     all_images = fashion_images + xtest_images
 
     # Let user select an image using Streamlit widget
+ 
     test_img_idx = st_image.image_select(label="Select an image", images=all_images, return_value="index", use_container_width=False)
-
+    if(test_img_idx==1 or test_img_idx==2):
+         test_img_idx+=1
+         
     # If the selected index is from fashion mnist data, handle accordingly
     # if test_img_idx < len(fashion_idx):
     #     # handle fashion mnist image
@@ -370,7 +398,7 @@ indicates that the model is less certain about the true class label.</div>
     mean = class_dict[f"{alpha}"]["mean_size"]
     
     st.image(f'./Generated_Images/Classification_Final_Image_image_no_{test_img_idx}_{alpha}.png')
-    st.write("Prediction Set for this image: ", pred_str)
+    st.markdown("<h2 style='font-size:21px;'>Prediction Set for this image: {}</h2>".format(pred_str), unsafe_allow_html=True)
     
     st.markdown("<div style=\"text-align: justify;\">In the above examples, the first 2 images are sourced from the Fashion-MNIST dataset. The model is \
              uncertain about these images, which can be seen by the larger predicted set sizes. This is a property we want,\
