@@ -179,7 +179,7 @@ with a desired coverage probability. Thus, conformal prediction serves as a tool
 
     st.image('image_720.png')
     st.markdown(
-    '<p style="color:grey; font-size:14px; text-align:center;">Figure: Newspaper Clipping of Alan Turing\'s Marathon time, '
+    '<p style="color:grey; font-size:14px; text-align:center;">Figure 1: Newspaper Clipping of Alan Turing\'s Marathon time, '
     '<a href="https://www.turing.org.uk/book/update/part6.html" style="color:grey; font-size:14px;">Source: Alan Turing Internet Scrapbook</a></p>',
     unsafe_allow_html=True  # Make sure to enable this for rendering HTML
 )
@@ -197,8 +197,7 @@ The objective is to model and understand the trend over the years.
     n_cal = 14
     st.image(f'./Generated_Images/Regression_Plot_{n_cal}.png')
     st.markdown(
-    '<p style="color:grey; font-size:14px; text-align:center;">Figure: Newspaper Clipping of Alan Turing\'s Marathon time, '
-    '<a href="https://www.turing.org.uk/book/update/part6.html" style="color:grey; font-size:14px;">Source: Alan Turing Internet Scrapbook</a></p>',
+    '<p style="color:grey; font-size:14px; text-align:center;">Figure 2: Olympic\'s Dataset, divided into training and calibration sets',
     unsafe_allow_html=True  # Make sure to enable this for rendering HTML
 )
     # st.write(r"The true function $f(x)$ is given by: ")
@@ -236,8 +235,7 @@ The objective is to model and understand the trend over the years.
     # st.pyplot(fig)
     st.image(f'./Generated_Images/Regression_Prediction_Plot_{n_cal}.png')
     st.markdown(
-    '<p style="color:grey; font-size:14px; text-align:center;">Figure: Newspaper Clipping of Alan Turing\'s Marathon time, '
-    '<a href="https://www.turing.org.uk/book/update/part6.html" style="color:grey; font-size:14px;">Source: Alan Turing Internet Scrapbook</a></p>',
+    '<p style="color:grey; font-size:14px; text-align:center;">Figure 3: Model (MLP) Predictions on the Calibration Data',
     unsafe_allow_html=True  # Make sure to enable this for rendering HTML
 )
     st.markdown("<h4 style=' color: black;'>Score Function</h4>", unsafe_allow_html=True)
@@ -259,8 +257,8 @@ The objective is to model and understand the trend over the years.
     #     with col2:
     st.image(new_image)
     st.markdown(
-    '<p style="color:grey; font-size:14px; text-align:center;">Figure: Newspaper Clipping of Alan Turing\'s Marathon time, '
-    '<a href="https://www.turing.org.uk/book/update/part6.html" style="color:grey; font-size:14px;">Source: Alan Turing Internet Scrapbook</a></p>',
+    '<p style="color:grey; font-size:14px; text-align:center;">Figure 4: Score Function for the Calibration Data',
+
     unsafe_allow_html=True  # Make sure to enable this for rendering HTML
 )
     st.markdown("</div>", unsafe_allow_html=True)
@@ -276,8 +274,7 @@ The objective is to model and understand the trend over the years.
         with col2:
             st.image(new_image)
             st.markdown(
-    '<p style="color:grey; font-size:14px; text-align:center;">Figure: Newspaper Clipping of Alan Turing\'s Marathon time, '
-    '<a href="https://www.turing.org.uk/book/update/part6.html" style="color:grey; font-size:14px;">Source: Alan Turing Internet Scrapbook</a></p>',
+    '<p style="color:grey; font-size:14px; text-align:center;">Figure 5: Sorting of the Scores',
     unsafe_allow_html=True  # Make sure to enable this for rendering HTML
 )
     
@@ -308,15 +305,13 @@ The objective is to model and understand the trend over the years.
         with col2:
             st.image(new_image)
             st.markdown(
-    '<p style="color:grey; font-size:14px; text-align:center;">Figure: Newspaper Clipping of Alan Turing\'s Marathon time, '
-    '<a href="https://www.turing.org.uk/book/update/part6.html" style="color:grey; font-size:14px;">Source: Alan Turing Internet Scrapbook</a></p>',
+    '<p style="color:grey; font-size:14px; text-align:center;">Figure 6: Quantile of the Scores',
     unsafe_allow_html=True  # Make sure to enable this for rendering HTML
 )
     st.write("We now compute the confidence intervals for the predictions.")
     st.image(f'./Generated_Images/Regression_Coverage_plot_{n_cal}_for_{alpha}.png')
     st.markdown(
-    '<p style="color:grey; font-size:14px; text-align:center;">Figure: Newspaper Clipping of Alan Turing\'s Marathon time, '
-    '<a href="https://www.turing.org.uk/book/update/part6.html" style="color:grey; font-size:14px;">Source: Alan Turing Internet Scrapbook</a></p>',
+    '<p style="color:grey; font-size:14px; text-align:center;">Figure 7: Confidence interval of the Predictions',
     unsafe_allow_html=True  # Make sure to enable this for rendering HTML
 )
     y_preds_46 = loaded_dict[f"{n_cal}"][f"{alpha}"]["y_preds_46"]
@@ -397,7 +392,10 @@ Therefore, based on this model, Alan Turing would have <span style='font-size:19
     # q = np.quantile(scores, q_val, method="higher")
     # histogram_plot(scores, q, alpha)
     st.image(f'./Generated_Images/Classification_Histogram_{alpha}.png')
-
+    st.markdown(
+    '<p style="color:grey; font-size:14px; text-align:center;">Figure 8: Quantile of the Scores',
+    unsafe_allow_html=True  # Make sure to enable this for rendering HTML
+)
     # st.pyplot(fig)
     st.markdown(r"For this value of alpha, the threshold value $1-q_{\text{val}}$ is " + f'<span style="font-size:20px;">{1-q_val:.4f}</span>', unsafe_allow_html=True)
     
