@@ -163,7 +163,7 @@ how well the model's predictions align with actual outcomes. These scores, in tu
 with a desired coverage probability. Thus, conformal prediction serves as a tool for robust and interpretable prediction intervals.
 </div>""", unsafe_allow_html=True)
     st.markdown("<br>", unsafe_allow_html=True)
-    st.markdown(f"Alan Turing, often considered the father of modern computing, was also a formidable athlete. He completed a marathon—covering a distance of 26 miles and 385 yards—in just 2 hours, 46 minutes, and 3 seconds<sup><a href='#references'>{references['olympic_data']}</a></sup>. This performance equates to an impressive pace of approximately **3.94 minutes per kilometer**. Utilizing conformal prediction, we aim to estimate whether Turing would have won a hypothetical Olympic gold medal in the marathon had the Olympics been held in 1946. Let's see if he wins the medal", unsafe_allow_html=True)
+    st.markdown(f"We now turn our attention to an example first presented by Neil Lawrence in his article, 'Deep Gaussian Processes I.' Alan Turing, widely regarded as the father of modern computing, was also an exceptional athlete. He completed a marathon—spanning a distance of 26 miles and 385 yards—in a mere 2 hours, 46 minutes, and 3 seconds<sup><a href='#references'>{references['olympic_data']}</a></sup>. This achievement translates to an impressive pace of approximately 3.94 minutes per kilometer. By employing conformal prediction, we aim to estimate whether Turing would have secured a hypothetical Olympic gold medal in the marathon, had the Olympics been staged in 1946. Let us explore the possibility of his winning the medal.", unsafe_allow_html=True)
 
     st.image('image_720.png')
     st.markdown(
@@ -191,6 +191,7 @@ The objective is to model and understand the trend over the years.
     
     st.markdown("<h4 style=' color: black;'>Model</h4>", unsafe_allow_html=True)
     st.markdown("<div style=\"text-align: justify;\">The model which is a Multi Layer Perceptron (MLP) will be trained on the training data and used to generate predictions on the calibration data.</div>", unsafe_allow_html=True)
+    st.markdown("<br>", unsafe_allow_html=True)
     st.markdown(r"The calibration data is used to estimate the quantiles ($q_{val}$) for the prediction intervals. You can choose the number of calibration data points $(n)$ using the slider below.")
     # Display the equation based on user-selected coefficients
 
@@ -233,6 +234,7 @@ The objective is to model and understand the trend over the years.
     alpha = st.slider(r"Select a value for $\alpha$:", min_value=0.1, max_value=1.0, step=0.1, value=0.4)
 
     # q, resid = conformal_prediction_regression(x_cal, y_cal_preds,alpha, y_cal)
+    
     q = loaded_dict[f"{n_cal}"][f"{alpha}"]["q"]
 
     st.image(f'./Generated_Images/Regression_Histogram_plot_{n_cal}_for_{alpha}.png')
@@ -241,6 +243,7 @@ The objective is to model and understand the trend over the years.
     # st.latex(r"q_{{\text{{value}}}} = {:.4f}".format(q))
     
     st.markdown(f'<span style=" top: 2px;font-size:50px;"><center> $q_{{\\text{{val}}}} = {q:.4f}$</center></span>', unsafe_allow_html=True)
+    st.image(f'./Generated_Images/Regression_Coverage_plot_{n_cal}_for_{alpha}.png')
     
     y_preds_46 = loaded_dict[f"{n_cal}"][f"{alpha}"]["y_preds_46"]
     # plot_conformal_prediction(x_train, y_train, x_cal, y_cal, y_cal_preds, q, alpha, scaler, net1)
@@ -337,7 +340,7 @@ indicates that the model is less certain about the true class label.</div>
     
     fashion_mnist_data = utils.fashion_mnist()
     fashion_idx = [5, 18]
-    idxs = [300,149,1782,195, 1, 2]
+    idxs = [376 , 673, 1000 ,2371 ,2394 ,2497]
 
     # Get images from fashion mnist data
     fashion_images = [tensor_to_img(fashion_mnist_data, idx) for idx in fashion_idx]
