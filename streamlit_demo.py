@@ -264,15 +264,15 @@ The objective is to model and understand the trend over the years.
     st.markdown("</div>", unsafe_allow_html=True)
     st.markdown("<h4 style=' color: black;'>Calibration</h4>", unsafe_allow_html=True)
     image = Image.open(f'./Generated_Images/Regression_Histogram_plot_{n_cal}_for_{0.1}.png')
-    new_image = image.resize((800, 600))
+    # new_image = image.resize((800, 600))
     
     # st.image(new_image)
     st.write("We initiate the calibration by sorting the scores in the ascending order")
     with st.container():
         st.write("", "", "")  # Adding some spacing at the top if needed
-        col1, col2, col3 = st.columns([0.1, .7, .1])
+        col1, col2, col3 = st.columns([0.01, 0.9, .01])
         with col2:
-            st.image(new_image)
+            st.image(image)
             st.markdown(
     '<p style="color:grey; font-size:14px; text-align:center;">Figure 5: Sorting of the Scores',
     unsafe_allow_html=True  # Make sure to enable this for rendering HTML
