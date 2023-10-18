@@ -196,6 +196,11 @@ The objective is to model and understand the trend over the years.
 """, unsafe_allow_html = True)
     n_cal = 14
     st.image(f'./Generated_Images/Regression_Plot_{n_cal}.png')
+    st.markdown(
+    '<p style="color:grey; font-size:14px; text-align:center;">Figure: Newspaper Clipping of Alan Turing\'s Marathon time, '
+    '<a href="https://www.turing.org.uk/book/update/part6.html" style="color:grey; font-size:14px;">Source: Alan Turing Internet Scrapbook</a></p>',
+    unsafe_allow_html=True  # Make sure to enable this for rendering HTML
+)
     # st.write(r"The true function $f(x)$ is given by: ")
     # Sliders with custom styles
     # display_equation(coef_1, coef_2, coef_3)
@@ -230,6 +235,11 @@ The objective is to model and understand the trend over the years.
     # fig, ax = plot_predictions(x_train, y_train, x_cal, y_cal, y_cal_preds, coef_1=coef_1, coef_2=coef_2, coef_3=coef_3, coef_4=coef_4)
     # st.pyplot(fig)
     st.image(f'./Generated_Images/Regression_Prediction_Plot_{n_cal}.png')
+    st.markdown(
+    '<p style="color:grey; font-size:14px; text-align:center;">Figure: Newspaper Clipping of Alan Turing\'s Marathon time, '
+    '<a href="https://www.turing.org.uk/book/update/part6.html" style="color:grey; font-size:14px;">Source: Alan Turing Internet Scrapbook</a></p>',
+    unsafe_allow_html=True  # Make sure to enable this for rendering HTML
+)
     st.markdown("<h4 style=' color: black;'>Score Function</h4>", unsafe_allow_html=True)
     st.latex(r"s_i = |y_i - \hat{y}_i|")
     
@@ -241,16 +251,36 @@ The objective is to model and understand the trend over the years.
              of model fit to the calibration data.")
     # st.image(f'./Generated_Images/Regression_Score_plot_{n_cal}_for_{0.1}.png')
     image = Image.open(f'./Generated_Images/Regression_Score_plot_{n_cal}_for_{0.1}.png')
-    new_image = image.resize((800, 600))
+    new_image = image
     # st.image(new_image)
+    # with st.container():
+    #     st.write("", "", "")  # Adding some spacing at the top if needed
+    #     col1, col2, col3 = st.columns([0.0.05, .9, .1])
+    #     with col2:
+    st.image(new_image)
+    st.markdown(
+    '<p style="color:grey; font-size:14px; text-align:center;">Figure: Newspaper Clipping of Alan Turing\'s Marathon time, '
+    '<a href="https://www.turing.org.uk/book/update/part6.html" style="color:grey; font-size:14px;">Source: Alan Turing Internet Scrapbook</a></p>',
+    unsafe_allow_html=True  # Make sure to enable this for rendering HTML
+)
+    st.markdown("</div>", unsafe_allow_html=True)
+    st.markdown("<h4 style=' color: black;'>Calibration</h4>", unsafe_allow_html=True)
+    image = Image.open(f'./Generated_Images/Regression_Histogram_plot_{n_cal}_for_{0.1}.png')
+    new_image = image.resize((800, 600))
+    
+    # st.image(new_image)
+    st.write("We initiate the calibration by sorting the scores in the ascending order")
     with st.container():
         st.write("", "", "")  # Adding some spacing at the top if needed
         col1, col2, col3 = st.columns([0.1, .7, .1])
         with col2:
             st.image(new_image)
-            
-    st.markdown("</div>", unsafe_allow_html=True)
-    st.markdown("<h4 style=' color: black;'>Calibration</h4>", unsafe_allow_html=True)
+            st.markdown(
+    '<p style="color:grey; font-size:14px; text-align:center;">Figure: Newspaper Clipping of Alan Turing\'s Marathon time, '
+    '<a href="https://www.turing.org.uk/book/update/part6.html" style="color:grey; font-size:14px;">Source: Alan Turing Internet Scrapbook</a></p>',
+    unsafe_allow_html=True  # Make sure to enable this for rendering HTML
+)
+    
     st.markdown(r"Use the below slider to choose the $\alpha$. With probability 1-$\alpha$, our computed uncertainty band $\hat{C}(X_{n+1})$ will contain the true value $Y_{n+1}$.")
     
     
@@ -261,7 +291,14 @@ The objective is to model and understand the trend over the years.
     q = loaded_dict[f"{n_cal}"][f"{alpha}"]["q"]
 
     # st.image(f'./Generated_Images/Regression_Histogram_plot_{n_cal}_for_{alpha}.png')
-    image = Image.open(f'./Generated_Images/Regression_Histogram_plot_{n_cal}_for_{alpha}.png')
+    
+            
+    # histogram_plot(resid, q, alpha)
+    st.write(r"Now, we compute $q_{val}$ by calculating the $\left\lceil \frac{(n+1)(1-\alpha)}{n} \right\rceil$th quantile of the conformity scores.")
+    # st.latex(r"q_{{\text{{value}}}} = {:.4f}".format(q))
+    
+    st.markdown(f'<span style=" top: 2px;font-size:50px;"><center> $q_{{\\text{{val}}}} = {q:.4f}$</center></span>', unsafe_allow_html=True)
+    image = Image.open(f'./Generated_Images/Regression_Histogram_plot_quantile_{n_cal}_for_{alpha}.png')
     new_image = image.resize((800, 600))
     
     # st.image(new_image)
@@ -270,14 +307,18 @@ The objective is to model and understand the trend over the years.
         col1, col2, col3 = st.columns([0.1, .7, .1])
         with col2:
             st.image(new_image)
-            
-    # histogram_plot(resid, q, alpha)
-    st.write(r"Now, we compute $q_{val}$ by calculating the $\left\lceil \frac{(n+1)(1-\alpha)}{n} \right\rceil$th quantile of the conformity scores.")
-    # st.latex(r"q_{{\text{{value}}}} = {:.4f}".format(q))
-    
-    st.markdown(f'<span style=" top: 2px;font-size:50px;"><center> $q_{{\\text{{val}}}} = {q:.4f}$</center></span>', unsafe_allow_html=True)
+            st.markdown(
+    '<p style="color:grey; font-size:14px; text-align:center;">Figure: Newspaper Clipping of Alan Turing\'s Marathon time, '
+    '<a href="https://www.turing.org.uk/book/update/part6.html" style="color:grey; font-size:14px;">Source: Alan Turing Internet Scrapbook</a></p>',
+    unsafe_allow_html=True  # Make sure to enable this for rendering HTML
+)
+    st.write("We now compute the confidence intervals for the predictions.")
     st.image(f'./Generated_Images/Regression_Coverage_plot_{n_cal}_for_{alpha}.png')
-    
+    st.markdown(
+    '<p style="color:grey; font-size:14px; text-align:center;">Figure: Newspaper Clipping of Alan Turing\'s Marathon time, '
+    '<a href="https://www.turing.org.uk/book/update/part6.html" style="color:grey; font-size:14px;">Source: Alan Turing Internet Scrapbook</a></p>',
+    unsafe_allow_html=True  # Make sure to enable this for rendering HTML
+)
     y_preds_46 = loaded_dict[f"{n_cal}"][f"{alpha}"]["y_preds_46"]
     # plot_conformal_prediction(x_train, y_train, x_cal, y_cal, y_cal_preds, q, alpha, scaler, net1)
     if(y_preds_46-q<=3.94 and  y_preds_46+q>=3.94):
@@ -417,11 +458,10 @@ indicates that the model is less certain about the true class label.</div>
     st.image(f'./Generated_Images/Classification_Final_Image_image_no_{test_img_idx}_{alpha}.png')
     st.markdown("<h2 style='font-size:21px;'>Prediction Set for this image: {}</h2>".format(pred_str), unsafe_allow_html=True)
     
-    st.markdown("<div style=\"text-align: justify;\">In the above examples, the first 2 images are sourced from the Fashion-MNIST dataset. The model is \
-             uncertain about these images, which can be seen by the larger predicted set sizes. This is a property we want,\
-             as the size of the predicted set indicates the model's uncertainty. In contrast, for the last 2 images, the predicted \
-             set contains only one element because the model is confident about its prediction. This is reflected by \
-             the high softmax scores of the true classes.</div>", unsafe_allow_html=True)
+    # st.markdown("<div style=\"text-align: justify;\">In the above examples, the first image is sourced from the Fashion-MNIST dataset. The model is \
+    #          uncertain about this image. In contrast, for the last 2 images, the predicted \
+    #          set contains only one element because the model is confident about its prediction. This is reflected by \
+    #          the high softmax scores of the true classes.</div>", unsafe_allow_html=True)
     
     st.markdown(f"The average size of prediction sets for all the images from the test set is <span style='font-size:20px;'>{mean}</span>", unsafe_allow_html=True)
 
