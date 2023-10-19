@@ -28,9 +28,9 @@ torch.manual_seed(42)
 np.random.seed(42)
 # plt.rcParams.update(bundles.icml2022())
 # plt.rcParams['text.usetex'] = True
-with open('nested_dict.json', 'r') as f:
+with open('data/nested_dict.json', 'r') as f:
         loaded_dict = json.load(f)
-with open('class_dict2.json', 'r') as f:
+with open('data/class_dict2.json', 'r') as f:
         class_dict = json.load(f)
 
 # Define the main function to create the Streamlit app
@@ -71,9 +71,12 @@ def main():
     st.markdown('<br>', unsafe_allow_html=True)
     st.markdown(f"<div style=\"text-align: justify;\">To illustrate, consider a scenario where a machine learning model was fine-tuned to classify green apples and oranges. Utilizing the fast.ai<sup><a href='#references'>{references['fastai']}</a></sup> library, a ResNet18 model was deployed and fed a myriad of images containing these fruits<sup><a href='#references'>{references['resnet_demo']}</a></sup>. However, when exposed to images of other objects that were green—such as frogs, green tennis balls, and even green oranges—the model overwhelmingly classified these as 'green apples' with high confidence. You can see the examples as follows:</div>", unsafe_allow_html=True)
     image_paths = [
-    "Screenshot 2023-09-29 at 3.56.30 PM.png",
-    "Screenshot 2023-09-29 at 3.56.50 PM.png",
-    "Screenshot 2023-09-29 at 3.56.57 PM.png"
+    # "Screenshot 2023-09-29 at 3.56.30 PM.png",
+    # "Screenshot 2023-09-29 at 3.56.50 PM.png",
+    # "Screenshot 2023-09-29 at 3.56.57 PM.png"
+    "Images/tennis_ball.png",
+    "Images/green_oranges.png",
+    "Images/green_frog.png"
     # Add more image paths here
 ]
 
@@ -95,14 +98,14 @@ def main():
     # st.markdown("<br>", unsafe_allow_html=True)
 
     if test_img_idx == 0:
-        utils.get_svg("example1.svg")
+        utils.get_svg("Images/example1.svg")
         st.markdown("<div style=\"text-align: justify;\">The model assigns a high probability to categorize this tennis ball as a green apple due to its resemblance in both shape and color. However, this is an incorrect classification, and it is essential to incorporate a level of uncertainty into this prediction.</div><br>", unsafe_allow_html=True)
         
     elif test_img_idx == 1:
-        utils.get_svg("example2.svg")
+        utils.get_svg("Images/example2.svg")
         st.markdown("<div style=\"text-align: justify;\">This image depicts an orange, but the model erroneously labels it as a green apple with high probability solely because of its green hue.</div><br>", unsafe_allow_html=True)
     else:
-        utils.get_svg("example3.svg")
+        utils.get_svg("Images/example3.svg")
         st.markdown("<div style=\"text-align: justify;\">The classification of this image featuring a frog as a green apple is once more the result of the predominant green color. In real life scenarios, a false classification like this may have significant implications.</div><br>", unsafe_allow_html=True)
 
 
@@ -177,7 +180,7 @@ with a desired coverage probability. Thus, conformal prediction serves as a tool
     st.markdown("<br>", unsafe_allow_html=True)
     st.markdown(f"We now turn our attention to an example first presented by Neil Lawrence in his article, 'Deep Gaussian Processes I.' Alan Turing, widely regarded as the father of modern computing, was also an exceptional athlete. He completed a marathon—spanning a distance of 26 miles and 385 yards—in a mere 2 hours, 46 minutes, and 3 seconds<sup><a href='#references'>{references['olympic_data']}</a></sup>. This achievement translates to an impressive pace of approximately 3.94 minutes per kilometer. By employing conformal prediction, we aim to estimate whether Turing would have secured a hypothetical Olympic gold medal in the marathon, had the Olympics been staged in 1946. Let us explore the possibility of his winning the medal.", unsafe_allow_html=True)
 
-    st.image('image_720.png')
+    st.image('Images/newspaper_cutting.png')
     st.markdown(
     '<p style="color:grey; font-size:14px; text-align:center;">Figure 1: Newspaper Clipping of Alan Turing\'s Marathon time, '
     '<a href="https://www.turing.org.uk/book/update/part6.html" style="color:grey; font-size:14px;">Source: Alan Turing Internet Scrapbook</a></p>',
@@ -195,7 +198,7 @@ from 1896 to the present. The 1904 outlier is due to organizational issues.
 The objective is to model and understand the trend over the years.
 """, unsafe_allow_html = True)
     n_cal = 14
-    st.image(f'./Generated_Images/Regression_Plot_{n_cal}.png')
+    st.image(f'./Images/Generated_Images/Regression_Plot_{n_cal}.png')
     st.markdown(
     '<p style="color:grey; font-size:14px; text-align:center;">Figure 2: Olympic\'s Dataset, divided into training and calibration sets',
     unsafe_allow_html=True  # Make sure to enable this for rendering HTML
@@ -233,7 +236,7 @@ The objective is to model and understand the trend over the years.
     
     # fig, ax = plot_predictions(x_train, y_train, x_cal, y_cal, y_cal_preds, coef_1=coef_1, coef_2=coef_2, coef_3=coef_3, coef_4=coef_4)
     # st.pyplot(fig)
-    st.image(f'./Generated_Images/Regression_Prediction_Plot_{n_cal}.png')
+    st.image(f'./Images/Generated_Images/Regression_Prediction_Plot_{n_cal}.png')
     st.markdown(
     '<p style="color:grey; font-size:14px; text-align:center;">Figure 3: Model (MLP) Predictions on the Calibration Data',
     unsafe_allow_html=True  # Make sure to enable this for rendering HTML
@@ -247,8 +250,8 @@ The objective is to model and understand the trend over the years.
              output $y_i$ and the model's predicted output $\hat{y}_i$ for each calibration data point $x_i$. \
              It measures the discrepancy between the true values and their corresponding predictions, providing a measure \
              of model fit to the calibration data.")
-    # st.image(f'./Generated_Images/Regression_Score_plot_{n_cal}_for_{0.1}.png')
-    image = Image.open(f'./Generated_Images/Regression_Score_plot_{n_cal}_for_{0.1}.png')
+    # st.image(f'./Images/Generated_Images/Regression_Score_plot_{n_cal}_for_{0.1}.png')
+    image = Image.open(f'./Images/Generated_Images/Regression_Score_plot_{n_cal}_for_{0.1}.png')
     new_image = image
     # st.image(new_image)
     # with st.container():
@@ -263,7 +266,7 @@ The objective is to model and understand the trend over the years.
 )
     st.markdown("</div>", unsafe_allow_html=True)
     st.markdown("<h4 style=' color: black;'>Calibration</h4>", unsafe_allow_html=True)
-    image = Image.open(f'./Generated_Images/Regression_Histogram_plot_{n_cal}_for_{0.1}.png')
+    image = Image.open(f'./Images/Generated_Images/Regression_Histogram_plot_{n_cal}_for_{0.1}.png')
     # new_image = image.resize((800, 600))
     
     # st.image(new_image)
@@ -287,7 +290,7 @@ The objective is to model and understand the trend over the years.
     
     q = loaded_dict[f"{n_cal}"][f"{alpha}"]["q"]
 
-    # st.image(f'./Generated_Images/Regression_Histogram_plot_{n_cal}_for_{alpha}.png')
+    # st.image(f'./Images/Generated_Images/Regression_Histogram_plot_{n_cal}_for_{alpha}.png')
     
             
     # histogram_plot(resid, q, alpha)
@@ -295,7 +298,7 @@ The objective is to model and understand the trend over the years.
     # st.latex(r"q_{{\text{{value}}}} = {:.4f}".format(q))
     
     st.markdown(f'<span style=" top: 2px;font-size:50px;"><center> $q_{{\\text{{val}}}} = {q:.4f}$</center></span>', unsafe_allow_html=True)
-    image = Image.open(f'./Generated_Images/Regression_Histogram_plot_quantile_{n_cal}_for_{alpha}.png')
+    image = Image.open(f'./Images/Generated_Images/Regression_Histogram_plot_quantile_{n_cal}_for_{alpha}.png')
     new_image = image
     
     # st.image(new_image)
@@ -306,7 +309,7 @@ The objective is to model and understand the trend over the years.
     unsafe_allow_html=True  # Make sure to enable this for rendering HTML
 )
     st.write("We now compute the confidence intervals for the predictions.")
-    st.image(f'./Generated_Images/Regression_Coverage_plot_{n_cal}_for_{alpha}.png')
+    st.image(f'./Images/Generated_Images/Regression_Coverage_plot_{n_cal}_for_{alpha}.png')
     st.markdown(
     '<p style="color:grey; font-size:14px; text-align:center;">Figure 7: Confidence interval of the Predictions',
     unsafe_allow_html=True  # Make sure to enable this for rendering HTML
@@ -388,7 +391,7 @@ Therefore, based on this model, Alan Turing would have <span style='font-size:19
 
     # q = np.quantile(scores, q_val, method="higher")
     # histogram_plot(scores, q, alpha)
-    st.image(f'./Generated_Images/Classification_Histogram_{alpha}.png')
+    st.image(f'./Images/Generated_Images/Classification_Histogram_{alpha}.png')
     st.markdown(
     '<p style="color:grey; font-size:14px; text-align:center;">Figure 8: Quantile of the Scores',
     unsafe_allow_html=True  # Make sure to enable this for rendering HTML
@@ -450,7 +453,7 @@ indicates that the model is less certain about the true class label.</div>
     pred_str = class_dict[f"{alpha}"][f"{test_img_idx}"]
     mean = class_dict[f"{alpha}"]["mean_size"]
     
-    st.image(f'./Generated_Images/Classification_Final_Image_image_no_{test_img_idx}_{alpha}.png')
+    st.image(f'./Images/Generated_Images/Classification_Final_Image_image_no_{test_img_idx}_{alpha}.png')
     st.markdown("<h2 style='font-size:21px;'>Prediction Set for this image: {}</h2>".format(pred_str), unsafe_allow_html=True)
     
     # st.markdown("<div style=\"text-align: justify;\">In the above examples, the first image is sourced from the Fashion-MNIST dataset. The model is \
