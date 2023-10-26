@@ -486,6 +486,13 @@ Conformal Prediction doesn't make strong assumptions about the data distribution
 """, unsafe_allow_html = True)
 
 
+    st.markdown("## **Further Reading:**")
+    st.markdown("""
+                <div style=\"text-align: justify;\">
+                If you're looking to delve deeper into the world of Conformal Prediction, we highly recommend checking out the GitHub Repository <a href = 'https://github.com/valeman/awesome-conformal-prediction'>awesome-conformal-prediction</a> by Valeriy Manokhin. It contains an expertly curated list of videos, tutorials, books, papers, PhD and MSc theses, articles and open-source libraries related to Conformal Prediction. It's a fantastic one-stop destination for anyone eager to explore this fascinating field.
+                </div>
+                """, unsafe_allow_html = True)
+
     st.markdown("## **References:**")
     st.markdown(
     '''
