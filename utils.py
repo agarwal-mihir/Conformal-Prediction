@@ -277,3 +277,31 @@ def get_references():
         "resnet_demo": [6],
         "awesome-conformal": [7]
     }
+
+def get_text_content():
+    text_content = {}
+    with open("data/text/references.md", "r") as f:
+        text_content['references_text'] = f.read()
+        
+    with open("data/text/header.md", "r") as f:
+        text_content['header_text'] = f.read()
+        
+    with open("data/text/introduction_1.md", "r") as f:
+        text_content['introduction_text1'] = f.read()
+        
+    with open("data/text/introduction_2.md", "r") as f:
+        text_content['introduction_text2'] = f.read()
+        
+    with open("data/text/regression_1.md", "r") as f:
+        text_content['regression_text1'] = f.read()
+        
+    with open("data/text/classification_1.md", "r") as f:
+        text_content['classification_text1'] = f.read()
+        
+    with open("data/text/classification_2.md", "r") as f:
+        text_content['classification_text2'] = f.read()
+        
+    with open("data/text/conclusion.md", "r") as f:
+        text_content['conclusion_text'] = f.read()
+    
+    return text_content

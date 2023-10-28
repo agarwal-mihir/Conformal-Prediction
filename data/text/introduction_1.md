@@ -1,0 +1,5 @@
+<div style="text-align: justify;">Understanding the nuances of uncertainty is pivotal in numerous domains, ranging from financial forecasting to healthcare diagnostics and autonomous vehicle control. The accurate quantification of uncertainty enables robust decision-making and engenders trust in machine learning models. For instance, in medical settings, a false negative could result in untreated disease progression, while a false positive might lead to unnecessary treatments&mdash;both with life-altering implications.</div>
+
+<br>
+
+<div style="text-align: justify;">To illustrate, consider a scenario where a machine learning model was fine-tuned to classify green apples and oranges. Utilizing the fast.ai<sup><a href='#references'>{}</a></sup> library, a ResNet18 model was deployed and fed a myriad of images containing these fruits<sup><a href='#references'>{}</a></sup>. However, when exposed to images of other objects that were green&mdash;such as frogs, green tennis balls, and even green oranges&mdash;the model overwhelmingly classified these as 'green apples' with high confidence. You can see the examples as follows:</div>
