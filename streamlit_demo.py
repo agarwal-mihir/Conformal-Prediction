@@ -30,7 +30,7 @@ np.random.seed(42)
 # plt.rcParams['text.usetex'] = True
 with open('data/nested_dict.json', 'r') as f:
         loaded_dict = json.load(f)
-with open('data/class_dict2.json', 'r') as f:
+with open('data/class_dict.json', 'r') as f:
         class_dict = json.load(f)
 
 # Define the main function to create the Streamlit app
