@@ -125,7 +125,7 @@ The objective is to model and understand the trend over the years.
 
     
 
-    x_train, y_train, x_cal, y_cal =  get_simple_data_train(n_cal)
+    # x_train, y_train, x_cal, y_cal =  get_simple_data_train(n_cal)
     
     st.image(f'./Images/Generated_Images/Regression_Prediction_Plot_{n_cal}.png')
     st.markdown(
