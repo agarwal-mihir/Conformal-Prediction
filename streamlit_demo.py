@@ -46,6 +46,7 @@ def main():
     st.markdown(text_content['introduction_text1'].format(references['fastai'], references['resnet_demo']), unsafe_allow_html=True)
 
     image_paths = [
+    "Images/apple.png",
     "Images/tennis_ball.png",
     "Images/green_oranges.png",
     "Images/green_frog.png"
@@ -56,11 +57,8 @@ def main():
     all_images = [np.array(Image.open(path).convert("RGB")) for path in image_paths]
 
 # Streamlit image selection widget
-    with st.container():
-        st.write("", "", "")  # Adding some spacing at the top if needed
-        col1, col2, col3 = st.columns([0.1, .7, .1])
-        with col2:
-            test_img_idx = st_image.image_select(label="Select an image", images=all_images, return_value="index", use_container_width=False)
+
+    test_img_idx = st_image.image_select(label="Select an image", images=all_images, return_value="index", use_container_width=False)
 
     # dict = {0: "Probability it's a apple: 0.9947, Probability it's a orange: 0.0053", 1: "Probability it's a apple: 0.9753, Probability it's a orange: 0.0247", 2: "Probability it's a apple: 0.9936, Probability it's a orange: 0.0064"}
     # st.write(dict[test_img_idx])
@@ -68,15 +66,16 @@ def main():
 
     # st.markdown(f"<div style='font-family: \"Helvetica, Arial, sans-serif\"; font-size:21px;'><b><span style='color:green;'>Probability it's an green apple: {apple_prob}</span><br><span style='color:orange;'>Probability it's an orange: {orange_prob}</span></b></div>", unsafe_allow_html=True)
     # st.markdown("<br>", unsafe_allow_html=True)
-
     if test_img_idx == 0:
+        utils.get_svg("Images/apple.svg")
+    if test_img_idx == 1:
         utils.get_svg("Images/example1.svg")
         st.markdown("<div style=\"text-align: justify;\">The model assigns a high probability to categorize this tennis ball as a green apple due to its resemblance in both shape and color. However, this is an incorrect classification, and it is essential to incorporate a level of uncertainty into this prediction.</div><br>", unsafe_allow_html=True)
         
-    elif test_img_idx == 1:
+    elif test_img_idx == 2:
         utils.get_svg("Images/example2.svg")
         st.markdown("<div style=\"text-align: justify;\">This image depicts an orange, but the model erroneously labels it as a green apple with high probability solely because of its green hue.</div><br>", unsafe_allow_html=True)
-    else:
+    elif test_img_idx == 3:
         utils.get_svg("Images/example3.svg")
         st.markdown("<div style=\"text-align: justify;\">The classification of this image featuring a frog as a green apple is once more the result of the predominant green color. In real life scenarios, a false classification like this may have significant implications.</div><br>", unsafe_allow_html=True)
 
