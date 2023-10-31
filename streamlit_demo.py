@@ -68,13 +68,15 @@ def main():
     # st.markdown("<br>", unsafe_allow_html=True)
     if test_img_idx == 0:
         utils.get_svg("Images/apple.svg")
+        st.markdown("<div style=\"text-align: justify;\">This is an image of green apples, and the model correctly identifies it as a green apple with high probability. This is expected as the Resnet model is fine-tuned for classification of green apples and oranges.</div><br>", unsafe_allow_html=True)
+        
     if test_img_idx == 1:
         utils.get_svg("Images/example1.svg")
         st.markdown("<div style=\"text-align: justify;\">The model assigns a high probability to categorize this tennis ball as a green apple due to its resemblance in both shape and color. However, this is an incorrect classification, and it is essential to incorporate a level of uncertainty into this prediction.</div><br>", unsafe_allow_html=True)
         
     elif test_img_idx == 2:
         utils.get_svg("Images/example2.svg")
-        st.markdown("<div style=\"text-align: justify;\">This image depicts an orange, but the model erroneously labels it as a green apple with high probability solely because of its green hue.</div><br>", unsafe_allow_html=True)
+        st.markdown("<div style=\"texat-align: justify;\">This image depicts an orange, but the model erroneously labels it as a green apple with high probability solely because of its green hue.</div><br>", unsafe_allow_html=True)
     elif test_img_idx == 3:
         utils.get_svg("Images/example3.svg")
         st.markdown("<div style=\"text-align: justify;\">The classification of this image featuring a frog as a green apple is once more the result of the predominant green color. In real life scenarios, a false classification like this may have significant implications.</div><br>", unsafe_allow_html=True)
