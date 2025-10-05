@@ -13,7 +13,7 @@ One of the most salient features of Conformal Prediction is its model-agnosticis
 Conformal Prediction doesn't make strong assumptions about the data distribution, making it robust in the face of non-ideal or 'dirty' data, often encountered in real-world applications. This characteristic facilitates its application in diverse industries without the need for extensive data preprocessing or assumption validations.
 </div>
 
-## Further Reading:
+## What Next?
 
 <div style="text-align: justify;">
 If you're looking to delve deeper into the world of Conformal Prediction, we highly recommend checking out the GitHub Repository <a href='https://github.com/valeman/awesome-conformal-prediction'>awesome-conformal-prediction</a> by Valeriy Manokhin. It contains an expertly curated list of videos, tutorials, books, papers, PhD and MSc theses, articles, and open-source libraries related to Conformal Prediction. It's a fantastic one-stop destination for anyone eager to explore this fascinating field.
