@@ -1,0 +1,1 @@
+<div style="text-align: justify;">This image depicts an orange, but the model erroneously labels it as a green apple with high probability solely because of its green hue.</div><br>

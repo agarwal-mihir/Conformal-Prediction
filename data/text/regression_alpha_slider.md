@@ -1,0 +1,1 @@
+Use the below slider to choose the $\alpha$. With probability 1-$\alpha$, our computed uncertainty band $\hat{C}(X_{n+1})$ will contain the true value $Y_{n+1}$.

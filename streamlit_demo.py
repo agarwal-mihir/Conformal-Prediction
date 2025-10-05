@@ -68,18 +68,18 @@ def main():
     # st.markdown("<br>", unsafe_allow_html=True)
     if test_img_idx == 0:
         utils.get_svg("Images/apple.svg")
-        st.markdown("<div style=\"text-align: justify;\">This is an image of green apples, and the model correctly identifies it as a green apple with high probability. This is expected as the Resnet model is fine-tuned for classification of green apples and oranges.</div><br>", unsafe_allow_html=True)
+        st.markdown(text_content['image_example_apple'], unsafe_allow_html=True)
         
     if test_img_idx == 1:
         utils.get_svg("Images/example1.svg")
-        st.markdown("<div style=\"text-align: justify;\">The model assigns a high probability to categorize this tennis ball as a green apple due to its resemblance in both shape and color. However, this is an incorrect classification, and it is essential to incorporate a level of uncertainty into this prediction.</div><br>", unsafe_allow_html=True)
+        st.markdown(text_content['image_example_tennis_ball'], unsafe_allow_html=True)
         
     elif test_img_idx == 2:
         utils.get_svg("Images/example2.svg")
-        st.markdown("<div style=\"texat-align: justify;\">This image depicts an orange, but the model erroneously labels it as a green apple with high probability solely because of its green hue.</div><br>", unsafe_allow_html=True)
+        st.markdown(text_content['image_example_orange'], unsafe_allow_html=True)
     elif test_img_idx == 3:
         utils.get_svg("Images/example3.svg")
-        st.markdown("<div style=\"text-align: justify;\">The classification of this image featuring a frog as a green apple is once more the result of the predominant green color. In real life scenarios, a false classification like this may have significant implications.</div><br>", unsafe_allow_html=True)
+        st.markdown(text_content['image_example_frog'], unsafe_allow_html=True)
 
 
     st.markdown(text_content['introduction_text2'], unsafe_allow_html=True)
@@ -104,11 +104,7 @@ def main():
     
     st.markdown("<br>", unsafe_allow_html=True)
     
-    st.markdown(f"""
-This dataset<sup><a href='#references'>{references["olympic_data"]}</a></sup> captures the pace of Olympic Gold Medal Marathon winners 
-from 1896 to the present. The 1904 outlier is due to organizational issues.
-The objective is to model and understand the trend over the years.
-""", unsafe_allow_html = True)
+    st.markdown(text_content['regression_dataset_description'].format(references["olympic_data"]), unsafe_allow_html = True)
     n_cal = 14
     st.image(f'./Images/Generated_Images/Regression_Plot_{n_cal}.png')
     st.markdown(
@@ -118,10 +114,7 @@ The objective is to model and understand the trend over the years.
     
     coef_4 = 2
     
-    st.markdown("<h4 style=' color: black;'>Model</h4>", unsafe_allow_html=True)
-    st.markdown("<div style=\"text-align: justify;\">The model which is a Multi Layer Perceptron (MLP) will be trained on the training data and used to generate predictions on the calibration data.</div>", unsafe_allow_html=True)
-    st.markdown("<br>", unsafe_allow_html=True)
-    st.markdown(r"The calibration data is used to estimate the quantiles ($q_{val}$) for the prediction intervals. You can choose the number of calibration data points $(n)$ using the slider below.")
+    st.markdown(text_content['regression_model'], unsafe_allow_html=True)
     # Display the equation based on user-selected coefficients
 
     
@@ -133,15 +126,9 @@ The objective is to model and understand the trend over the years.
     '<p style="color:grey; font-size:14px; text-align:center;">Figure 3: Model (MLP) Predictions on the Calibration Data',
     unsafe_allow_html=True  # Make sure to enable this for rendering HTML
 )
-    st.markdown("<h4 style=' color: black;'>Score Function</h4>", unsafe_allow_html=True)
     st.latex(r"s_i = |y_i - \hat{y}_i|")
     
-    
-    st.markdown("<div style=\"text-align: right;\">", unsafe_allow_html=True)
-    st.write("The score function $s_i$ represents the absolute difference between the true \
-             output $y_i$ and the model's predicted output $\hat{y}_i$ for each calibration data point $x_i$. \
-             It measures the discrepancy between the true values and their corresponding predictions, providing a measure \
-             of model fit to the calibration data.")
+    st.markdown(text_content['regression_score_function'], unsafe_allow_html=True)
     # st.image(f'./Images/Generated_Images/Regression_Score_plot_{n_cal}_for_{0.1}.png')
     image = Image.open(f'./Images/Generated_Images/Regression_Score_plot_{n_cal}_for_{0.1}.png')
     st.image(image)
@@ -149,12 +136,8 @@ The objective is to model and understand the trend over the years.
     '<p style="color:grey; font-size:14px; text-align:center;">Figure 4: Score Function for the Calibration Data</div>',
     unsafe_allow_html=True  # Make sure to enable this for rendering HTML
 )
-    st.markdown("<h4 style=' color: black;'>Calibration</h4>", unsafe_allow_html=True)
+    st.markdown(text_content['regression_calibration'], unsafe_allow_html=True)
     image = Image.open(f'./Images/Generated_Images/Regression_Histogram_plot_{n_cal}_for_{0.1}.png')
-    # new_image = image.resize((800, 600))
-    
-    # st.image(new_image)
-    st.write("We initiate the calibration by sorting the scores in the ascending order")
     with st.container():
         st.write("", "", "")  # Adding some spacing at the top if needed
         col1, col2, col3 = st.columns([0.01, 0.9, .01])
@@ -165,7 +148,7 @@ The objective is to model and understand the trend over the years.
     unsafe_allow_html=True  # Make sure to enable this for rendering HTML
 )
     
-    st.markdown(r"Use the below slider to choose the $\alpha$. With probability 1-$\alpha$, our computed uncertainty band $\hat{C}(X_{n+1})$ will contain the true value $Y_{n+1}$.")
+    st.markdown(text_content['regression_alpha_slider'])
     
     
     alpha = st.slider(r"Select a value for $\alpha$:", min_value=0.1, max_value=1.0, step=0.1, value=0.4)
@@ -178,7 +161,7 @@ The objective is to model and understand the trend over the years.
     
             
     # histogram_plot(resid, q, alpha)
-    st.write(r"Now, we compute $q_{val}$ by calculating the $\left\lceil \frac{(n+1)(1-\alpha)}{n} \right\rceil$th quantile of the conformity scores.")
+    st.write(text_content['regression_quantile_calculation'])
     # st.latex(r"q_{{\text{{value}}}} = {:.4f}".format(q))
     
     st.markdown(f'<span style=" top: 2px;font-size:50px;"><center> $q_{{\\text{{val}}}} = {q:.4f}$</center></span>', unsafe_allow_html=True)
@@ -192,7 +175,7 @@ The objective is to model and understand the trend over the years.
     '<p style="color:grey; font-size:14px; text-align:center;">Figure 6: Quantile of the Scores',
     unsafe_allow_html=True  # Make sure to enable this for rendering HTML
 )
-    st.write("We now compute the confidence intervals for the predictions.")
+    st.write(text_content['regression_confidence_intervals'])
     st.image(f'./Images/Generated_Images/Regression_Coverage_plot_{n_cal}_for_{alpha}.png')
     st.markdown(
     '<p style="color:grey; font-size:14px; text-align:center;">Figure 7: Confidence interval of the Predictions',
@@ -206,9 +189,7 @@ The objective is to model and understand the trend over the years.
         true_1 = "lost"
     
 
-    st.markdown("""The model predicts that the time for the Olympic gold medalist in 1946 would have been {:.2f} minutes. 
-With a significance level of &alpha; = {:.2f}, the uncertainty band calculated using conformal prediction ranges from {:.2f} to {:.2f} minutes. 
-Therefore, based on this model, Alan Turing would have <span style='font-size:19px;'><strong>{}</strong></span> the gold medal.""".format(y_preds_46, alpha, y_preds_46 - q, y_preds_46 + q, true_1), unsafe_allow_html=True)
+    st.markdown(text_content['regression_prediction_result'].format(y_preds_46, alpha, y_preds_46 - q, y_preds_46 + q, true_1), unsafe_allow_html=True)
 
     ########################################################################################################################################################
     ########################################################################################################################################################
@@ -276,14 +257,11 @@ Therefore, based on this model, Alan Turing would have <span style='font-size:19
     #          set contains only one element because the model is confident about its prediction. This is reflected by \
     #          the high softmax scores of the true classes.</div>", unsafe_allow_html=True)
     
-    st.markdown(f"The average size of prediction sets for all the images from the test set is <span style='font-size:20px;'>{mean}</span>", unsafe_allow_html=True)
+    st.markdown(text_content['classification_average_size'].format(mean), unsafe_allow_html=True)
 
 
     st.write(f" **What does the average size mean?**")
-    st.markdown("<div style=\"text-align: justify;\">We observe that the average size of the prediction set decreases when \
-             value of alpha is increased. This is because of our method for computing conformity scores, where we only \
-             take into account the softmax scores of the correct class when calculating 𝑞̂. With increasing alpha, the \
-             softmax scores for the classes decreases and thus there are lesser scores above the threshold value.</div>", unsafe_allow_html=True)
+    st.markdown(text_content['classification_average_size_explanation'], unsafe_allow_html=True)
     
     st.markdown(text_content['conclusion_text'], unsafe_allow_html=True)
     

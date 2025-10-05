@@ -1,0 +1,1 @@
+The average size of prediction sets for all the images from the test set is <span style='font-size:20px;'>{}</span>
