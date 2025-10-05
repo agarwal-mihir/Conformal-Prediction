@@ -14,11 +14,11 @@ from sklearn.preprocessing import StandardScaler
 # from tueplots import axes, bundles
 from sklearn.model_selection import train_test_split
 # from tqdm.auto import trange, tqdm
-import utils
-# Import utility func        tions and model classes from custom modules
-from utils import get_simple_data_train, display_equation, train, get_data, get_test_preds_and_smx, get_scores, quantile, get_pred_sets, mean_set_size, get_test_accuracy, train_model, conformal_prediction_regression, tensor_to_img
-from utils_plot import plot_generic, plot_predictions, histogram_plot, show_samples, plot_conformal_prediction
-from model import MLP, MLP1
+import src.utils as utils
+# Import utility functions and model classes from custom modules
+from src.utils import get_simple_data_train, display_equation, train, get_data, get_test_preds_and_smx, get_scores, quantile, get_pred_sets, mean_set_size, get_test_accuracy, train_model, conformal_prediction_regression, tensor_to_img
+from src.utils_plot import plot_generic, plot_predictions, histogram_plot, show_samples, plot_conformal_prediction
+from src.model import MLP, MLP1
 from PIL import Image
 import json
 
