@@ -1,0 +1,1 @@
+<div style="text-align: justify;">This is an image of green apples, and the model correctly identifies it as a green apple with high probability. This is expected as the Resnet model is fine-tuned for classification of green apples and oranges.</div><br>

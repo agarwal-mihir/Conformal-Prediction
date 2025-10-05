@@ -304,4 +304,49 @@ def get_text_content():
     with open("data/text/conclusion.md", "r") as f:
         text_content['conclusion_text'] = f.read()
     
+    # Image example descriptions
+    with open("data/text/image_example_apple.md", "r") as f:
+        text_content['image_example_apple'] = f.read()
+    
+    with open("data/text/image_example_tennis_ball.md", "r") as f:
+        text_content['image_example_tennis_ball'] = f.read()
+    
+    with open("data/text/image_example_orange.md", "r") as f:
+        text_content['image_example_orange'] = f.read()
+    
+    with open("data/text/image_example_frog.md", "r") as f:
+        text_content['image_example_frog'] = f.read()
+    
+    # Regression section texts
+    with open("data/text/regression_dataset_description.md", "r") as f:
+        text_content['regression_dataset_description'] = f.read()
+    
+    with open("data/text/regression_model.md", "r") as f:
+        text_content['regression_model'] = f.read()
+    
+    with open("data/text/regression_score_function.md", "r") as f:
+        text_content['regression_score_function'] = f.read()
+    
+    with open("data/text/regression_calibration.md", "r") as f:
+        text_content['regression_calibration'] = f.read()
+    
+    with open("data/text/regression_alpha_slider.md", "r") as f:
+        text_content['regression_alpha_slider'] = f.read()
+    
+    with open("data/text/regression_quantile_calculation.md", "r") as f:
+        text_content['regression_quantile_calculation'] = f.read()
+    
+    with open("data/text/regression_confidence_intervals.md", "r") as f:
+        text_content['regression_confidence_intervals'] = f.read()
+    
+    with open("data/text/regression_prediction_result.md", "r") as f:
+        text_content['regression_prediction_result'] = f.read()
+    
+    # Classification section texts
+    with open("data/text/classification_average_size.md", "r") as f:
+        text_content['classification_average_size'] = f.read()
+    
+    with open("data/text/classification_average_size_explanation.md", "r") as f:
+        text_content['classification_average_size_explanation'] = f.read()
+    
     return text_content

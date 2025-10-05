@@ -1,0 +1,1 @@
+<div style="text-align: justify;">The classification of this image featuring a frog as a green apple is once more the result of the predominant green color. In real life scenarios, a false classification like this may have significant implications.</div><br>
